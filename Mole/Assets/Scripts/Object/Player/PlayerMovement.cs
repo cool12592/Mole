@@ -4,8 +4,6 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
-using Unity.Jobs;        // IJob, IJobParallelFor
-using UnityEngine.Jobs;  // IJobParallelForTransform
 
 public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -19,7 +17,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     private Animator characterAnim;
     private Rigidbody2D rigidBody;
     public Vector3 receivePos;
-    public TransformAccessArray _transformAccessArray;
     public Transform[] _transformArray; // 대상 트랜스폼들 등록
 
     private const float originalSpeed = 270f;
@@ -47,7 +44,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
             dashBtnText = GameObject.Find("Canvas").transform.Find("DashButton").transform.Find("Text").GetComponent<Text>();
             rigidBody = gameObject.GetComponent<Rigidbody2D>();
         }
-        _transformAccessArray = new TransformAccessArray(_transformArray);
 
     }
 
@@ -81,22 +77,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (PV.IsMine == false)
         {
-            // 잡 생성
-            otherPositionSyncJob posJob = new otherPositionSyncJob { receivePos_ = receivePos };
-            // 잡 예약(실행)
-            JobHandle handle = posJob.Schedule(_transformAccessArray);
-        }
-    }
-
-  //  [BurstCompile]
-    private struct otherPositionSyncJob : IJobParallelForTransform
-    {
-        public Vector3 receivePos_;
-        public void Execute(int index, TransformAccess transform)
-        {
-            if ((transform.position - receivePos_).sqrMagnitude >= 100) transform.position = receivePos_; //위치가 동기화 위치랑 너무 멀어지면 동기화 위치로 만듬
-            else transform.position = Vector3.Lerp(transform.position, receivePos_, Time.deltaTime * 10); //그게 아니면 위치를 동기화 받은위치로 보간시킴
-
+            if ((transform.position - receivePos).sqrMagnitude >= 100) transform.position = receivePos; //위치가 동기화 위치랑 너무 멀어지면 동기화 위치로 만듬
+            else transform.position = Vector3.Lerp(transform.position, receivePos, Time.deltaTime * 10); //그게 아니면 위치를 동기화 받은위치로 보간시킴
         }
     }
 
@@ -181,11 +163,5 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (player.isActive == false) return;
         rigidBody.velocity = inputDirection * moveSpeed / moveCoefficient;
-    }
-
-    private void OnDestroy()
-    {
-        // 메모리 해제
-        _transformAccessArray.Dispose();
     }
 }
