@@ -22,6 +22,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     Vector3 lastPos;
 
     Action OnGenerateMesh;
+    [SerializeField] FallingGround _fallingGround;
 
     private void Awake()
     {
@@ -49,6 +50,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         dashBtn = GameObject.Find("Canvas").transform.Find("DashButton").gameObject.GetComponent<Button>();
         dashBtn.onClick.AddListener(GenerateMeshObject);
+
+        _fallingGround = GameObject.Find("FallingGround").GetComponent<FallingGround>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -129,5 +132,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         // 🔥 위치 및 레이어 동기화
         meshObj.transform.position = new Vector3(meshObj.transform.position.x, meshObj.transform.position.y, -1f);
         meshObj.layer = Mathf.RoundToInt(Mathf.Log(changeLayer.value, 2));
+
+        StartCoroutine(CoPostGenerateMesh());
+    }
+
+    IEnumerator CoPostGenerateMesh()
+    {
+        yield return null;
+        _fallingGround.StartFalling();
     }
 }

@@ -1,16 +1,14 @@
-Shader "Custom/GroundChanger"
+Shader "Custom/GroundChanger2"
 {
     Properties
     {
         _MainTex("Main Texture", 2D) = "" {}
         _MaskTex("Mask Texture", 2D) = "" {}
-        _PaintColor("Paint Color", Color) = (1,1,1,1)  // 기본값 설정 (흰색)
-        _RoadColor("Road Color", Color) = (1,1,1,1)  // 기본값 설정 (흰색)
+        _MaskTex2("Mask Texture2", 2D) = "" {}
     }
     SubShader
     {
-        Tags { "RenderType" = "Transparent" }
-        Blend SrcAlpha OneMinusSrcAlpha
+        Tags { "RenderType" = "Opaque" }
         Pass
         {
             CGPROGRAM
@@ -30,9 +28,8 @@ Shader "Custom/GroundChanger"
 
             sampler2D _MainTex;
             sampler2D _MaskTex;
-            uniform fixed4 _PaintColor;  // `Color` 타입을 `fixed4`로 선언
-            uniform fixed4 _RoadColor;  // `Color` 타입을 `fixed4`로 선언
-
+            sampler2D _MaskTex2;
+            uniform fixed4 _BaseColor;  // `Color` 타입을 `fixed4`로 선언
 
             v2f vert(appdata_t v)
             {
@@ -45,20 +42,17 @@ Shader "Custom/GroundChanger"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                fixed4 baseColor = tex2D(_MainTex, i.uv);
+                fixed4 mainColor = tex2D(_MainTex, i.uv);
                 fixed4 maskColor = tex2D(_MaskTex, i.uv);
+                fixed4 maskColor2 = tex2D(_MaskTex2, i.uv);
 
-                if ( maskColor.r >= 0.8)
+                if ( maskColor.r >= 0.5)
                 {
-                    return _RoadColor;  
+                    return maskColor2;  
                 }
-                else if ( maskColor.a > 0.3)
-                {
-                    return _PaintColor;  
-                }
-
+               
                 clip(-1); // 해당 픽셀을 완전히 삭제 (투명)
-                return baseColor;
+                return mainColor;
             }
             ENDCG
         }
