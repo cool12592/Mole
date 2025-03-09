@@ -206,8 +206,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [PunRPC]
     private void SyncPosListAndGenerateMesh_RPC(Vector2[] receivedPosList)
     {
-        OnGenerateMesh?.Invoke();
-        OnGenerateMesh = null;
+       
 
         // 🔥 받은 posList로 동기화
         posList = new List<Vector2>(receivedPosList);
@@ -266,5 +265,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             yield break;
         }
         _fallingGround.StartFalling();
+
+        yield return null;
+       // OnGenerateMesh?.Invoke();
+        //OnGenerateMesh = null;
     }
 }
