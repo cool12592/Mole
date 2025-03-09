@@ -156,23 +156,23 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
 
 
-        //if (lastExitRoad != null && lastEnterRoad != null)
-        //{
-        //    if (lastExitRoad.myNumber > lastEnterRoad.myNumber)
-        //    {
-        //        var temp = lastExitRoad;
-        //        lastExitRoad = lastEnterRoad;
-        //        lastEnterRoad = temp;
-        //    }
+        if (lastExitRoad != null && lastEnterRoad != null)
+        {
+            if (lastExitRoad.myNumber > lastEnterRoad.myNumber)
+            {
+                var temp = lastExitRoad;
+                lastExitRoad = lastEnterRoad;
+                lastEnterRoad = temp;
+            }
 
-        //    Road nextRoad = lastExitRoad;
-        //    while (nextRoad != null && nextRoad != lastEnterRoad)
-        //    {
-        //        posList.Add(nextRoad.transform.position);
-        //        nextRoad.ChangeColor();
-        //        nextRoad = nextRoad.nextRoad;
-        //    }
-        //}
+            Road nextRoad = lastExitRoad;
+            while (nextRoad != null && nextRoad != lastEnterRoad)
+            {
+                posList.Add(nextRoad.transform.position);
+                nextRoad.ChangeColor();
+                nextRoad = nextRoad.nextRoad;
+            }
+        }
 
         photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray());
     }

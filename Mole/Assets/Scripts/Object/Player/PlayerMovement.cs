@@ -162,5 +162,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (player.isActive == false) return;
         rigidBody.velocity = inputDirection * moveSpeed / moveCoefficient;
+
+        if (inputDirection != Vector2.zero)
+        {
+            float angle = Mathf.Atan2(inputDirection.y, inputDirection.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+        }
     }
 }
