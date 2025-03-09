@@ -11,6 +11,9 @@ public class FallingGround : MonoBehaviour
     private bool isFalling = false;
     private float lerpTime = 0f;
 
+    [SerializeField] RenderTexture meshRender;
+    [SerializeField] RenderTexture meshRenderCopy;
+
     private void Awake()
     {
         startPos = transform.position;
@@ -38,6 +41,8 @@ public class FallingGround : MonoBehaviour
 
     public void StartFalling()
     {
+        Graphics.Blit(meshRender, meshRenderCopy);
+
         gameObject.SetActive(true);
         transform.position = startPos; // 오브젝트를 순간이동
         lerpTime = 0f;

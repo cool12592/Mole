@@ -253,12 +253,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     IEnumerator CoPostGenerateMesh()
     {
         yield return null;
-
-        yield return null;
         _textureADD.BlendRenderTextures();
-        yield return null;
-
-        yield return null;
         if(first)
         {
             first = false;
@@ -266,8 +261,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
         _fallingGround.StartFalling();
 
-        yield return null;
-       // OnGenerateMesh?.Invoke();
-        //OnGenerateMesh = null;
+       // yield return null;
+
+        OnGenerateMesh?.Invoke();
+        OnGenerateMesh = null;
     }
 }
