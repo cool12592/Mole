@@ -17,7 +17,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     private Animator characterAnim;
     private Rigidbody2D rigidBody;
     public Vector3 receivePos;
-    public Transform[] _transformArray; // 대상 트랜스폼들 등록
 
     private const float originalSpeed = 270f;
     private float moveSpeed = originalSpeed;
@@ -37,7 +36,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
         if (PV.IsMine)
         {
             dashBtnObject = GameObject.Find("Canvas").transform.Find("DashButton").gameObject;
-            dashBtnObject.SetActive(true);
+          //  dashBtnObject.SetActive(true);
             dashBtn = dashBtnObject.GetComponent<Button>();
             dashBtn.onClick.AddListener(Dash);
 

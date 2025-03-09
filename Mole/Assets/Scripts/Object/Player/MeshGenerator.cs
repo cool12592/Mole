@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [SerializeField] GameObject _recordObj;
     public PhotonView PV;
     private Button dashBtn;
+
+    float timer = 0f;
+    Vector3 lastPos;
+
+    Action OnGenerateMesh;
 
     private void Awake()
     {
@@ -45,8 +51,14 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         dashBtn.onClick.AddListener(GenerateMeshObject);
     }
 
-    float timer = 0f;
-    Vector3 lastPos;
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer != LayerMask.NameToLayer("Road"))
+            return;
+
+        GenerateMeshObject();
+    }
+
     private void Update()
     {
         timer += Time.deltaTime;
@@ -56,11 +68,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
 
         lastPos = transform.position;
-        if(0.3f<timer)
+        if(0.1f<timer)
         {
             timer = 0f;
             posList.Add(new Vector2(transform.position.x, transform.position.y));
-            Instantiate(_recordObj,transform.position, Quaternion.identity);
+            OnGenerateMesh += Instantiate(_recordObj,transform.position, Quaternion.identity).GetComponent<Road>().DisableCollider;
         }
     }
 
@@ -76,14 +88,17 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [PunRPC]
     private void SyncPosListAndGenerateMesh_RPC(Vector2[] receivedPosList)
     {
-        // 🔥 받은 posList로 동기화
-        posList = new List<Vector2>(receivedPosList);
-
-        if (posList.Count < 3)
+        if (receivedPosList.Length < 3)
         {
             Debug.LogError("정점이 3개 이상 필요합니다!");
             return;
         }
+
+        OnGenerateMesh?.Invoke();
+
+
+        // 🔥 받은 posList로 동기화
+        posList = new List<Vector2>(receivedPosList);
 
         Mesh mesh = new Mesh();
         meshFilter.mesh = mesh;

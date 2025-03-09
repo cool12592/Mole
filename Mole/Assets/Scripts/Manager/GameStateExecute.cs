@@ -57,7 +57,7 @@ public class GameStateExecute : MonoBehaviour
 
     private void OnFightState()
     {
-        AimJoystick.SetActive(true);
+       // AimJoystick.SetActive(true);
     }
 
     private void OnResultState()

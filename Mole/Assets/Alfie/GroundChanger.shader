@@ -49,6 +49,8 @@ Shader "Custom/GroundChanger"
                 {
                     return _NewColor;  
                 }
+
+                clip(-1); // 해당 픽셀을 완전히 삭제 (투명)
                 return baseColor;
             }
             ENDCG

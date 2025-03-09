@@ -52,10 +52,6 @@ public class playerScript : MonoBehaviourPunCallbacks
 
         aimJoystick = GameObject.Find("Canvas").transform.Find("Aim_Joystick").gameObject;
         aimJoystick.GetComponent<JoyStickScript>().MyPlayer = gameObject;
-
-
-        attackButton = aimJoystick.transform.Find("attack_BTN").gameObject.GetComponent<Button>();
-        attackButton.onClick.AddListener(GetComponent<PlayerAttack>().Attack);
     }
 
     private void Start()
@@ -67,6 +63,9 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     private void OnDestroy()
     {
+        if (GameStateManager.Instance == null)
+            return;
+
         GameStateManager.Instance.ReadyStateAction -= OnReadyState;
         GameStateManager.Instance.FightStateAction -= OnFightState;
         GameStateManager.Instance.ResultStateAction -= OnResultState;
