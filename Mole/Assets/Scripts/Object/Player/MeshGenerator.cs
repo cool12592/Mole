@@ -26,8 +26,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     Action OnGenerateMesh;
     [SerializeField] FallingGround _fallingGround;
     [SerializeField] TextureAdd _textureADD;
-    [SerializeField] bool inHouse = false;
+    [SerializeField] bool inHouse = true;
     [SerializeField] int _curPointCount = 0;
+
+    [SerializeField] Road lastExitRoad;
+
     private void Awake()
     {
         PV = GetComponent<PhotonView>();
@@ -58,17 +61,51 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         dashBtn.onClick.AddListener(GenerateMeshObject);
 
         _fallingGround = GameObject.Find("FallingGround").GetComponent<FallingGround>();
+        _fallingGround.gameObject.SetActive(false);
+
+        Instantiate(_recordObj, transform.position + new Vector3(-1f,1f,0f), Quaternion.identity).GetComponent<Road>().DisableCollider();
+        Instantiate(_recordObj, transform.position + new Vector3(0f, 1f, 0f), Quaternion.identity).GetComponent<Road>().DisableCollider();
+        Instantiate(_recordObj, transform.position + new Vector3(1f, 1f, 0f), Quaternion.identity).GetComponent<Road>().DisableCollider();
+        Instantiate(_recordObj, transform.position + new Vector3(-1f, 0f, 0f), Quaternion.identity).GetComponent<Road>().DisableCollider();
+        Instantiate(_recordObj, transform.position + new Vector3(1f, 0f, 0f), Quaternion.identity).GetComponent<Road>().DisableCollider();
+        Instantiate(_recordObj, transform.position + new Vector3(-1f, -1f, 0f), Quaternion.identity).GetComponent<Road>().DisableCollider();
+        Instantiate(_recordObj, transform.position + new Vector3(0f, -1f, 0f), Quaternion.identity).GetComponent<Road>().DisableCollider();
+        Instantiate(_recordObj, transform.position + new Vector3(1f, -1f, 0f), Quaternion.identity).GetComponent<Road>().DisableCollider();
+
+        Instantiate(_recordObj, transform.position + new Vector3(0f, 0f, 0f), Quaternion.identity).GetComponent<Road>().DisableCollider();
+
+
+        _curPointCount = 100;
+        posList.Add(transform.position + new Vector3(-1f, -1f, 0f));
+        posList.Add(transform.position + new Vector3(-1f, 1f, 0f));
+        posList.Add(transform.position + new Vector3(1f, 1f, 0f));
+        posList.Add(transform.position + new Vector3(1f, -1f, 0f));
+    }
+
+    private IEnumerator Start()
+    {
+        yield return null;
+        GenerateMeshObject();
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (inHouse)
             return; 
-        if (collision.gameObject.layer != LayerMask.NameToLayer("Road") && collision.gameObject.layer != LayerMask.NameToLayer("FinishRoad"))
+        if (collision.gameObject.layer != LayerMask.NameToLayer("FinishRoad"))
             return;
        // collision.gameObject.GetComponent<Road>()
 
         GenerateMeshObject();
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer != LayerMask.NameToLayer("FinishRoad"))
+            return;
+
+        lastExitRoad = collision.GetComponent<Road>();
     }
 
     public void OnTriggerEnter3D(Collider other)
@@ -106,7 +143,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     void GenerateMeshObject()
     {
-        if (_curPointCount < 10)
+        if (_curPointCount < 3)
             return;
 
         photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray());

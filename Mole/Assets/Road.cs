@@ -17,9 +17,13 @@ public class Road : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (gameObject.layer == LayerMask.NameToLayer("FinishRoad"))
+            return;
+
         if (collision.gameObject.layer != LayerMask.NameToLayer("Player"))
             return;
 
+        
         gameObject.layer = LayerMask.NameToLayer("Road");
 
     }
