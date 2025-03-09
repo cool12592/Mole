@@ -63,8 +63,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (inHouse)
-            return;
-        if (collision.gameObject.layer != LayerMask.NameToLayer("Road"))
+            return; 
+        if (collision.gameObject.layer != LayerMask.NameToLayer("Road") && collision.gameObject.layer != LayerMask.NameToLayer("FinishRoad"))
             return;
        // collision.gameObject.GetComponent<Road>()
 

@@ -10,7 +10,9 @@ public class Road : MonoBehaviour
     public void DisableCollider()
     {
         isNoUseRoad = false;
-       // collider_.enabled = false;
+        gameObject.layer = LayerMask.NameToLayer("FinishRoad");
+
+        // collider_.enabled = false;
     }
 
     private void OnTriggerExit2D(Collider2D collision)
