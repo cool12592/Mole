@@ -135,8 +135,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         GetComponent<SpriteRenderer>().color = Color.red;
 
-        if (Vector3.SqrMagnitude(transform.position-lastPos)<0.01f)
+        if (transform.position == lastPos)
             return;
+       // if (Vector3.SqrMagnitude(transform.position-lastPos)<0.01f)
+       //     return;
 
         lastPos = transform.position;
        // if(0.1f<timer)
@@ -156,25 +158,81 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
 
 
-        if (lastExitRoad != null && lastEnterRoad != null)
-        {
-            if (lastExitRoad.myNumber > lastEnterRoad.myNumber)
-            {
-                var temp = lastExitRoad;
-                lastExitRoad = lastEnterRoad;
-                lastEnterRoad = temp;
-            }
 
-            Road nextRoad = lastExitRoad;
-            while (nextRoad != null && nextRoad != lastEnterRoad)
-            {
-                posList.Add(nextRoad.transform.position);
-                nextRoad.ChangeColor();
-                nextRoad = nextRoad.nextRoad;
-            }
-        }
+
+        //if (lastExitRoad != null && lastEnterRoad != null)
+        //{
+        //    if (lastExitRoad.myNumber > lastEnterRoad.myNumber)
+        //    {
+        //        var temp = lastExitRoad;
+        //        lastExitRoad = lastEnterRoad;
+        //        lastEnterRoad = temp;
+        //    }
+
+        //    Road nextRoad = lastExitRoad;
+        //    while (nextRoad != null && nextRoad != lastEnterRoad)
+        //    {
+        //        posList.Add(nextRoad.transform.position);
+        //        nextRoad.ChangeColor();
+        //        nextRoad = nextRoad.nextRoad;
+        //    }
+        //}
+
+        originLastIndex = posList.Count - 1;
+        if (lastExitRoad != null && lastEnterRoad != null)
+            CastRaysAlongLine();
 
         photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray());
+    }
+
+    [Header("hmm")]
+
+    public Vector2 pointA;   // 시작 점
+    public Vector2 pointB;   // 끝 점
+    public float spacing = 0.2f;  // 점 간격
+    public float rayLength = 1000f;  // 레이 길이
+    public LayerMask hitLayer;    // 충돌 레이어 설정
+
+    void CastRaysAlongLine()
+    {
+        pointA = lastExitRoad.gameObject.transform.position;
+        pointB = lastEnterRoad.gameObject.transform.position;
+        Vector2 direction = (pointB - pointA).normalized; // 선분 방향
+        float length = Vector2.Distance(pointA, pointB);  // 총 길이
+        int numPoints = Mathf.FloorToInt(length / spacing); // 찍을 점 개수
+
+        for (int i = 0; i <= numPoints; i++)
+        {
+            Vector2 point = pointA + direction * (i * spacing); // 선분 위 점
+
+            // 수직 방향 2개 (왼쪽, 오른쪽)
+            Vector2 perpDirection1 = new Vector2(-direction.y, direction.x); // 시계 방향 90도 회전
+            Vector2 perpDirection2 = new Vector2(direction.y, -direction.x); // 반시계 방향 90도 회전
+
+            // 첫 번째 수직 방향으로 레이 쏘기
+            RaycastHit2D hit1 = Physics2D.Raycast(point, perpDirection1, rayLength, hitLayer);
+            Debug.DrawRay(point, perpDirection1 * rayLength, Color.red, 1f);
+
+            if (hit1.collider != null)
+            {
+                posList.Add(hit1.collider.transform.position);
+
+               // GameObject go = new GameObject("test1");
+               // go.transform.position = hit1.collider.transform.position;
+            }
+
+            // 두 번째 수직 방향으로 레이 쏘기
+            RaycastHit2D hit2 = Physics2D.Raycast(point, perpDirection2, rayLength, hitLayer);
+            Debug.DrawRay(point, perpDirection2 * rayLength, Color.blue, 1f);
+
+            if (hit2.collider != null)
+            {
+                posList.Add(hit2.collider.transform.position);
+              //  GameObject go = new GameObject("test2");
+               // go.transform.position = hit1.collider.transform.position;
+
+            }
+        }
     }
 
     void CreateMesh()
@@ -202,6 +260,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     }
 
+    int originLastIndex = 0;
     /// <summary>
     /// 정점 리스트를 받아서 이동 경로 Mesh를 생성
     /// </summary>
@@ -231,6 +290,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         for (int i = 1; i < vertices.Length - 1; i++)
         {
             triangles.Add(0);
+            triangles.Add(i);
+            triangles.Add(i + 1);
+        }
+
+        for (int i = 1; i < vertices.Length - 1; i++)
+        {
+            triangles.Add(originLastIndex);
             triangles.Add(i);
             triangles.Add(i + 1);
         }

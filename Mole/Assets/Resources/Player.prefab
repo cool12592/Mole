@@ -428,6 +428,13 @@ MonoBehaviour:
   _textureADD: {fileID: 2147442307044310656}
   inHouse: 1
   _curPointCount: 0
+  pointA: {x: 0, y: 0}
+  pointB: {x: 0, y: 0}
+  spacing: 0.1
+  rayLength: 1000
+  hitLayer:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!114 &2147442307044310656
 MonoBehaviour:
   m_ObjectHideFlags: 0
