@@ -52,7 +52,7 @@ Shader "Custom/GroundChanger"
                 fixed4 roadColor = tex2D(_RoadTex, i.uv);
 
 
-                if ( maskColor.a > 0.1)
+                if ( maskColor.r > 0.1)
                 {
                     return _PaintColor;  
                 }
