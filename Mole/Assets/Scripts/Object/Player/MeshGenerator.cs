@@ -143,7 +143,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     void GenerateMeshObject()
     {
-        if (_curPointCount < 3)
+        if (_curPointCount < 10)
             return;
 
         photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray());
@@ -197,6 +197,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         StartCoroutine(CoPostGenerateMesh());
     }
 
+    bool first = true;
     IEnumerator CoPostGenerateMesh()
     {
         yield return null;
@@ -206,6 +207,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         yield return null;
 
         yield return null;
+        if(first)
+        {
+            first = false;
+            yield break;
+        }
         _fallingGround.StartFalling();
     }
 }
