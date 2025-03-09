@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GroundPaintMat 1
-  m_Shader: {fileID: 4800000, guid: 99ee50a120c02b942ab9ff7fc24502d7, type: 3}
+  m_Name: PaintMat
+  m_Shader: {fileID: 4800000, guid: 8cc68f4c0c538354bb50d469838db9ac, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -44,15 +44,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 8400000, guid: 50f52de789b8f3d40867e44a21eef3c4, type: 2}
+        m_Texture: {fileID: 2800000, guid: be25d1b7d1cd3a04ca6f390106ef2c49, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 8400000, guid: 50f52de789b8f3d40867e44a21eef3c4, type: 2}
+        m_Texture: {fileID: 8400000, guid: 8f9bf704b64d6d34092823336f89bfc5, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex2:
-        m_Texture: {fileID: 8400000, guid: d705bc581ed2b794db5b7dac8823f9e7, type: 2}
+        m_Texture: {fileID: 2800000, guid: c347206643c0d514294fd0eb5d4d3496, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -69,6 +69,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoadTex:
+        m_Texture: {fileID: 8400000, guid: a71701305b3f1364a8cdd6099e4b6558, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -91,7 +95,6 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _NewColor: {r: 0, g: 0.9411765, b: 1, a: 0.5019608}

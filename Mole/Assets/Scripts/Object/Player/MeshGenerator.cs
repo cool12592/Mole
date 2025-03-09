@@ -23,6 +23,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     Action OnGenerateMesh;
     [SerializeField] FallingGround _fallingGround;
+    [SerializeField] TextureAdd _textureADD;
 
     private void Awake()
     {
@@ -138,6 +139,12 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     IEnumerator CoPostGenerateMesh()
     {
+        yield return null;
+
+        yield return null;
+        _textureADD.BlendRenderTextures();
+        yield return null;
+
         yield return null;
         _fallingGround.StartFalling();
     }

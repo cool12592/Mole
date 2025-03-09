@@ -4217,6 +4217,54 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1835501670}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1271155285
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1271155287}
+  - component: {fileID: 1271155286}
+  m_Layer: 0
+  m_Name: RenderTextureCargo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1271155286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271155285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1630694780b53a438ecb5058064473b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceTexture: {fileID: 8400000, guid: 50f52de789b8f3d40867e44a21eef3c4, type: 2}
+  targetTexture: {fileID: 8400000, guid: 8f9bf704b64d6d34092823336f89bfc5, type: 2}
+  tempTexture: {fileID: 8400000, guid: d800be9c74abd8742b0a66751a791e56, type: 2}
+  blitMaterial: {fileID: 2100000, guid: f038547dd8dec6a40aa9c2b4614fe5c4, type: 2}
+--- !u!4 &1271155287
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271155285}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.4060904, y: -2.1676595, z: -0.07359564}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1271460582
 GameObject:
   m_ObjectHideFlags: 0
@@ -14658,7 +14706,7 @@ GameObject:
   - component: {fileID: 1831305351}
   - component: {fileID: 1831305353}
   m_Layer: 0
-  m_Name: PaintCamera
+  m_Name: RoadCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14718,9 +14766,9 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 704
+    m_Bits: 640
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: 8f9bf704b64d6d34092823336f89bfc5, type: 2}
+  m_TargetTexture: {fileID: 8400000, guid: a71701305b3f1364a8cdd6099e4b6558, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -15921,3 +15969,4 @@ SceneRoots:
   - {fileID: 1141210216}
   - {fileID: 580111136}
   - {fileID: 1998074992}
+  - {fileID: 1271155287}
