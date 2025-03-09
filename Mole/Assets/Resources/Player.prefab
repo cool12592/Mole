@@ -428,7 +428,6 @@ MonoBehaviour:
   _textureADD: {fileID: 2147442307044310656}
   inHouse: 1
   _curPointCount: 0
-  lastExitRoad: {fileID: 0}
 --- !u!114 &2147442307044310656
 MonoBehaviour:
   m_ObjectHideFlags: 0

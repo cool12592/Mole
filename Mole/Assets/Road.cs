@@ -6,12 +6,31 @@ public class Road : MonoBehaviour
 {
 
     [SerializeField] Collider2D collider_;
-    
+    static int staticNumber = 0;
+    public int myNumber = 0;
+    public Road nextRoad;
 
-    public void DisableCollider()
+    static Road staticRoad = null;
+
+
+    private void Awake()
+    {
+        if(staticRoad != null) 
+            staticRoad.nextRoad = this;
+        staticRoad = this;
+        staticNumber++;
+        myNumber = staticNumber;
+    }
+
+    public void ChangeLayer()
     {
         gameObject.layer = LayerMask.NameToLayer("FinishRoad");
 
         // collider_.enabled = false;
+    }
+
+    public void ChangeColor()
+    {
+        //GetComponent<SpriteRenderer>().color = Color.black;
     }
 }
