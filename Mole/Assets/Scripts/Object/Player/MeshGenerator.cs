@@ -256,6 +256,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     IEnumerator CoPostGenerateMesh()
     {
         yield return null;
+        _fallingGround.BlendRenderTextures();
         _textureADD.BlendRenderTextures();
         if(first)
         {

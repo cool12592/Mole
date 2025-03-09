@@ -15448,8 +15448,10 @@ MonoBehaviour:
   fallSpeed: 0.5
   targetY: -30
   delay: 0.4
-  meshRender: {fileID: 8400000, guid: 50f52de789b8f3d40867e44a21eef3c4, type: 2}
-  meshRenderCopy: {fileID: 8400000, guid: 47d0c3b43d668cd4f8aa6a405bcb1ff2, type: 2}
+  meshTexture: {fileID: 8400000, guid: 50f52de789b8f3d40867e44a21eef3c4, type: 2}
+  meshTextureCopy: {fileID: 8400000, guid: 47d0c3b43d668cd4f8aa6a405bcb1ff2, type: 2}
+  paintTexture: {fileID: 8400000, guid: 8f9bf704b64d6d34092823336f89bfc5, type: 2}
+  blitMaterial: {fileID: 2100000, guid: 8e6d91524c053b6418a2be104040f525, type: 2}
 --- !u!1 &1999928710
 GameObject:
   m_ObjectHideFlags: 0

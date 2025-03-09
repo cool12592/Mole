@@ -11,8 +11,11 @@ public class FallingGround : MonoBehaviour
     private bool isFalling = false;
     private float lerpTime = 0f;
 
-    [SerializeField] RenderTexture meshRender;
-    [SerializeField] RenderTexture meshRenderCopy;
+    [SerializeField] RenderTexture meshTexture;
+    [SerializeField] RenderTexture meshTextureCopy;
+
+    [SerializeField] RenderTexture paintTexture;
+    [SerializeField] Material blitMaterial;
 
     private void Awake()
     {
@@ -39,10 +42,15 @@ public class FallingGround : MonoBehaviour
         }
     }
 
+    public void BlendRenderTextures()
+    {
+        blitMaterial.SetTexture("_MainTex", meshTexture);
+        blitMaterial.SetTexture("_PaintTex", paintTexture);
+        Graphics.Blit(meshTexture, meshTextureCopy, blitMaterial);
+    }
+
     public void StartFalling()
     {
-        Graphics.Blit(meshRender, meshRenderCopy);
-
         gameObject.SetActive(true);
         transform.position = startPos; // 오브젝트를 순간이동
         lerpTime = 0f;
