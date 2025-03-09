@@ -20,13 +20,10 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
         PV = GetComponent<PhotonView>();
         spriteRender = GetComponent<SpriteRenderer>();
         gunObject = transform.Find("gun").gameObject;
+        player = GetComponent<playerScript>();
 
-        if (PV.IsMine)
-        {
-            player = GetComponent<playerScript>();
-            gunAni = gunObject.GetComponent<Animator>();
-            characterAnim = GetComponent<Animator>();
-        }
+        gunAni = gunObject.GetComponent<Animator>();
+        characterAnim = GetComponent<Animator>();
     }
 
     // Update is called once per frame

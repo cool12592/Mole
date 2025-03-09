@@ -27,13 +27,12 @@ public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable
     void Start()
     {
         PV = GetComponent<PhotonView>();
-        if (PV.IsMine)
-        {
-            rigidBody = gameObject.GetComponent<Rigidbody2D>();
-            characterAnim = GetComponent<Animator>();
-            spriteRender = GetComponent<SpriteRenderer>();
-            player = GetComponent<playerScript>();
-        }
+
+        rigidBody = gameObject.GetComponent<Rigidbody2D>();
+        characterAnim = GetComponent<Animator>();
+        spriteRender = GetComponent<SpriteRenderer>();
+        player = GetComponent<playerScript>();
+        
     }
 
     // Update is called once per frame

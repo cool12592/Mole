@@ -29,12 +29,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     {
         PV = GetComponent<PhotonView>();
         health = GetComponent<PlayerHealth>();
+        player = GetComponent<playerScript>();
+
+        characterAnim = GetComponent<Animator>();
+        rigidBody = gameObject.GetComponent<Rigidbody2D>();
 
         if (PV.IsMine)
         {
-            player = GetComponent<playerScript>();
-            characterAnim = GetComponent<Animator>();
-
             dashBtnObject = GameObject.Find("Canvas").transform.Find("DashButton").gameObject;
             dashBtnObject.SetActive(true);
             dashBtn = dashBtnObject.GetComponent<Button>();
@@ -42,7 +43,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 
             dashCoolTimeImage = GameObject.Find("Canvas").transform.Find("DashCoolTime").gameObject.GetComponent<Image>();
             dashBtnText = GameObject.Find("Canvas").transform.Find("DashButton").transform.Find("Text").GetComponent<Text>();
-            rigidBody = gameObject.GetComponent<Rigidbody2D>();
         }
 
     }
