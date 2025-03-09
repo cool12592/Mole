@@ -5,6 +5,7 @@ Shader "Custom/GroundChanger"
         _MainTex("Main Texture", 2D) = "" {}
         _MaskTex("Mask Texture", 2D) = "" {}        
         _RoadTex("Road Texture", 2D) = "" {}
+        _FinishRoadTex("Finish Road Texture", 2D) = "" {}
         _PaintColor("Paint Color", Color) = (1,1,1,1)  // 기본값 설정 (흰색)
         _RoadColor("Road Color", Color) = (1,1,1,1)  // 기본값 설정 (흰색)
     }
@@ -32,6 +33,7 @@ Shader "Custom/GroundChanger"
             sampler2D _MainTex;
             sampler2D _MaskTex;
             sampler2D _RoadTex;
+            sampler2D _FinishRoadTex;
             uniform fixed4 _PaintColor;  // `Color` 타입을 `fixed4`로 선언
             uniform fixed4 _RoadColor;  // `Color` 타입을 `fixed4`로 선언
 
@@ -50,9 +52,9 @@ Shader "Custom/GroundChanger"
                 fixed4 baseColor = tex2D(_MainTex, i.uv);
                 fixed4 maskColor = tex2D(_MaskTex, i.uv);
                 fixed4 roadColor = tex2D(_RoadTex, i.uv);
+                fixed4 finishRoadColor = tex2D(_FinishRoadTex, i.uv);
 
-
-                if ( maskColor.r > 0.1)
+                if ( maskColor.r > 0.1 || finishRoadColor.r > 0.1)
                 {
                     return _PaintColor;  
                 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1794218829877025456}
   - component: {fileID: 67316864639300267}
   - component: {fileID: -5154976001687268517}
-  m_Layer: 9
+  m_Layer: 7
   m_Name: Road
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145,3 +145,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collider_: {fileID: 67316864639300267}
+  myNumber: 0
+  nextRoad: {fileID: 0}

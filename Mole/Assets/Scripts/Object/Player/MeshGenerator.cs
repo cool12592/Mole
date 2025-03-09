@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.UI.Image;
 
 public class MeshGenerator : MonoBehaviourPunCallbacks
 {
@@ -37,26 +38,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         PV = GetComponent<PhotonView>();
         PV.ObservedComponents.Add(this);
         PV.Synchronization = ViewSynchronization.UnreliableOnChange; // 변경 시만 동기화
-
-        // ✅ Mesh 오브젝트 초기화
-        meshObj = new GameObject("GeneratedMesh");
-        meshCollider = meshObj.AddComponent<MeshCollider>();
-      //  meshCollider.isTrigger = true;
-        meshFilter = meshObj.AddComponent<MeshFilter>();
-        meshRenderer = meshObj.AddComponent<MeshRenderer>();
-        // ✅ 머터리얼 설정
-        if (meshMaterial != null)
-        {
-            meshRenderer.material = meshMaterial;
-        }
-        else
-        {
-            Debug.LogWarning("Mesh Material이 설정되지 않았습니다!");
-        }
-
-        // ✅ 위치 조정
-        meshObj.transform.position = Vector3.zero;
-
 
         dashBtn = GameObject.Find("Canvas").transform.Find("DashButton").gameObject.GetComponent<Button>();
         dashBtn.onClick.AddListener(GenerateMeshObject);
@@ -115,18 +96,27 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void OnTriggerEnter3D(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture"))
+       // if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
+       //     return;
+
+       // inHouse = true;
+
+
+    }
+
+    public void OnTriggerStay3D(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
             return;
+
         inHouse = true;
-
-        GenerateMeshObject();
-
     }
 
     public void OnTriggerExit3D(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture"))
+        if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
             return;
+   
         inHouse = false;
     }
 
@@ -135,7 +125,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         timer += Time.deltaTime;
 
         if (inHouse)
+        {
+            GetComponent<SpriteRenderer>().color = Color.white;
             return;
+        }
+
+        GetComponent<SpriteRenderer>().color = Color.red;
+
         if (Vector3.SqrMagnitude(transform.position-lastPos)<0.01f)
             return;
 
@@ -157,25 +153,50 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
 
 
-        if (lastExitRoad != null && lastEnterRoad != null)
-        {
-            if (lastExitRoad.myNumber > lastEnterRoad.myNumber)
-            {
-                var temp = lastExitRoad;
-                lastExitRoad = lastEnterRoad;
-                lastEnterRoad = temp;
-            }
+        //if (lastExitRoad != null && lastEnterRoad != null)
+        //{
+        //    if (lastExitRoad.myNumber > lastEnterRoad.myNumber)
+        //    {
+        //        var temp = lastExitRoad;
+        //        lastExitRoad = lastEnterRoad;
+        //        lastEnterRoad = temp;
+        //    }
 
-            Road nextRoad = lastExitRoad;
-            while (nextRoad != null && nextRoad != lastEnterRoad)
-            {
-                posList.Add(nextRoad.transform.position);
-                nextRoad.ChangeColor();
-                nextRoad = nextRoad.nextRoad;
-            }
-        }
+        //    Road nextRoad = lastExitRoad;
+        //    while (nextRoad != null && nextRoad != lastEnterRoad)
+        //    {
+        //        posList.Add(nextRoad.transform.position);
+        //        nextRoad.ChangeColor();
+        //        nextRoad = nextRoad.nextRoad;
+        //    }
+        //}
 
         photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray());
+    }
+
+    void CreateMesh()
+    {
+        if (meshObj == null)
+        {
+            meshObj = new GameObject("GeneratedMesh");
+            meshCollider = meshObj.AddComponent<MeshCollider>();
+            meshFilter = meshObj.AddComponent<MeshFilter>();
+            meshRenderer = meshObj.AddComponent<MeshRenderer>();
+            meshRenderer.material = meshMaterial;
+        }
+        else
+        {
+            meshObj.layer = LayerMask.NameToLayer("FinishRenderTexture");
+            meshObj = Instantiate(meshObj);
+            meshObj.name = "GeneratedMesh";
+            meshCollider = meshObj.GetComponent<MeshCollider>();
+            meshFilter = meshObj.GetComponent<MeshFilter>();
+            meshRenderer = meshObj.GetComponent<MeshRenderer>();
+            meshRenderer.material = meshMaterial;
+        }
+
+        meshObj.transform.position = Vector3.zero;
+
     }
 
     /// <summary>
@@ -190,6 +211,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         // 🔥 받은 posList로 동기화
         posList = new List<Vector2>(receivedPosList);
+
+        CreateMesh();
 
         Mesh mesh = new Mesh();
         meshFilter.mesh = mesh;
@@ -242,6 +265,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             first = false;
             yield break;
         }
-       // _fallingGround.StartFalling();
+        _fallingGround.StartFalling();
     }
 }

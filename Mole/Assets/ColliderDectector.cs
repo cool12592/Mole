@@ -10,6 +10,11 @@ public class ColliderDectector : MonoBehaviour
         _owner.OnTriggerEnter3D(other);
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        _owner.OnTriggerStay3D(other);
+    }
+
     private void OnTriggerExit(Collider other)
     {
         _owner.OnTriggerExit3D(other);
