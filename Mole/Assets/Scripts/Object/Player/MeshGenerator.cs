@@ -27,6 +27,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [SerializeField] FallingGround _fallingGround;
     [SerializeField] TextureAdd _textureADD;
     [SerializeField] bool inHouse = false;
+    [SerializeField] int _curPointCount = 0;
     private void Awake()
     {
         PV = GetComponent<PhotonView>();
@@ -36,7 +37,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         // ✅ Mesh 오브젝트 초기화
         meshObj = new GameObject("GeneratedMesh");
         meshCollider = meshObj.AddComponent<MeshCollider>();
-        meshCollider.isTrigger = true;
+      //  meshCollider.isTrigger = true;
         meshFilter = meshObj.AddComponent<MeshFilter>();
         meshRenderer = meshObj.AddComponent<MeshRenderer>();
         // ✅ 머터리얼 설정
@@ -65,6 +66,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
         if (collision.gameObject.layer != LayerMask.NameToLayer("Road"))
             return;
+       // collision.gameObject.GetComponent<Road>()
 
         GenerateMeshObject();
     }
@@ -95,6 +97,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         lastPos = transform.position;
        // if(0.1f<timer)
         {
+            _curPointCount++;
             timer = 0f;
             posList.Add(new Vector2(transform.position.x, transform.position.y));
             OnGenerateMesh += Instantiate(_recordObj,transform.position, Quaternion.identity).GetComponent<Road>().DisableCollider;
@@ -103,6 +106,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     void GenerateMeshObject()
     {
+        if (_curPointCount < 10)
+            return;
+
         photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray());
     }
 
@@ -113,14 +119,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [PunRPC]
     private void SyncPosListAndGenerateMesh_RPC(Vector2[] receivedPosList)
     {
-        if (receivedPosList.Length < 3)
-        {
-            Debug.LogError("정점이 3개 이상 필요합니다!");
-            return;
-        }
-
         OnGenerateMesh?.Invoke();
-
+        OnGenerateMesh = null;
 
         // 🔥 받은 posList로 동기화
         posList = new List<Vector2>(receivedPosList);
@@ -156,6 +156,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         meshObj.transform.position = new Vector3(meshObj.transform.position.x, meshObj.transform.position.y, 0f);
         meshObj.layer = Mathf.RoundToInt(Mathf.Log(changeLayer.value, 2));
 
+        _curPointCount = 0;
         StartCoroutine(CoPostGenerateMesh());
     }
 

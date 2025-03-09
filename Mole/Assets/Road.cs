@@ -6,10 +6,11 @@ public class Road : MonoBehaviour
 {
 
     [SerializeField] Collider2D collider_;
+    public bool isNoUseRoad = true; 
     public void DisableCollider()
     {
-        return;
-        collider_.enabled = false;
+        isNoUseRoad = false;
+       // collider_.enabled = false;
     }
 
     private void OnTriggerExit2D(Collider2D collision)

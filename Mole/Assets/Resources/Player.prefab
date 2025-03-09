@@ -427,6 +427,7 @@ MonoBehaviour:
   _fallingGround: {fileID: 0}
   _textureADD: {fileID: 2147442307044310656}
   inHouse: 0
+  _curPointCount: 0
 --- !u!114 &2147442307044310656
 MonoBehaviour:
   m_ObjectHideFlags: 0
