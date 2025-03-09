@@ -92,6 +92,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
 
         lastExitRoad = collision.GetComponent<Road>();
+
+        _curPointCount = 0;
+        posList.Clear();
     }
 
     public void OnTriggerEnter3D(Collider other)
