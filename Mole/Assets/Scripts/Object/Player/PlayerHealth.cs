@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable
+public class PlayerHealth : MonoBehaviourPunCallbacks
 {
     
     
@@ -134,16 +134,16 @@ public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     private void DestroyRPC() => Destroy(gameObject);
 
-    //변수 동기화
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(healthImage.fillAmount);
-        }
-        else
-        {
-            healthImage.fillAmount = (float)stream.ReceiveNext();
-        }
-    }
+    ////변수 동기화
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    if (stream.IsWriting)
+    //    {
+    //        stream.SendNext(healthImage.fillAmount);
+    //    }
+    //    else
+    //    {
+    //        healthImage.fillAmount = (float)stream.ReceiveNext();
+    //    }
+    //}
 }

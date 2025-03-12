@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.UI.Image;
 
 public class MeshGenerator : MonoBehaviourPunCallbacks
 {
@@ -36,14 +35,15 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     private void Awake()
     {
         PV = GetComponent<PhotonView>();
-        PV.ObservedComponents.Add(this);
-        PV.Synchronization = ViewSynchronization.UnreliableOnChange; // 변경 시만 동기화
 
         dashBtn = GameObject.Find("Canvas").transform.Find("DashButton").gameObject.GetComponent<Button>();
         dashBtn.onClick.AddListener(GenerateMeshObject);
 
         _fallingGround = GameObject.Find("FallingGround").GetComponent<FallingGround>();
+       
+        _fallingGround = Instantiate(_fallingGround);
         _fallingGround.gameObject.SetActive(false);
+        _fallingGround.GetComponent<SpriteRenderer>().sortingOrder = 0;
 
         Instantiate(_recordObj, transform.position + new Vector3(-1f,1f,0f), Quaternion.identity).GetComponent<Road>().ChangeLayer();
         Instantiate(_recordObj, transform.position + new Vector3(0f, 1f, 0f), Quaternion.identity).GetComponent<Road>().ChangeLayer();
