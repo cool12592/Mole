@@ -29,9 +29,7 @@ public class playerScript : MonoBehaviourPunCallbacks
         {   
             GameManager.Instance.myplayer = gameObject;
             GameObject.Find("ObjectPoolParent").transform.GetChild(0).gameObject.SetActive(true);
-            InitCamera();
-            InitJoystick();
-            
+            InitCamera();            
         }
     }
 
@@ -41,17 +39,6 @@ public class playerScript : MonoBehaviourPunCallbacks
         var CM = GameObject.Find("CMCamera").GetComponent<CinemachineVirtualCamera>();
         CM.Follow = transform;
         CM.LookAt = transform;
-    }
-
-    void InitJoystick()
-    {
-        moveJoystick = GameObject.Find("Canvas").transform.Find("Move_Joystick").gameObject;
-        moveJoystick.SetActive(true);
-        moveJoystick.GetComponent<JoyStickScript>().MyPlayer = gameObject;
-
-
-        aimJoystick = GameObject.Find("Canvas").transform.Find("Aim_Joystick").gameObject;
-        aimJoystick.GetComponent<JoyStickScript>().MyPlayer = gameObject;
     }
 
     private void Start()

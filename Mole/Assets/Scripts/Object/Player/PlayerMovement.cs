@@ -52,6 +52,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
         otherPositionSync();
         if (PV.IsMine)
         {
+            Move(JoyStickScript.InputAxis);
             RunDashCoolTime();
             SpeedReturnsAfterDash();
             AnimationBranch();
