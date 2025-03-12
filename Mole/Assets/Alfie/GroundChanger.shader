@@ -11,7 +11,7 @@ Shader "Custom/GroundChanger"
     }
     SubShader
     {
-        Tags { "RenderType" = "Transparent" }
+        Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
         Blend SrcAlpha OneMinusSrcAlpha
         Pass
         {

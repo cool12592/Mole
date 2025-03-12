@@ -20,6 +20,7 @@ public class FallingGround : MonoBehaviour
     private void Awake()
     {
         startPos = transform.position;
+        startPos = new Vector3(startPos.x, startPos.y, 5f);
     }
 
     void Update()

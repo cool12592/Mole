@@ -104,5 +104,5 @@ Material:
     - _NewColor: {r: 0, g: 0.9411765, b: 1, a: 0.5019608}
     - _PaintColor: {r: 0, g: 0.9411765, b: 1, a: 1}
     - _PointArray: {r: 0, g: 0, b: 0, a: 0}
-    - _RoadColor: {r: 0, g: 0.9411765, b: 1, a: 0.5019608}
+    - _RoadColor: {r: 0, g: 0.9411765, b: 1, a: 0.15686275}
   m_BuildTextureStacks: []
