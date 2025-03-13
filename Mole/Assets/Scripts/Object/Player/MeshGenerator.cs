@@ -50,6 +50,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         _fallingGround = GameObject.Find("FallingGround").GetComponent<FallingGround>();
        
         _fallingGround = Instantiate(_fallingGround);
+        _fallingGround.GetComponent<SpriteRenderer>().enabled = true;
         _fallingGround.gameObject.SetActive(false);
         _fallingGround.GetComponent<SpriteRenderer>().sortingOrder = 0;
 
@@ -204,7 +205,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
         }
 
-        GetComponent<SpriteRenderer>().color = Color.red;
+       // GetComponent<SpriteRenderer>().color = Color.red;
 
         if (transform.position == lastPos)
         {
@@ -243,7 +244,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (_curPointCount < 10)
             return;
 
-
+        var road = Instantiate(_recordObj, transform.position, Quaternion.identity).GetComponent<Road>();
+        _myRoadSet.Add(road.collider_);
+        OnGenerateMesh += road.ChangeLayer;
 
 
         //if (lastExitRoad != null && lastEnterRoad != null)
@@ -411,6 +414,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         yield return null;
         _fallingGround.BlendRenderTextures();
+        yield return null;
+
         _textureADD.BlendRenderTextures();
         if(first)
         {

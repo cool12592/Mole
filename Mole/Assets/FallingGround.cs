@@ -14,6 +14,9 @@ public class FallingGround : MonoBehaviour
     [SerializeField] RenderTexture meshTexture;
     [SerializeField] RenderTexture meshTextureCopy;
 
+    [SerializeField] RenderTexture _roadTexture;
+    [SerializeField] RenderTexture _finishRoadTexture;
+
     [SerializeField] RenderTexture paintTexture;
     [SerializeField] Material blitMaterial;
 
@@ -46,7 +49,10 @@ public class FallingGround : MonoBehaviour
     public void BlendRenderTextures()
     {
         blitMaterial.SetTexture("_MainTex", meshTexture);
-        blitMaterial.SetTexture("_PaintTex", paintTexture);
+        blitMaterial.SetTexture("_MaskTex1", paintTexture);
+        blitMaterial.SetTexture("_MaskTex2", _roadTexture);
+        blitMaterial.SetTexture("_MaskTex3", _finishRoadTexture);
+
         Graphics.Blit(meshTexture, meshTextureCopy, blitMaterial);
     }
 
@@ -55,7 +61,9 @@ public class FallingGround : MonoBehaviour
         gameObject.SetActive(true);
         transform.position = startPos; // 오브젝트를 순간이동
         lerpTime = 0f;
-        StartCoroutine(StartFallAfterDelay());
+        isFalling = true;
+
+        // StartCoroutine(StartFallAfterDelay());
     }
 
     private IEnumerator StartFallAfterDelay()
