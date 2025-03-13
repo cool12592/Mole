@@ -5,13 +5,13 @@ using UnityEngine;
 public class Road : MonoBehaviour
 {
 
-    [SerializeField] Collider2D collider_;
+    public Collider2D collider_;
     static int staticNumber = 0;
     public int myNumber = 0;
     public Road nextRoad;
 
     static Road staticRoad = null;
-
+    
 
     private void Awake()
     {

@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -37,6 +38,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     Road lastExitRoad;
     Road lastEnterRoad;
 
+    HashSet<Collider2D> _myRoadSet = new HashSet<Collider2D>();
+    HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
     private void Awake()
     {
         PV = GetComponent<PhotonView>();
@@ -50,17 +53,45 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         _fallingGround.gameObject.SetActive(false);
         _fallingGround.GetComponent<SpriteRenderer>().sortingOrder = 0;
 
-        Instantiate(_recordObj, transform.position + new Vector3(-1f,1f,0f), Quaternion.identity).GetComponent<Road>().ChangeLayer();
-        Instantiate(_recordObj, transform.position + new Vector3(0f, 1f, 0f), Quaternion.identity).GetComponent<Road>().ChangeLayer();
-        Instantiate(_recordObj, transform.position + new Vector3(1f, 1f, 0f), Quaternion.identity).GetComponent<Road>().ChangeLayer();
-        Instantiate(_recordObj, transform.position + new Vector3(-1f, 0f, 0f), Quaternion.identity).GetComponent<Road>().ChangeLayer();
-        Instantiate(_recordObj, transform.position + new Vector3(1f, 0f, 0f), Quaternion.identity).GetComponent<Road>().ChangeLayer();
-        Instantiate(_recordObj, transform.position + new Vector3(-1f, -1f, 0f), Quaternion.identity).GetComponent<Road>().ChangeLayer();
-        Instantiate(_recordObj, transform.position + new Vector3(0f, -1f, 0f), Quaternion.identity).GetComponent<Road>().ChangeLayer();
-        Instantiate(_recordObj, transform.position + new Vector3(1f, -1f, 0f), Quaternion.identity).GetComponent<Road>().ChangeLayer();
+        var road = Instantiate(_recordObj, transform.position + new Vector3(-1f,1f,0f), Quaternion.identity).GetComponent<Road>();
+        road.ChangeLayer();
+        _myRoadSet.Add(road.collider_);
 
-        Instantiate(_recordObj, transform.position + new Vector3(0f, 0f, 0f), Quaternion.identity).GetComponent<Road>().ChangeLayer();
+        road = Instantiate(_recordObj, transform.position + new Vector3(0f, 1f, 0f), Quaternion.identity).GetComponent<Road>();
+        road.ChangeLayer();
+        _myRoadSet.Add(road.collider_);
 
+        road = Instantiate(_recordObj, transform.position + new Vector3(1f, 1f, 0f), Quaternion.identity).GetComponent<Road>();
+        road.ChangeLayer();
+        _myRoadSet.Add(road.collider_);
+
+        road = Instantiate(_recordObj, transform.position + new Vector3(-1f, 0f, 0f), Quaternion.identity).GetComponent<Road>();
+        road.ChangeLayer();
+        _myRoadSet.Add(road.collider_);
+
+        road = Instantiate(_recordObj, transform.position + new Vector3(-1f, 0f, 0f), Quaternion.identity).GetComponent<Road>();
+        road.ChangeLayer();
+        _myRoadSet.Add(road.collider_);
+
+        road = Instantiate(_recordObj, transform.position + new Vector3(1f, 0f, 0f), Quaternion.identity).GetComponent<Road>();
+        road.ChangeLayer();
+        _myRoadSet.Add(road.collider_);
+
+        road = Instantiate(_recordObj, transform.position + new Vector3(-1f, -1f, 0f), Quaternion.identity).GetComponent<Road>();
+        road.ChangeLayer();
+        _myRoadSet.Add(road.collider_);
+
+        road = Instantiate(_recordObj, transform.position + new Vector3(0f, -1f, 0f), Quaternion.identity).GetComponent<Road>();
+        road.ChangeLayer();
+        _myRoadSet.Add(road.collider_);
+
+        road = Instantiate(_recordObj, transform.position + new Vector3(1f, -1f, 0f), Quaternion.identity).GetComponent<Road>();
+        road.ChangeLayer();
+        _myRoadSet.Add(road.collider_);
+
+        road = Instantiate(_recordObj, transform.position + new Vector3(0f, 0f, 0f), Quaternion.identity).GetComponent<Road>();
+        road.ChangeLayer();
+        _myRoadSet.Add(road.collider_);
 
         _curPointCount = 100;
         posList.Add(transform.position + new Vector3(-1f, -1f, 0f));
@@ -78,6 +109,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (_myRoadSet.Contains(collision) == false)
+            return;
+
         if (inHouse)
             return;
 
@@ -93,6 +127,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (_myRoadSet.Contains(collision) == false)
+            return;
+
         if (collision.gameObject.layer != LayerMask.NameToLayer("FinishRoad"))
             return;
 
@@ -104,16 +141,22 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void OnTriggerEnter3D(Collider other)
     {
-       // if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
-       //     return;
+       // if (_myMeshSet.Contains(other))
+         //   return;
 
-       // inHouse = true;
+        // if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
+        //     return;
+
+        // inHouse = true;
 
 
     }
 
     public void OnTriggerStay3D(Collider other)
     {
+        if (_myMeshSet.Contains(other.gameObject)==false)
+            return;
+
         if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
             return;
 
@@ -124,6 +167,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void OnTriggerExit3D(Collider other)
     {
+        if (_myMeshSet.Contains(other.gameObject) == false)
+            return;
+
         if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
             return;
         inHouse = false;
@@ -158,7 +204,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
         }
 
-       // GetComponent<SpriteRenderer>().color = Color.red;
+        GetComponent<SpriteRenderer>().color = Color.red;
 
         if (transform.position == lastPos)
         {
@@ -182,7 +228,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
 
             var pos = transform.position + transform.up * -1f;
-            OnGenerateMesh += Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>().ChangeLayer;
+            var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
+            _myRoadSet.Add(road.collider_);
+            OnGenerateMesh += road.ChangeLayer;
+
         }
     }
 
@@ -278,6 +327,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         {
             meshObj = new GameObject("GeneratedMesh");
             meshCollider = meshObj.AddComponent<MeshCollider>();
+            _myMeshSet.Add(meshObj);
             meshFilter = meshObj.AddComponent<MeshFilter>();
             meshRenderer = meshObj.AddComponent<MeshRenderer>();
             meshRenderer.material = meshMaterial;
@@ -288,6 +338,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshObj = Instantiate(meshObj);
             meshObj.name = "GeneratedMesh";
             meshCollider = meshObj.GetComponent<MeshCollider>();
+            _myMeshSet.Add(meshObj);
             meshFilter = meshObj.GetComponent<MeshFilter>();
             meshRenderer = meshObj.GetComponent<MeshRenderer>();
             meshRenderer.material = meshMaterial;
