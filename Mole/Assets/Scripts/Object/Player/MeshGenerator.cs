@@ -227,7 +227,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             posList.Add(new Vector2(transform.position.x, transform.position.y));
 
 
-            var pos = transform.position + transform.up * -1f;
+            var pos = transform.position + transform.up * -0.5f;
             var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
             _myRoadSet.Add(road.collider_);
             OnGenerateMesh += road.ChangeLayer;
