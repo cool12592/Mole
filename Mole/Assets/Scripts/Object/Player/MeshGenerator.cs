@@ -20,7 +20,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     public PhotonView PV;
     private Button dashBtn;
 
-    float timer = 0f;
+    float dustTimer = 0f;
+    float flipTimer = 0f;
+
     Vector3 lastPos;
 
     Action OnGenerateMesh;
@@ -28,6 +30,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [SerializeField] TextureAdd _textureADD;
     [SerializeField] bool inHouse = true;
     [SerializeField] int _curPointCount = 0;
+
+    [SerializeField] GameObject _dust;
+    [SerializeField] SpriteRenderer _dustRockSR;
 
     Road lastExitRoad;
     Road lastEnterRoad;
@@ -113,19 +118,39 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
 
         inHouse = true;
+        _dust.SetActive(false);
+
     }
 
     public void OnTriggerExit3D(Collider other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
             return;
-   
         inHouse = false;
+        DeactiveDust();
+    }
+
+    void DeactiveDust()
+    {
+        flipTimer = 0f;
+        _dust.SetActive(false);
+    }
+
+    void ActiveDust()
+    {
+        dustTimer = 0f;
+        _dust.SetActive(true);
+
+        flipTimer += Time.deltaTime;
+        if (0.02f < flipTimer)
+        {
+            _dustRockSR.flipX = !_dustRockSR.flipX;
+            flipTimer = 0f;
+        }
     }
 
     private void Update()
     {
-        timer += Time.deltaTime;
 
         if (inHouse)
         {
@@ -133,27 +158,39 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
         }
 
-        GetComponent<SpriteRenderer>().color = Color.red;
+       // GetComponent<SpriteRenderer>().color = Color.red;
 
         if (transform.position == lastPos)
+        {
+            dustTimer += Time.deltaTime;
+            if (0.1f < dustTimer)
+            {
+                DeactiveDust();
+            }
             return;
-       // if (Vector3.SqrMagnitude(transform.position-lastPos)<0.01f)
-       //     return;
+        }
 
+        ActiveDust();
+        
         lastPos = transform.position;
+
        // if(0.1f<timer)
         {
             _curPointCount++;
-            timer = 0f;
+            dustTimer = 0f;
             posList.Add(new Vector2(transform.position.x, transform.position.y));
 
 
-            OnGenerateMesh += Instantiate(_recordObj,transform.position, Quaternion.identity).GetComponent<Road>().ChangeLayer;
+            var pos = transform.position + transform.up * -1f;
+            OnGenerateMesh += Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>().ChangeLayer;
         }
     }
 
     void GenerateMeshObject()
     {
+        if (PV.IsMine == false)
+            return;
+
         if (_curPointCount < 10)
             return;
 

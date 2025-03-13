@@ -48,7 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: be25d1b7d1cd3a04ca6f390106ef2c49, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2c18d1813288f694d9da137955f8ac7b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
@@ -91,6 +91,7 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _OutlineWidth: 0.0176
     - _Parallax: 0.02
     - _PointCount: 0
     - _SmoothnessTextureChannel: 0
@@ -102,7 +103,8 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _NewColor: {r: 0, g: 0.9411765, b: 1, a: 0.5019608}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 0.14117648}
     - _PaintColor: {r: 0, g: 0.9411765, b: 1, a: 1}
     - _PointArray: {r: 0, g: 0, b: 0, a: 0}
-    - _RoadColor: {r: 0, g: 0.9411765, b: 1, a: 0.15686275}
+    - _RoadColor: {r: 0, g: 0.9411764, b: 1, a: 0.15686275}
   m_BuildTextureStacks: []
