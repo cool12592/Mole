@@ -23,6 +23,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     private int dashCount = 2;
     private const float moveCoefficient = 60f;
 
+    // 🔴 receiveRotation 변수 추가
+    private Quaternion receiveRotation;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,10 +69,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation); // 🔴 회전 값 추가
+
         }
         else
         {
             receivePos = (Vector3)stream.ReceiveNext();
+            receiveRotation = (Quaternion)stream.ReceiveNext(); // 🔴 회전 값 수신
+
         }
     }
 
@@ -77,8 +84,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (PV.IsMine == false)
         {
-            if ((transform.position - receivePos).sqrMagnitude >= 100) transform.position = receivePos; //위치가 동기화 위치랑 너무 멀어지면 동기화 위치로 만듬
-            else transform.position = Vector3.Lerp(transform.position, receivePos, Time.deltaTime * 10); //그게 아니면 위치를 동기화 받은위치로 보간시킴
+            if ((transform.position - receivePos).sqrMagnitude >= 100)
+                transform.position = receivePos;
+            else
+                transform.position = Vector3.Lerp(transform.position, receivePos, Time.deltaTime * 10);
+
+            transform.rotation = Quaternion.Lerp(transform.rotation, receiveRotation, Time.deltaTime * 10); // 🔴 회전 보간 적용
         }
     }
 
