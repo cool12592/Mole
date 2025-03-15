@@ -116,7 +116,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     private IEnumerator Start()
     {
-        yield return null;
+        yield return new WaitUntil(() => myColor != default(Color));
         GenerateMeshObject();
 
     }
@@ -247,14 +247,19 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             }
 
             dustTimer = 0f;
-            var pos = transform.position;// + transform.up;// * 0.5f;
-            CreateLoad(pos);
-
+            CreateLoad(transform.position);
         }
     }
 
     void CreateLoad(Vector3 pos)
     {
+        photonView.RPC("CreateLoad_RPC", RpcTarget.AllBuffered, pos.x, pos.y, pos.z);
+    }
+
+    [PunRPC]
+    void CreateLoad_RPC(float x, float y, float z)
+    {
+        Vector3 pos = new Vector3(x, y, z);
         var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
         road.GetComponent<SpriteRenderer>().color = myColor;
         _myRoadSet.Add(road.collider_);
@@ -271,30 +276,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         CreateLoad(transform.position);
 
-
-        //if (lastExitRoad != null && lastEnterRoad != null)
-        //{
-        //    if (lastExitRoad.myNumber > lastEnterRoad.myNumber)
-        //    {
-        //        var temp = lastExitRoad;
-        //        lastExitRoad = lastEnterRoad;
-        //        lastEnterRoad = temp;
-        //    }
-
-        //    Road nextRoad = lastExitRoad;
-        //    while (nextRoad != null && nextRoad != lastEnterRoad)
-        //    {
-        //        posList.Add(nextRoad.transform.position);
-        //        nextRoad.ChangeColor();
-        //        nextRoad = nextRoad.nextRoad;
-        //    }
-        //}
-
         originLastIndex = posList.Count - 1;
         if (lastExitRoad != null && lastEnterRoad != null)
             CastRaysAlongLine();
 
-        photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray());
+        photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.AllBuffered, posList.ToArray());
+        photonView.RPC("PostGenerateMesh_RPC", RpcTarget.All);
+
     }
 
     [Header("hmm")]
@@ -357,7 +345,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshFilter = meshObj.AddComponent<MeshFilter>();
             meshRenderer = meshObj.AddComponent<MeshRenderer>();
             meshRenderer.material = meshMaterial;
-            meshRenderer.sharedMaterial.color = myColor;
+            meshRenderer.material.color = myColor;
 
         }
         else
@@ -370,7 +358,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshFilter = meshObj.GetComponent<MeshFilter>();
             meshRenderer = meshObj.GetComponent<MeshRenderer>();
             meshRenderer.material = meshMaterial;
-            meshRenderer.sharedMaterial.color = myColor;
+            meshRenderer.material.color = myColor;
 
             meshObj.AddComponent<MeshShatter>().Init(groundPieceMat, _fallingGround.gameObject);
         }
@@ -436,10 +424,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         _curPointCount = 0;
         posList.Clear();
-        StartCoroutine(CoPostGenerateMesh());
     }
 
     bool first = true;
+
+    [PunRPC]
+    void PostGenerateMesh_RPC()
+    {
+        StartCoroutine(CoPostGenerateMesh());
+    }
+
     IEnumerator CoPostGenerateMesh()
     {
         yield return null;

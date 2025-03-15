@@ -81,6 +81,8 @@ MonoBehaviour:
   - killWriteRPC
   - SyncPosListAndGenerateMesh_RPC
   - RPC_SyncColor
+  - CreateLoad_RPC
+  - PostGenerateMesh_RPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
