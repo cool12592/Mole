@@ -521,6 +521,7 @@ MonoBehaviour:
   hitLayer:
     serializedVersion: 2
     m_Bits: 1024
+  groundPieceMat: {fileID: 2100000, guid: 79664077e8e1ab741abcedee51cf929c, type: 2}
 --- !u!114 &2147442307044310656
 MonoBehaviour:
   m_ObjectHideFlags: 0

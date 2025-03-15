@@ -20,6 +20,8 @@ public class FallingGround : MonoBehaviour
     [SerializeField] RenderTexture paintTexture;
     [SerializeField] Material blitMaterial;
 
+    [SerializeField] SpriteShatter SpriteShatter;
+
     private void Awake()
     {
         startPos = transform.position;
@@ -61,7 +63,7 @@ public class FallingGround : MonoBehaviour
         gameObject.SetActive(true);
         transform.position = startPos; // 오브젝트를 순간이동
         lerpTime = 0f;
-        isFalling = true;
+       // isFalling = true;
 
         // StartCoroutine(StartFallAfterDelay());
     }

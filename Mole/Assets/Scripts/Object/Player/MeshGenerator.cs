@@ -345,11 +345,15 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshFilter = meshObj.GetComponent<MeshFilter>();
             meshRenderer = meshObj.GetComponent<MeshRenderer>();
             meshRenderer.material = meshMaterial;
+
+            meshObj.AddComponent<MeshShatter>().Init(groundPieceMat, _fallingGround.gameObject);
         }
 
         meshObj.transform.position = Vector3.zero;
 
     }
+
+    [SerializeField] Material groundPieceMat;
 
     int originLastIndex = 0;
     /// <summary>
