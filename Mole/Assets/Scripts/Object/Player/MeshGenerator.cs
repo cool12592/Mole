@@ -104,9 +104,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         foreach (Vector3 offset in positions)
         {
-            var road = Instantiate(_recordObj, transform.position + offset, Quaternion.identity).GetComponent<Road>();
-            road.ChangeLayer();
-            _myRoadSet.Add(road.collider_);
+            CreateLoad(transform.position + offset);
         }
 
         _curPointCount = 100;
@@ -250,11 +248,17 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
             dustTimer = 0f;
             var pos = transform.position;// + transform.up;// * 0.5f;
-            var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
-            _myRoadSet.Add(road.collider_);
-            OnGenerateMesh += road.ChangeLayer;
+            CreateLoad(pos);
 
         }
+    }
+
+    void CreateLoad(Vector3 pos)
+    {
+        var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
+        road.GetComponent<SpriteRenderer>().color = myColor;
+        _myRoadSet.Add(road.collider_);
+        OnGenerateMesh += road.ChangeLayer;
     }
 
     void GenerateMeshObject()
@@ -265,9 +269,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (_curPointCount < 2)
             return;
 
-        var road = Instantiate(_recordObj, transform.position, Quaternion.identity).GetComponent<Road>();
-        _myRoadSet.Add(road.collider_);
-        OnGenerateMesh += road.ChangeLayer;
+        CreateLoad(transform.position);
 
 
         //if (lastExitRoad != null && lastEnterRoad != null)
@@ -355,6 +357,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshFilter = meshObj.AddComponent<MeshFilter>();
             meshRenderer = meshObj.AddComponent<MeshRenderer>();
             meshRenderer.material = meshMaterial;
+            meshRenderer.sharedMaterial.color = myColor;
+
         }
         else
         {
@@ -366,6 +370,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshFilter = meshObj.GetComponent<MeshFilter>();
             meshRenderer = meshObj.GetComponent<MeshRenderer>();
             meshRenderer.material = meshMaterial;
+            meshRenderer.sharedMaterial.color = myColor;
 
             meshObj.AddComponent<MeshShatter>().Init(groundPieceMat, _fallingGround.gameObject);
         }
@@ -442,7 +447,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         yield return null;
 
         _textureADD.BlendRenderTextures();
-        if(first)
+
+        OnGenerateMesh?.Invoke();
+        OnGenerateMesh = null;
+
+        if (first)
         {
             first = false;
             yield break;
@@ -450,8 +459,5 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         _fallingGround.StartFalling();
 
        // yield return null;
-
-        OnGenerateMesh?.Invoke();
-        OnGenerateMesh = null;
     }
 }

@@ -62,18 +62,18 @@
                 fixed4 finalColor = groundColor * _PaintColor;
 
                 // 🚀 1. 먼저 빠르게 리턴할 수 있는 경우 처리 (불필요한 연산 방지)
-                if (maskColor.r > 0.1)
+                if (maskColor.a > 0.1)
                 {
                     return finalColor; // 바로 반환 (이후 검사 안 함)
                 }
     
-                if (finishRoadColor.r > 0.1)
+                if (finishRoadColor.a > 0.1)
                 {
                     return finalColor * 0.5; // 밝기 조절 후 반환 (이후 검사 안 함)
                 }
 
                 // 🚀 2. roadColor 칠해진 부분만 경계 판별 실행 (불필요한 연산 최소화)
-                if (roadColor.r > 0.1)
+                if (roadColor.a > 0.1)
                 {
                     // 텍스처 크기 기반으로 texel 크기 계산 (512x512 텍스처 기준)
                     float2 texelSize = float2(1.0 / 512.0, 1.0 / 512.0);

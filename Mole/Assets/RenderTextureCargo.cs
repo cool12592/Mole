@@ -12,11 +12,11 @@ public class RenderTextureCargo : MonoBehaviour
     private void Awake()
     {
         RenderTexture.active = targetTexture;
-        GL.Clear(true, true, Color.black);
+        GL.Clear(true, true, Color.clear);
         RenderTexture.active = null;
 
         RenderTexture.active = tempTexture;
-        GL.Clear(true, true, Color.black);
+        GL.Clear(true, true, Color.clear);
         RenderTexture.active = null;
     }
 }
