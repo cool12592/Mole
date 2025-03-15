@@ -40,9 +40,15 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     HashSet<Collider2D> _myRoadSet = new HashSet<Collider2D>();
     HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
+
+    [SerializeField] GamePalette palette;  // 팔레트 오브젝트 (씬에 있어야 함)
+    Color myColor;
+
     private void Awake()
     {
         PV = GetComponent<PhotonView>();
+
+
 
         dashBtn = GameObject.Find("Canvas").transform.Find("DashButton").gameObject.GetComponent<Button>();
         dashBtn.onClick.AddListener(GenerateMeshObject);
@@ -54,45 +60,19 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         _fallingGround.gameObject.SetActive(false);
         _fallingGround.GetComponent<SpriteRenderer>().sortingOrder = 0;
 
-        var road = Instantiate(_recordObj, transform.position + new Vector3(-1f,1f,0f), Quaternion.identity).GetComponent<Road>();
-        road.ChangeLayer();
-        _myRoadSet.Add(road.collider_);
+        Vector3[] positions =
+        {
+            new Vector3(-1f, 1f, 0f), new Vector3(0f, 1f, 0f), new Vector3(1f, 1f, 0f),
+            new Vector3(-1f, 0f, 0f), new Vector3(0f, 0f, 0f), new Vector3(1f, 0f, 0f),
+            new Vector3(-1f, -1f, 0f), new Vector3(0f, -1f, 0f), new Vector3(1f, -1f, 0f)
+        };
 
-        road = Instantiate(_recordObj, transform.position + new Vector3(0f, 1f, 0f), Quaternion.identity).GetComponent<Road>();
-        road.ChangeLayer();
-        _myRoadSet.Add(road.collider_);
-
-        road = Instantiate(_recordObj, transform.position + new Vector3(1f, 1f, 0f), Quaternion.identity).GetComponent<Road>();
-        road.ChangeLayer();
-        _myRoadSet.Add(road.collider_);
-
-        road = Instantiate(_recordObj, transform.position + new Vector3(-1f, 0f, 0f), Quaternion.identity).GetComponent<Road>();
-        road.ChangeLayer();
-        _myRoadSet.Add(road.collider_);
-
-        road = Instantiate(_recordObj, transform.position + new Vector3(-1f, 0f, 0f), Quaternion.identity).GetComponent<Road>();
-        road.ChangeLayer();
-        _myRoadSet.Add(road.collider_);
-
-        road = Instantiate(_recordObj, transform.position + new Vector3(1f, 0f, 0f), Quaternion.identity).GetComponent<Road>();
-        road.ChangeLayer();
-        _myRoadSet.Add(road.collider_);
-
-        road = Instantiate(_recordObj, transform.position + new Vector3(-1f, -1f, 0f), Quaternion.identity).GetComponent<Road>();
-        road.ChangeLayer();
-        _myRoadSet.Add(road.collider_);
-
-        road = Instantiate(_recordObj, transform.position + new Vector3(0f, -1f, 0f), Quaternion.identity).GetComponent<Road>();
-        road.ChangeLayer();
-        _myRoadSet.Add(road.collider_);
-
-        road = Instantiate(_recordObj, transform.position + new Vector3(1f, -1f, 0f), Quaternion.identity).GetComponent<Road>();
-        road.ChangeLayer();
-        _myRoadSet.Add(road.collider_);
-
-        road = Instantiate(_recordObj, transform.position + new Vector3(0f, 0f, 0f), Quaternion.identity).GetComponent<Road>();
-        road.ChangeLayer();
-        _myRoadSet.Add(road.collider_);
+        foreach (Vector3 offset in positions)
+        {
+            var road = Instantiate(_recordObj, transform.position + offset, Quaternion.identity).GetComponent<Road>();
+            road.ChangeLayer();
+            _myRoadSet.Add(road.collider_);
+        }
 
         _curPointCount = 100;
         posList.Add(transform.position + new Vector3(-1f, -1f, 0f));
@@ -234,7 +214,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             }
 
             dustTimer = 0f;
-            var pos = transform.position + transform.up * -0.5f;
+            var pos = transform.position;// + transform.up;// * 0.5f;
             var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
             _myRoadSet.Add(road.collider_);
             OnGenerateMesh += road.ChangeLayer;

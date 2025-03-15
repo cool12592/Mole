@@ -38,7 +38,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
-        RoomOptions roomoption = new RoomOptions { MaxPlayers = 5 };
+        RoomOptions roomoption = new RoomOptions { MaxPlayers = 20 };
         PhotonNetwork.JoinOrCreateRoom("Room", roomoption, null);
     }
 

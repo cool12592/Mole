@@ -514,6 +514,7 @@ MonoBehaviour:
   _curPointCount: 0
   _dust: {fileID: 8760623091734092484}
   _dustRockSR: {fileID: 1678369328577501713}
+  palette: {fileID: 0}
   pointA: {x: 0, y: 0}
   pointB: {x: 0, y: 0}
   spacing: 0.1
