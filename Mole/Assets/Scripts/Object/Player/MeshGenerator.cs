@@ -137,7 +137,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         lastExitRoad = collision.GetComponent<Road>();
 
         _curPointCount = 0;
-        posList.Clear();
     }
 
     public void OnTriggerEnter3D(Collider other)
@@ -174,6 +173,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
             return;
         inHouse = false;
+        posList.Clear();
+
         DeactiveDust();
     }
 
