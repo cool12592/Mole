@@ -44,11 +44,46 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [SerializeField] GamePalette palette;  // 팔레트 오브젝트 (씬에 있어야 함)
     Color myColor;
 
+    void AssignColor()
+    {
+        if (PhotonNetwork.IsMasterClient == false) 
+            return;
+
+        // 🔴 현재 방의 색상 인덱스를 가져옴
+        var roomProps = PhotonNetwork.CurrentRoom.CustomProperties;
+        int nextColorIndex = 0;
+
+        if (roomProps.ContainsKey("NextColorIndex"))
+        {
+            nextColorIndex = (int)roomProps["NextColorIndex"];
+        }
+        
+        // 🔴 본인의 색상을 모든 유저에게 전파
+        PV.RPC("RPC_SyncColor", RpcTarget.AllBuffered, nextColorIndex);
+
+        // 🔴 색상 인덱스를 증가 (최대값 넘으면 0으로 초기화)
+        int newColorIndex = (nextColorIndex + 1) % palette.MaxColors;
+
+        // 🔴 방 속성 업데이트 (다음 입장 플레이어를 위한 색상 인덱스 변경)
+        var newProps = new ExitGames.Client.Photon.Hashtable { { "NextColorIndex", newColorIndex } };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(newProps);
+    }
+
+    [PunRPC]
+    void RPC_SyncColor(int colorIndex)
+    {
+        var newColor = palette.GetColor(colorIndex);
+        myColor = newColor;
+        GetComponent<playerScript>().NickNameText.color = myColor;
+       
+    }
+
+
     private void Awake()
     {
         PV = GetComponent<PhotonView>();
 
-
+        AssignColor();
 
         dashBtn = GameObject.Find("Canvas").transform.Find("DashButton").gameObject.GetComponent<Button>();
         dashBtn.onClick.AddListener(GenerateMeshObject);

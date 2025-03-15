@@ -23,7 +23,7 @@ public class playerScript : MonoBehaviourPunCallbacks
     private void Awake()
     {
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName.ToString() : PV.Owner.NickName.ToString();
-        NickNameText.color = PV.IsMine ? Color.green : Color.red;
+       // NickNameText.color = PV.IsMine ? Color.green : Color.red;
 
         if (PV.IsMine)
         {   
