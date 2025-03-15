@@ -30,16 +30,18 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [SerializeField] FallingGround _fallingGround;
     [SerializeField] TextureAdd _textureADD;
     [SerializeField] bool inHouse = true;
-    [SerializeField] int _curPointCount = 0;
 
     [SerializeField] GameObject _dust;
     [SerializeField] SpriteRenderer _dustRockSR;
 
-    Road lastExitRoad;
-    Road lastEnterRoad;
+    Vector3 lastExitTr;
+    Vector3 lastEnterTr;
 
     HashSet<Collider2D> _myRoadSet = new HashSet<Collider2D>();
     HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
+
+    HashSet<GameObject> _curInMyMeshSet = new HashSet<GameObject>();
+    HashSet<GameObject> _curInOtherMeshSet = new HashSet<GameObject>();
 
     [SerializeField] GamePalette palette;  // 팔레트 오브젝트 (씬에 있어야 함)
     Color myColor;
@@ -114,7 +116,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             CreateLoad(transform.position + offset);
         }
 
-        _curPointCount = 100;
         posList.Add(transform.position + new Vector3(-1f, -1f, 0f));
         posList.Add(transform.position + new Vector3(-1f, 1f, 0f));
         posList.Add(transform.position + new Vector3(1f, 1f, 0f));
@@ -124,75 +125,93 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         GenerateMeshObject();
 
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (_myRoadSet.Contains(collision) == false)
-            return;
-
-        if (inHouse)
-            return;
-
-        if (collision.gameObject.layer != LayerMask.NameToLayer("FinishRoad"))
-            return;
-
-        lastEnterRoad = collision.GetComponent<Road>();
-
-        GenerateMeshObject();
-
-
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (_myRoadSet.Contains(collision) == false)
-            return;
-
-        if (collision.gameObject.layer != LayerMask.NameToLayer("FinishRoad"))
-            return;
-
-        lastExitRoad = collision.GetComponent<Road>();
-
-        _curPointCount = 0;
-    }
-
-    public void OnTriggerEnter3D(Collider other)
-    {
-       // if (_myMeshSet.Contains(other))
-         //   return;
-
-        // if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
-        //     return;
-
-        // inHouse = true;
-
-
-    }
-
     public void OnTriggerStay3D(Collider other)
     {
-        if (_myMeshSet.Contains(other.gameObject)==false)
-            return;
 
+    }
+    public void OnTriggerEnter3D(Collider other)
+    {
         if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
             return;
 
-        inHouse = true;
-        _dust.SetActive(false);
 
+        if (_myMeshSet.Contains(other.gameObject))
+        {
+            _curInMyMeshSet.Add(other.gameObject);
+        }
+        else
+        {
+            _curInOtherMeshSet.Add(other.gameObject);
+            return;
+        }
     }
 
     public void OnTriggerExit3D(Collider other)
     {
-        if (_myMeshSet.Contains(other.gameObject) == false)
-            return;
-
         if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
             return;
-        inHouse = false;
-        posList.Clear();
 
-        DeactiveDust();
+        if (_myMeshSet.Contains(other.gameObject))
+        {
+            _curInMyMeshSet.Remove(other.gameObject);
+            posList.Clear();
+        }
+        else
+        {
+            _curInOtherMeshSet.Remove(other.gameObject);
+            return;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if(_curInMyMeshSet.Count == 0)
+        {
+            SetInHouse(false);
+            return;
+        }
+
+        float minZ = 1f;
+        foreach (GameObject go in _curInMyMeshSet)
+        {
+            if (go.transform.position.z < minZ)
+            {
+                minZ = go.transform.position.z;
+            }
+        }
+
+        foreach (GameObject go in _curInOtherMeshSet)
+        {
+            if (go.transform.position.z < minZ)
+            {
+                SetInHouse(false);
+                return;
+            }
+        }
+
+        SetInHouse(true);
+    }
+
+    void SetInHouse(bool res)
+    {
+        if (res == inHouse)
+            return;
+
+        inHouse = res;
+
+        if (inHouse)
+        {
+            if(1 < posList.Count)
+            {
+                lastEnterTr = transform.position;
+                GenerateMeshObject();
+            }
+        }
+        else
+        {
+            lastExitTr = transform.position;
+            posList.Clear();
+        }
     }
 
     void DeactiveDust()
@@ -203,6 +222,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     void ActiveDust()
     {
+        if (inHouse)
+            return;
+
         dustTimer = 0f;
         _dust.SetActive(true);
 
@@ -214,7 +236,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
     }
 
-    double count = 0;
+    int count = 0;
 
     private void Update()
     {
@@ -246,7 +268,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         {
             if (count % 5 == 0)
             {
-                _curPointCount++;
                 posList.Add(new Vector2(transform.position.x, transform.position.y));
             }
 
@@ -279,13 +300,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (PV.IsMine == false)
             return;
 
-        if (_curPointCount < 2)
+        if (posList.Count < 2)
             return;
 
         CreateLoad(transform.position);
 
         originLastIndex = posList.Count - 1;
-        if (lastExitRoad != null && lastEnterRoad != null)
+        if (lastEnterTr != Vector3.zero && lastEnterTr != Vector3.zero)
             CastRaysAlongLine();
 
         float z = GetSharedFloat();
@@ -306,8 +327,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     void CastRaysAlongLine()
     {
-        pointA = lastExitRoad.gameObject.transform.position;
-        pointB = lastEnterRoad.gameObject.transform.position;
+        pointA = lastExitTr;
+        pointB = lastEnterTr;
         Vector2 direction = (pointB - pointA).normalized; // 선분 방향
         float length = Vector2.Distance(pointA, pointB);  // 총 길이
         int numPoints = Mathf.FloorToInt(length / spacing); // 찍을 점 개수
@@ -435,7 +456,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         meshObj.transform.position = new Vector3(meshObj.transform.position.x, meshObj.transform.position.y, z);
         meshObj.layer = Mathf.RoundToInt(Mathf.Log(changeLayer.value, 2));
 
-        _curPointCount = 0;
         posList.Clear();
     }
 

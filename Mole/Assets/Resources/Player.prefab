@@ -511,7 +511,6 @@ MonoBehaviour:
   _fallingGround: {fileID: 0}
   _textureADD: {fileID: 2147442307044310656}
   inHouse: 1
-  _curPointCount: 0
   _dust: {fileID: 8760623091734092484}
   _dustRockSR: {fileID: 1678369328577501713}
   palette: {fileID: 11400000, guid: ed52dd3026c19864885d2f24f10366eb, type: 2}
