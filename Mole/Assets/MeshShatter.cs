@@ -15,7 +15,7 @@ public class MeshShatter : MonoBehaviour
     private int[] originalTriangles;
     private Material mat;
     private GameObject fakeMesh;
-
+    const int maxNum = 9999999;
     public void Init(Material mat_, GameObject fakeMesh_)
     {
         mat = mat_;
@@ -47,7 +47,7 @@ public class MeshShatter : MonoBehaviour
         float pieceWidth = bounds.size.x / cols;
         float pieceHeight = bounds.size.y / rows;
 
-        // 2️⃣ Mesh를 일정한 크기로 분할
+        // 2️⃣ 기존 위치의 원 생성 (기본 조각)
         for (int y = 0; y < rows; y++)
         {
             for (int x = 0; x < cols; x++)
@@ -56,7 +56,22 @@ public class MeshShatter : MonoBehaviour
             }
         }
 
-        // 3️⃣ 원본 Mesh 숨김
+        // 3️⃣ 가로/세로 중간에도 원 추가 (빈 공간 제거)
+        for (int y = 0; y < rows; y++)
+        {
+            for (int x = 0; x < cols; x++)
+            {
+                // 가로 중간 추가 (정확한 중간 위치)
+                if (x < cols - 1)
+                    CreateMeshPiece(bounds, x + maxNum, y, pieceWidth, pieceHeight); // `+ 1000`을 사용해 중간 좌표로 구분
+
+                // 세로 중간 추가
+                if (y < rows - 1)
+                    CreateMeshPiece(bounds, x, y + maxNum, pieceWidth, pieceHeight);
+            }
+        }
+
+        // 4️⃣ 원본 Mesh 숨김
         fakeMesh.SetActive(false);
     }
 
@@ -76,9 +91,26 @@ public class MeshShatter : MonoBehaviour
         List<int> triangles = new List<int>();
         List<Vector2> uvs = new List<Vector2>();
 
-        // 6️⃣ 원형 조각 중심 위치
-        float centerX = bounds.min.x + (x + 0.5f) * width;
-        float centerY = bounds.min.y + (y + 0.5f) * height;
+        // 6️⃣ 원형 조각 중심 위치 (정확한 중간 위치 보정)
+        float centerX;
+        float centerY;
+
+        if (x >= maxNum)
+        {
+            centerX = bounds.min.x + ((x - maxNum) + 1f) * width;
+            centerY = bounds.min.y + y * height;
+        }
+        else if (y >= maxNum)
+        {
+            centerX = bounds.min.x + x * width;
+            centerY = bounds.min.y + ((y - maxNum) + 1f) * height;
+        }
+        else
+        {
+            centerX = bounds.min.x + (x + 0.5f) * width;
+            centerY = bounds.min.y + (y + 0.5f) * height;
+        }
+
         Vector3 center = new Vector3(centerX, centerY, 0);
 
         vertices.Add(center); // 중심점 추가
@@ -88,8 +120,8 @@ public class MeshShatter : MonoBehaviour
         {
             float angle = (i / (float)circleSegments) * Mathf.PI * 2f;
 
-            // ✅ 랜덤한 변형 추가 (0.8 ~ 1.2 배율 조정)
-            float randomFactor = Random.Range(0.8f, 1.2f);
+            // ✅ 랜덤한 변형 추가 (0.8 ~ 1.3 배율 조정)
+            float randomFactor = Random.Range(0.8f, 1.3f);
             float vx = centerX + Mathf.Cos(angle) * (width / 2f) * randomFactor;
             float vy = centerY + Mathf.Sin(angle) * (height / 2f) * randomFactor;
             vertices.Add(new Vector3(vx, vy, 0));
@@ -118,7 +150,6 @@ public class MeshShatter : MonoBehaviour
         Rigidbody2D rb = piece.AddComponent<Rigidbody2D>();
         rb.gravityScale = 1f;
         rb.AddForce(new Vector2(Random.Range(-spread, spread), Random.Range(0, spread)) * explosionForce, ForceMode2D.Impulse);
-
-        //Destroy(piece, 2f); // 2초 후 자동 삭제
     }
+
 }
