@@ -46,7 +46,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     void AssignColor()
     {
-        if (PhotonNetwork.IsMasterClient == false) 
+        if (PV.IsMine == false) 
             return;
 
         // 🔴 현재 방의 색상 인덱스를 가져옴
@@ -95,6 +95,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         _fallingGround.gameObject.SetActive(false);
         _fallingGround.GetComponent<SpriteRenderer>().sortingOrder = 0;
 
+        
+    }
+
+    private IEnumerator Start()
+    {
+        yield return new WaitUntil(() => myColor != default(Color));
+
         Vector3[] positions =
         {
             new Vector3(-1f, 1f, 0f), new Vector3(0f, 1f, 0f), new Vector3(1f, 1f, 0f),
@@ -112,11 +119,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         posList.Add(transform.position + new Vector3(-1f, 1f, 0f));
         posList.Add(transform.position + new Vector3(1f, 1f, 0f));
         posList.Add(transform.position + new Vector3(1f, -1f, 0f));
-    }
 
-    private IEnumerator Start()
-    {
-        yield return new WaitUntil(() => myColor != default(Color));
+        yield return null;
         GenerateMeshObject();
 
     }
@@ -253,6 +257,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     void CreateLoad(Vector3 pos)
     {
+        if (PV.IsMine == false)
+            return;
+        pos.z = GetSharedFloat();
+
         photonView.RPC("CreateLoad_RPC", RpcTarget.AllBuffered, pos.x, pos.y, pos.z);
     }
 
@@ -280,7 +288,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (lastExitRoad != null && lastEnterRoad != null)
             CastRaysAlongLine();
 
-        photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.AllBuffered, posList.ToArray());
+        float z = GetSharedFloat();
+
+
+        photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.AllBuffered, posList.ToArray(),z);
         photonView.RPC("PostGenerateMesh_RPC", RpcTarget.All);
 
     }
@@ -375,7 +386,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     /// </summary>
     /// <param name="verticesList">Mesh를 구성할 정점 리스트</param>
     [PunRPC]
-    private void SyncPosListAndGenerateMesh_RPC(Vector2[] receivedPosList)
+    private void SyncPosListAndGenerateMesh_RPC(Vector2[] receivedPosList, float z)
     {
        
 
@@ -419,7 +430,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         Debug.Log("Mesh 생성 완료! 정점 개수: " + vertices.Length);
 
         // 🔥 위치 및 레이어 동기화
-        meshObj.transform.position = new Vector3(meshObj.transform.position.x, meshObj.transform.position.y, 0f);
+
+
+        meshObj.transform.position = new Vector3(meshObj.transform.position.x, meshObj.transform.position.y, z);
         meshObj.layer = Mathf.RoundToInt(Mathf.Log(changeLayer.value, 2));
 
         _curPointCount = 0;
@@ -453,5 +466,20 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         _fallingGround.StartFalling();
 
        // yield return null;
+    }
+
+
+    static float sharedFloat = 0f; // 🔴 공유할 float 값 (초기값 100)
+
+    public float GetSharedFloat()
+    {
+        PV.RPC("RPC_DecreaseSharedFloat", RpcTarget.AllBuffered); // 🔴 값 감소 요청
+        return sharedFloat; // 🔴 로컬 값 반환 (즉시 반영)
+    }
+
+    [PunRPC]
+    void RPC_DecreaseSharedFloat()
+    {
+        sharedFloat -= 0.001f; // 🔴 모든 클라이언트에서 sharedFloat 값을 감소
     }
 }

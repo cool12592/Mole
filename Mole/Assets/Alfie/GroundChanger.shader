@@ -61,17 +61,6 @@
 
                 //fixed4 finalColor = groundColor * _PaintColor;
 
-                // 🚀 1. 먼저 빠르게 리턴할 수 있는 경우 처리 (불필요한 연산 방지)
-                if (maskColor.a > 0.1)
-                {
-                    return groundColor * maskColor; // 바로 반환 (이후 검사 안 함)
-                }
-    
-                if (finishRoadColor.a > 0.1)
-                {
-                    return groundColor * finishRoadColor * 0.5; // 밝기 조절 후 반환 (이후 검사 안 함)
-                }
-
                 // 🚀 2. roadColor 칠해진 부분만 경계 판별 실행 (불필요한 연산 최소화)
                 if (roadColor.a > 0.1)
                 {
@@ -96,6 +85,19 @@
 
                     return finalColor;
                 }
+
+                // 🚀 1. 먼저 빠르게 리턴할 수 있는 경우 처리 (불필요한 연산 방지)
+                if (maskColor.a > 0.1)
+                {
+                    return groundColor * maskColor; // 바로 반환 (이후 검사 안 함)
+                }
+    
+                if (finishRoadColor.a > 0.1)
+                {
+                    return groundColor * finishRoadColor * 0.5; // 밝기 조절 후 반환 (이후 검사 안 함)
+                }
+
+                
 
                 // 🚀 3. 그 외의 경우 기본 색상 반환
                 clip(-1); // 해당 픽셀을 완전히 삭제 (투명)
