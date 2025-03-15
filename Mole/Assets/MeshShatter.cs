@@ -150,6 +150,10 @@ public class MeshShatter : MonoBehaviour
         Rigidbody2D rb = piece.AddComponent<Rigidbody2D>();
         rb.gravityScale = 1f;
         rb.AddForce(new Vector2(Random.Range(-spread, spread), Random.Range(0, spread)) * explosionForce, ForceMode2D.Impulse);
+
+        Destroy(piece, 10f);
+
+
     }
 
 }

@@ -197,6 +197,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
     }
 
+    double count = 0;
+
     private void Update()
     {
 
@@ -222,13 +224,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         
         lastPos = transform.position;
 
+        count++;
        // if(0.1f<timer)
         {
-            _curPointCount++;
+            if (count % 5 == 0)
+            {
+                _curPointCount++;
+                posList.Add(new Vector2(transform.position.x, transform.position.y));
+            }
+
             dustTimer = 0f;
-            posList.Add(new Vector2(transform.position.x, transform.position.y));
-
-
             var pos = transform.position + transform.up * -0.5f;
             var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
             _myRoadSet.Add(road.collider_);
@@ -242,7 +247,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (PV.IsMine == false)
             return;
 
-        if (_curPointCount < 10)
+        if (_curPointCount < 2)
             return;
 
         var road = Instantiate(_recordObj, transform.position, Quaternion.identity).GetComponent<Road>();
