@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: mobile_multi_game
+  productName: MoleAndMole!
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -58,10 +58,10 @@ PlayerSettings:
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
   iosUseCustomAppBackgroundBehavior: 0
-  allowedAutorotateToPortrait: 0
-  allowedAutorotateToPortraitUpsideDown: 0
-  allowedAutorotateToLandscapeRight: 1
-  allowedAutorotateToLandscapeLeft: 1
+  allowedAutorotateToPortrait: 1
+  allowedAutorotateToPortraitUpsideDown: 1
+  allowedAutorotateToLandscapeRight: 0
+  allowedAutorotateToLandscapeLeft: 0
   useOSAutorotation: 1
   use32BitDisplayBuffer: 1
   preserveFramebufferAlpha: 0
@@ -161,8 +161,8 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.DefaultCompany.mobile_multi_game
-    Standalone: com.DefaultCompany.mobile-multi-game
+    Android: com.DefaultCompany.MoleAndMole
+    Standalone: com.DefaultCompany.MoleAndMole-
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -287,7 +287,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 10c428b1f3aa8c24597b262d06c31a09, type: 3}
+      m_Icon: {fileID: 2800000, guid: f7ee9b1ec33994b49b1aeb01a12a1b05, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
