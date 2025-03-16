@@ -473,7 +473,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         posList.Clear();
 
-        PostGenerateMesh_RPC();
+        StartCoroutine(CoPostGenerateMesh());
     }
 
     [PunRPC]
@@ -484,11 +484,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     }
 
     bool first = true;
-
-    void PostGenerateMesh_RPC()
-    {
-        StartCoroutine(CoPostGenerateMesh());
-    }
 
     IEnumerator CoPostGenerateMesh()
     {
