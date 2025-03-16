@@ -28,7 +28,7 @@ public class playerScript : MonoBehaviourPunCallbacks
         if (PV.IsMine)
         {   
             GameManager.Instance.myplayer = gameObject;
-            GameObject.Find("ObjectPoolParent").transform.GetChild(0).gameObject.SetActive(true);
+           // GameObject.Find("ObjectPoolParent").transform.GetChild(0).gameObject.SetActive(true);
             InitCamera();            
         }
     }

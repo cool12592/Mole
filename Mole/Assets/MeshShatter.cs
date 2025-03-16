@@ -72,7 +72,8 @@ public class MeshShatter : MonoBehaviour
         }
 
         // 4️⃣ 원본 Mesh 숨김
-        fakeMesh.SetActive(false);
+        if(fakeMesh != null)
+            fakeMesh.SetActive(false);
     }
 
     void CreateMeshPiece(Bounds bounds, int x, int y, float width, float height)

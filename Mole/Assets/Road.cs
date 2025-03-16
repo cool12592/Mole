@@ -11,7 +11,11 @@ public class Road : MonoBehaviour
     public Road nextRoad;
 
     static Road staticRoad = null;
-    
+    [SerializeField] MeshDetector meshDetector;
+
+    public HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
+
+    bool _isFinishRoad = false;
 
     private void Awake()
     {
@@ -20,12 +24,14 @@ public class Road : MonoBehaviour
         staticRoad = this;
         staticNumber++;
         myNumber = staticNumber;
+
+        meshDetector.OnMeshCollide += CollideMesh;
     }
 
     public void ChangeLayer()
     {
         gameObject.layer = LayerMask.NameToLayer("FinishRoad");
-
+        _isFinishRoad = true;
         // collider_.enabled = false;
     }
 
@@ -33,4 +39,18 @@ public class Road : MonoBehaviour
     {
         //GetComponent<SpriteRenderer>().color = Color.black;
     }
+
+    void CollideMesh(GameObject go)
+    {
+        if (_isFinishRoad == false)
+            return;
+        if (_myMeshSet == null)
+            return;
+        if(_myMeshSet.Contains(go))
+        {
+            return;
+        }
+        Destroy(gameObject);
+    }
+
 }

@@ -246,6 +246,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (inHouse)
         {
+            DeactiveDust();
             GetComponent<SpriteRenderer>().color = Color.white;
             return;
         }
@@ -296,6 +297,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         road.GetComponent<SpriteRenderer>().color = myColor;
         _myRoadSet.Add(road.collider_);
         OnGenerateMesh += road.ChangeLayer;
+        road._myMeshSet = _myMeshSet;
     }
 
     void GenerateMeshObject()
@@ -316,7 +318,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
 
         photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.AllBuffered, posList.ToArray(),z);
-        photonView.RPC("PostGenerateMesh_RPC", RpcTarget.All);
+        photonView.RPC("ShatterMesh_RPC", RpcTarget.All);
 
     }
 
@@ -345,27 +347,25 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             Vector2 perpDirection2 = new Vector2(direction.y, -direction.x); // 반시계 방향 90도 회전
 
             // 첫 번째 수직 방향으로 레이 쏘기
-            RaycastHit2D hit1 = Physics2D.Raycast(point, perpDirection1, rayLength, hitLayer);
-            Debug.DrawRay(point, perpDirection1 * rayLength, Color.red, 1f);
-
-            if (hit1.collider != null)
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, perpDirection1, rayLength, hitLayer);
+            foreach (var hit in hits)
             {
-                posList.Add(hit1.collider.transform.position);
-
-               // GameObject go = new GameObject("test1");
-               // go.transform.position = hit1.collider.transform.position;
+                if (_myRoadSet.Contains(hit.collider))
+                {
+                    posList.Add(hit.collider.transform.position);
+                    break;
+                }
             }
 
             // 두 번째 수직 방향으로 레이 쏘기
-            RaycastHit2D hit2 = Physics2D.Raycast(point, perpDirection2, rayLength, hitLayer);
-            Debug.DrawRay(point, perpDirection2 * rayLength, Color.blue, 1f);
-
-            if (hit2.collider != null)
+            RaycastHit2D[] hits2 = Physics2D.RaycastAll(point, perpDirection2, rayLength, hitLayer);
+            foreach (var hit in hits2)
             {
-                posList.Add(hit2.collider.transform.position);
-              //  GameObject go = new GameObject("test2");
-               // go.transform.position = hit1.collider.transform.position;
-
+                if (_myRoadSet.Contains(hit.collider))
+                {
+                    posList.Add(hit.collider.transform.position);
+                    break;
+                }
             }
         }
     }
@@ -375,8 +375,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (meshObj == null)
         {
             meshObj = new GameObject("GeneratedMesh");
-            meshCollider = meshObj.AddComponent<MeshCollider>();
             _myMeshSet.Add(meshObj);
+
+            meshCollider = meshObj.AddComponent<MeshCollider>();
             meshFilter = meshObj.AddComponent<MeshFilter>();
             meshRenderer = meshObj.AddComponent<MeshRenderer>();
             meshRenderer.material = meshMaterial;
@@ -387,15 +388,15 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         {
             meshObj.layer = LayerMask.NameToLayer("FinishRenderTexture");
             meshObj = Instantiate(meshObj);
+            _myMeshSet.Add(meshObj);
+
             meshObj.name = "GeneratedMesh";
             meshCollider = meshObj.GetComponent<MeshCollider>();
-            _myMeshSet.Add(meshObj);
             meshFilter = meshObj.GetComponent<MeshFilter>();
             meshRenderer = meshObj.GetComponent<MeshRenderer>();
             meshRenderer.material = meshMaterial;
             meshRenderer.material.color = myColor;
 
-            meshObj.AddComponent<MeshShatter>().Init(groundPieceMat, _fallingGround.gameObject);
         }
 
         meshObj.transform.position = Vector3.zero;
@@ -460,11 +461,19 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         meshObj.layer = Mathf.RoundToInt(Mathf.Log(changeLayer.value, 2));
 
         posList.Clear();
+
+        PostGenerateMesh_RPC();
+    }
+
+    [PunRPC]
+    void ShatterMesh_RPC()
+    {
+        if(meshObj!=null)
+            meshObj.AddComponent<MeshShatter>().Init(groundPieceMat, _fallingGround.gameObject);
     }
 
     bool first = true;
 
-    [PunRPC]
     void PostGenerateMesh_RPC()
     {
         StartCoroutine(CoPostGenerateMesh());

@@ -84,6 +84,7 @@ MonoBehaviour:
   - CreateLoad_RPC
   - PostGenerateMesh_RPC
   - RPC_DecreaseSharedFloat
+  - ShatterMesh_RPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

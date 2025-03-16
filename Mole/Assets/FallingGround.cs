@@ -65,12 +65,18 @@ public class FallingGround : MonoBehaviour
         lerpTime = 0f;
        // isFalling = true;
 
-        // StartCoroutine(StartFallAfterDelay());
+         StartCoroutine(StartFallAfterDelay());
     }
 
     private IEnumerator StartFallAfterDelay()
     {
-        yield return new WaitForSeconds(delay);
-        isFalling = true;
+        yield return new WaitForSeconds(0.2f);
+        gameObject.SetActive(false);
     }
+
+    //private IEnumerator StartFallAfterDelay()
+    //{
+    //    yield return new WaitForSeconds(delay);
+    //    isFalling = true;
+    //}
 }
