@@ -2430,7 +2430,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1317366504}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: NetworrkManager, Assembly-CSharp
         m_MethodName: spawn
         m_Mode: 1
         m_Arguments:
@@ -15772,10 +15772,10 @@ RectTransform:
   - {fileID: 774980879}
   m_Father: {fileID: 1065700828}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00005340576, y: -0.000030517578}
-  m_SizeDelta: {x: 2399, y: 1204}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2034783359
 GameObject:
@@ -16048,7 +16048,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: cd49e64bfcd204a438d28e72998bcd79, type: 3}
-    m_FontSize: 200
+    m_FontSize: 120
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1

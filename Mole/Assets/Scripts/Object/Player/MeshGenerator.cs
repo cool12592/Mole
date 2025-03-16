@@ -49,29 +49,48 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [SerializeField] Sprite pieceSprite;
 
 
-    void AssignColor()
+    public void AssignColor()
     {
-        if (PV.IsMine == false) 
-            return;
+        if (!PV.IsMine) return;
 
-        // 🔴 현재 방의 색상 인덱스를 가져옴
+        // 현재 방의 속성 가져오기
         var roomProps = PhotonNetwork.CurrentRoom.CustomProperties;
-        int nextColorIndex = 0;
 
-        if (roomProps.ContainsKey("NextColorIndex"))
+        // 현재 플레이어의 ActorNumber 가져오기
+        int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+        int assignedColorIndex;
+
+        // 🔴 이미 색상이 할당된 경우 기존 값 유지
+        if (roomProps.ContainsKey($"Color_{actorNumber}"))
         {
-            nextColorIndex = (int)roomProps["NextColorIndex"];
+            assignedColorIndex = (int)roomProps[$"Color_{actorNumber}"];
         }
-        
-        // 🔴 본인의 색상을 모든 유저에게 전파
-        PV.RPC("RPC_SyncColor", RpcTarget.AllBuffered, nextColorIndex);
+        else
+        {
+            // 🔴 방의 다음 색상 인덱스 가져오기
+            int nextColorIndex = 0;
+            if (roomProps.ContainsKey("NextColorIndex"))
+            {
+                nextColorIndex = (int)roomProps["NextColorIndex"];
+            }
 
-        // 🔴 색상 인덱스를 증가 (최대값 넘으면 0으로 초기화)
-        int newColorIndex = (nextColorIndex + 1) % palette.MaxColors;
+            // 🔴 현재 유저에게 색상 할당
+            assignedColorIndex = nextColorIndex;
 
-        // 🔴 방 속성 업데이트 (다음 입장 플레이어를 위한 색상 인덱스 변경)
-        var newProps = new ExitGames.Client.Photon.Hashtable { { "NextColorIndex", newColorIndex } };
-        PhotonNetwork.CurrentRoom.SetCustomProperties(newProps);
+            // 🔴 다음 색상 인덱스 업데이트 (최대값 넘으면 0으로 초기화)
+            int newColorIndex = (nextColorIndex + 1) % palette.MaxColors;
+
+            // 🔴 방 속성 업데이트 (다음 플레이어를 위한 값 저장)
+            var newProps = new ExitGames.Client.Photon.Hashtable
+            {
+                { $"Color_{actorNumber}", assignedColorIndex }, // 현재 플레이어의 색상 저장
+                { "NextColorIndex", newColorIndex } // 다음 할당을 위한 값 갱신
+            };
+                PhotonNetwork.CurrentRoom.SetCustomProperties(newProps);
+            }
+
+            // 🔴 모든 유저에게 색상 동기화
+            PV.RPC("RPC_SyncColor", RpcTarget.AllBuffered, assignedColorIndex);
     }
 
     [PunRPC]
@@ -87,9 +106,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     private void Awake()
     {
         PV = GetComponent<PhotonView>();
-
         AssignColor();
-
         dashBtn = GameObject.Find("Canvas").transform.Find("DashButton").gameObject.GetComponent<Button>();
         dashBtn.onClick.AddListener(GenerateMeshObject);
 
@@ -204,7 +221,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (inHouse)
         {
-            GetComponent<SpriteRenderer>().color = Color.white;
+           // GetComponent<SpriteRenderer>().color = Color.white;
             if(1 < posList.Count)
             {
                 lastEnterTr = transform.position;
@@ -213,7 +230,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
         else
         {
-            GetComponent<SpriteRenderer>().color = Color.red;
+          //  GetComponent<SpriteRenderer>().color = Color.red;
 
             lastExitTr = transform.position;
             posList.Clear();
@@ -519,5 +536,18 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     void RPC_DecreaseSharedFloat()
     {
         sharedFloat -= 0.001f; // 🔴 모든 클라이언트에서 sharedFloat 값을 감소
+    }
+
+    public override void OnDisable()
+    {
+        foreach(var a in _myMeshSet)
+        {
+            Destroy(a);
+        }
+
+        foreach (var b in _myRoadSet)
+        {
+            Destroy(b.gameObject);
+        }
     }
 }

@@ -19,6 +19,7 @@ public class playerScript : MonoBehaviourPunCallbacks
     private GameObject aimJoystick;
     private Button attackButton;
 
+    CinemachineVirtualCamera CM;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -36,9 +37,18 @@ public class playerScript : MonoBehaviourPunCallbacks
     void InitCamera()
     {
         // 2D 카메라
-        var CM = GameObject.Find("CMCamera").GetComponent<CinemachineVirtualCamera>();
+        CM = GameObject.Find("CMCamera").GetComponent<CinemachineVirtualCamera>();
         CM.Follow = transform;
         CM.LookAt = transform;
+    }
+
+    public void DisConnectCam()
+    {
+        if(CM != null)
+        {
+            CM.Follow = null;
+            CM.LookAt = null;
+        }
     }
 
     private void Start()

@@ -475,6 +475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PV: {fileID: 0}
   healthImage: {fileID: 0}
+  _dieSprite: {fileID: 21300000, guid: 0b6e4e285787c474fb8b5ec580960574, type: 3}
 --- !u!114 &8945967696009623113
 MonoBehaviour:
   m_ObjectHideFlags: 0

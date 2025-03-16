@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour
 
     public void ReportTheKill(string killer, string deadPerson)
     {
-        PV.RPC("killWriteRPC", RpcTarget.AllBuffered, killer, deadPerson); //마스터가 rank업데이트해야함
+        //PV.RPC("killWriteRPC", RpcTarget.AllBuffered, killer, deadPerson); //마스터가 rank업데이트해야함
     }
 
     [PunRPC]

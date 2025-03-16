@@ -22,6 +22,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
     private enum ColorList { Original, DamagedColor };
     Timer.TimerStruct healthTimer = new Timer.TimerStruct(0.35f);
+    [SerializeField] Sprite _dieSprite;
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +41,8 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     {
         RunTimer();
         if (Input.GetKeyDown(KeyCode.T)) TakeDamage(PhotonNetwork.NickName);
+
+        if (Input.GetKeyDown(KeyCode.H)) Death();
 
     }
 
@@ -119,7 +122,37 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         player.isActive = false;
         rigidBody.velocity = Vector2.zero;
         GameManager.Instance.ReportTheKill(recentAttacker, PhotonNetwork.NickName);
-        characterAnim.SetTrigger("death");
+        //characterAnim.SetTrigger("death");
+        spriteRender.sprite = _dieSprite;
+
+        spriteRender.color = Color.white;
+        StartCoroutine(CoLateDeath());
+    }
+
+    public IEnumerator CoLateDeath()
+    {
+
+        transform.rotation = Quaternion.identity;
+        GetComponent<MeshGenerator>().enabled = false;
+        GetComponent<playerScript>().DisConnectCam(); 
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        Collider2D col = GetComponent<Collider2D>();
+
+        col.enabled = false;  // 충돌 비활성화
+        rb.velocity = new Vector2(0, 7f);  // 위로 솟구치기
+        rb.gravityScale = 0;  // 중력 제거
+
+        yield return new WaitForSeconds(0.5f);  // 잠시 떠 있음
+
+        rb.gravityScale = 2f;  // 중력 활성화 (떨어지기 시작)
+
+        yield return new WaitForSeconds(1.5f);  // 일정 시간 후 삭제
+
+        if (PV.IsMine)
+        {
+            GameManager.Instance.ResponePanel.SetActive(true);
+            PV.RPC("DestroyRPC", RpcTarget.AllBuffered); // AllBuffered로 해야 제대로 사라져 복제버그가 안 생긴다
+        }
     }
 
     //death애니메이션끝에이벤트달아놈
@@ -133,6 +166,26 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     }
     [PunRPC]
     private void DestroyRPC() => Destroy(gameObject);
+
+
+
+    private IEnumerator DeathAnimation()
+    {
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        Collider2D col = GetComponent<Collider2D>();
+
+        col.enabled = false;  // 충돌 비활성화
+        rb.velocity = new Vector2(0, 10f);  // 위로 솟구치기
+        rb.gravityScale = 0;  // 중력 제거
+
+        yield return new WaitForSeconds(0.5f);  // 잠시 떠 있음
+
+        rb.gravityScale = 2f;  // 중력 활성화 (떨어지기 시작)
+
+        yield return new WaitForSeconds(1.5f);  // 일정 시간 후 삭제
+
+        Destroy(gameObject);  // 오브젝트 제거
+    }
 
     ////변수 동기화
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
