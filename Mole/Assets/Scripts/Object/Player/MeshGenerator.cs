@@ -125,11 +125,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         GenerateMeshObject();
 
     }
-    public void OnTriggerStay3D(Collider other)
+    public void OnTriggerEnter3D(Collider other)
     {
 
     }
-    public void OnTriggerEnter3D(Collider other)
+    public void OnTriggerStay3D(Collider other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
             return;
@@ -201,6 +201,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (inHouse)
         {
+            GetComponent<SpriteRenderer>().color = Color.white;
             if(1 < posList.Count)
             {
                 lastEnterTr = transform.position;
@@ -209,6 +210,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
         else
         {
+            GetComponent<SpriteRenderer>().color = Color.red;
+
             lastExitTr = transform.position;
             posList.Clear();
         }
