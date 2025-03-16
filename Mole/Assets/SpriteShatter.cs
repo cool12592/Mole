@@ -7,8 +7,8 @@ public class SpriteShatter : MonoBehaviour
 
 
 
-    public int rows = 5; // 가로 방향 조각 개수
-    public int cols = 5; // 세로 방향 조각 개수
+    public int rows = 4; // 가로 방향 조각 개수
+    public int cols = 4; // 세로 방향 조각 개수
     public float explosionForce = 5f; // 조각들이 튀는 힘
     public float spread = 1f; // 조각들이 퍼지는 정도
 
@@ -57,7 +57,7 @@ public class SpriteShatter : MonoBehaviour
         rb.gravityScale = 1f;
         rb.AddForce(new Vector2(UnityEngine.Random.Range(-spread, spread), UnityEngine.Random.Range(0, spread)) * explosionForce, ForceMode2D.Impulse);
 
-        Destroy(piece, 3f); // 2초 후 자동 삭제z
+        Destroy(piece, 2f); // 2초 후 자동 삭제z
     }
 
 }

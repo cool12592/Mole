@@ -94,7 +94,7 @@
     
                 if (finishRoadColor.a > 0.1)
                 {
-                    return groundColor * finishRoadColor * 0.5; // 밝기 조절 후 반환 (이후 검사 안 함)
+                    return groundColor * finishRoadColor * 0.4; // 밝기 조절 후 반환 (이후 검사 안 함)
                 }
 
                 
