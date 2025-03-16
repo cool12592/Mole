@@ -167,7 +167,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 4f2a70cb0969171428ee8ce1154cf168, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -265,7 +265,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: f7ee9b1ec33994b49b1aeb01a12a1b05, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
@@ -514,6 +514,7 @@ MonoBehaviour:
   _dust: {fileID: 8760623091734092484}
   _dustRockSR: {fileID: 1678369328577501713}
   palette: {fileID: 11400000, guid: ed52dd3026c19864885d2f24f10366eb, type: 2}
+  pieceSprite: {fileID: 21300000, guid: b7e83f72357aec54f9b2570d4fbf5ad4, type: 3}
   pointA: {x: 0, y: 0}
   pointB: {x: 0, y: 0}
   spacing: 0.1

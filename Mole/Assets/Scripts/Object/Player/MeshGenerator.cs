@@ -46,6 +46,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [SerializeField] GamePalette palette;  // 팔레트 오브젝트 (씬에 있어야 함)
     Color myColor;
 
+    [SerializeField] Sprite pieceSprite;
+
+
     void AssignColor()
     {
         if (PV.IsMine == false) 
@@ -270,27 +273,32 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         count++;
        // if(0.1f<timer)
         {
+            bool shatter = false;
             if (count % 5 == 0)
             {
                 posList.Add(new Vector2(transform.position.x, transform.position.y));
             }
+            if(count%10==0)
+            {
+                shatter = true;
+            }
 
             dustTimer = 0f;
-            CreateLoad(transform.position);
+            CreateLoad(transform.position, shatter);
         }
     }
 
-    void CreateLoad(Vector3 pos)
+    void CreateLoad(Vector3 pos, bool shatter = false)
     {
         if (PV.IsMine == false)
             return;
         pos.z = GetSharedFloat();
 
-        photonView.RPC("CreateLoad_RPC", RpcTarget.AllBuffered, pos.x, pos.y, pos.z);
+        photonView.RPC("CreateLoad_RPC", RpcTarget.AllBuffered, pos.x, pos.y, pos.z,shatter);
     }
 
     [PunRPC]
-    void CreateLoad_RPC(float x, float y, float z)
+    void CreateLoad_RPC(float x, float y, float z,bool shatter)
     {
         Vector3 pos = new Vector3(x, y, z);
         var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
@@ -298,6 +306,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         _myRoadSet.Add(road.collider_);
         OnGenerateMesh += road.ChangeLayer;
         road._myMeshSet = _myMeshSet;
+
+        if (shatter)
+            road.gameObject.AddComponent<SpriteShatter>().Init(pieceSprite);
     }
 
     void GenerateMeshObject()

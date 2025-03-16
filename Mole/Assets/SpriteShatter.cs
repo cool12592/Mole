@@ -1,22 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
 public class SpriteShatter : MonoBehaviour
 {
 
-    private IEnumerator Start()
-    {
-        yield return new WaitForSeconds(1f);
-        Shatter();
-    }
 
 
-    public int rows = 3; // 가로 방향 조각 개수
-    public int cols = 3; // 세로 방향 조각 개수
+
+    public int rows = 5; // 가로 방향 조각 개수
+    public int cols = 5; // 세로 방향 조각 개수
     public float explosionForce = 5f; // 조각들이 튀는 힘
     public float spread = 1f; // 조각들이 퍼지는 정도
 
+    Sprite sprite;
+    public void Init(Sprite sprite_)
+    {
+        sprite = sprite_;
+        Shatter();
+    }
 
     public void Shatter()
     {
@@ -45,23 +46,18 @@ public class SpriteShatter : MonoBehaviour
     {
         GameObject piece = new GameObject("Piece_" + x + "_" + y);
         piece.transform.position = transform.position;
-        piece.transform.localScale = transform.localScale;
+        piece.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
 
         SpriteRenderer sr = piece.AddComponent<SpriteRenderer>();
-        sr.sprite = Sprite.Create(texture, new Rect(spriteRect.x + x * width, spriteRect.y + y * height, width, height), new Vector2(0.5f, 0.5f), original.sprite.pixelsPerUnit);
-        sr.sortingOrder = original.sortingOrder;
-        sr.material = original.sharedMaterial;
+        sr.sortingOrder = 2;
+        sr.sprite = sprite;
 
         // 조각에 Rigidbody2D 추가해서 떨어지게 만들기
         Rigidbody2D rb = piece.AddComponent<Rigidbody2D>();
         rb.gravityScale = 1f;
-        rb.AddForce(new Vector2(Random.Range(-spread, spread), Random.Range(0, spread)) * explosionForce, ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(UnityEngine.Random.Range(-spread, spread), UnityEngine.Random.Range(0, spread)) * explosionForce, ForceMode2D.Impulse);
 
-        // Collider 추가
-        BoxCollider2D collider = piece.AddComponent<BoxCollider2D>();
-        collider.size = new Vector2(width / texture.width, height / texture.height);
-
-        //Destroy(piece, 10f); // 2초 후 자동 삭제z
+        Destroy(piece, 3f); // 2초 후 자동 삭제z
     }
 
 }
