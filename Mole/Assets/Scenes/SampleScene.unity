@@ -21791,7 +21791,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 18.76
+  orthographic size: 18.5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -22290,7 +22290,7 @@ Transform:
   m_GameObject: {fileID: 816811237}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -20.79, y: 0.90480536, z: 1.1771146}
+  m_LocalPosition: {x: -18.9, y: 0.90480536, z: 1.1771146}
   m_LocalScale: {x: 1, y: 83.34, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22590,7 +22590,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 18.76
+  orthographic size: 18.5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -22600,7 +22600,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 0
+  m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -23051,7 +23051,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 18.76
+  orthographic size: 18.5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -23806,7 +23806,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 18.76
+  orthographic size: 18.5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -23816,7 +23816,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 0
+  m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -44455,7 +44455,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 18.76
+  orthographic size: 18.5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -44465,7 +44465,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 0
+  m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -45731,7 +45731,7 @@ Transform:
   m_GameObject: {fileID: 2118381271}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 19.69, y: 0.90480536, z: 1.1771146}
+  m_LocalPosition: {x: 18.9, y: 0.90480536, z: 1.1771146}
   m_LocalScale: {x: 1, y: 83.34, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
