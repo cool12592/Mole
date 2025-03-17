@@ -97,7 +97,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         Vector3 spawnPosition;
         int maxAttempts = 100;
         int attempt = 0;
-        float checkRadius = 3f;
+        float checkRadius = 2f;
 
         do
         {
