@@ -117,11 +117,11 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         }
     }
 
-    private void Death()
+    public void Death(string attackerName = "")
     {
         player.isActive = false;
         rigidBody.velocity = Vector2.zero;
-        GameManager.Instance.ReportTheKill(recentAttacker, PhotonNetwork.NickName);
+        GameManager.Instance.ReportTheKill(attackerName, PhotonNetwork.NickName);
         //characterAnim.SetTrigger("death");
         spriteRender.sprite = _dieSprite;
 
@@ -148,6 +148,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(1.5f);  // 일정 시간 후 삭제
 
+        GetComponent<MeshGenerator>().OnALLDestroy();
         if (PV.IsMine)
         {
             GameManager.Instance.ResponePanel.SetActive(true);

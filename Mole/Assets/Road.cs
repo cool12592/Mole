@@ -30,6 +30,8 @@ public class Road : MonoBehaviour
 
     public void ChangeLayer()
     {
+        if (this == null) return;
+
         gameObject.layer = LayerMask.NameToLayer("FinishRoad");
         _isFinishRoad = true;
         // collider_.enabled = false;

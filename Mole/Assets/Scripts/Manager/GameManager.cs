@@ -147,17 +147,12 @@ public class GameManager : MonoBehaviour
 
     public void ReportTheKill(string killer, string deadPerson)
     {
-        //PV.RPC("killWriteRPC", RpcTarget.AllBuffered, killer, deadPerson); //마스터가 rank업데이트해야함
+        PV.RPC("killWriteRPC", RpcTarget.AllBuffered, killer, deadPerson); //마스터가 rank업데이트해야함
     }
 
     [PunRPC]
     private void killWriteRPC(string killer, string deadPerson)
     {
-        if (killer == PhotonNetwork.LocalPlayer.NickName)
-        {
-            myplayer.GetComponent<PlayerHealth>().HealHP(0.3f);
-        }
-
         if (PhotonNetwork.IsMasterClient)
         {
             killLogQueue.Enqueue(new KeyValuePair<string, string>(killer, deadPerson));

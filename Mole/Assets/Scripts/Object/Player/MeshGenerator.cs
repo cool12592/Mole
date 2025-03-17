@@ -427,6 +427,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         }
 
+        meshObj.AddComponent<AttackMesh>().Init(PV.Owner.NickName);
         meshObj.transform.position = Vector3.zero;
 
     }
@@ -538,7 +539,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         sharedFloat -= 0.001f; // 🔴 모든 클라이언트에서 sharedFloat 값을 감소
     }
 
-    public override void OnDisable()
+    public void OnALLDestroy()
     {
         foreach(var a in _myMeshSet)
         {
