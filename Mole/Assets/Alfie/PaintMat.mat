@@ -48,7 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GroundTex:
-        m_Texture: {fileID: 8400000, guid: d705bc581ed2b794db5b7dac8823f9e7, type: 2}
+        m_Texture: {fileID: 8400000, guid: 9bd7be4bd5d46d84da814e0cf47ad52a, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -81,6 +81,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _RoadTex:
         m_Texture: {fileID: 8400000, guid: a71701305b3f1364a8cdd6099e4b6558, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _UnderGroundTex:
+        m_Texture: {fileID: 8400000, guid: 9bd7be4bd5d46d84da814e0cf47ad52a, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []

@@ -5,7 +5,7 @@
         _MainTex("Main Texture", 2D) = "" {}
         _MaskTex("Mask Texture", 2D) = "" {}        
         _RoadTex("Road Texture", 2D) = "" {}
-        _GroundTex("Ground Texture", 2D) = "" {}
+        _UnderGroundTex("Under Ground Texture", 2D) = "" {}
 
         _FinishRoadTex("Finish Road Texture", 2D) = "" {}
         _PaintColor("Paint Color", Color) = (1,1,1,1)  // 기본값 설정 (흰색)
@@ -35,7 +35,7 @@
             sampler2D _MainTex;
             sampler2D _MaskTex;
             sampler2D _RoadTex;
-            sampler2D _GroundTex;
+            sampler2D _UnderGroundTex;
 
             sampler2D _FinishRoadTex;
             uniform fixed4 _PaintColor;  // `Color` 타입을 `fixed4`로 선언
@@ -57,7 +57,7 @@
                 fixed4 maskColor = tex2D(_MaskTex, i.uv);
                 fixed4 roadColor = tex2D(_RoadTex, i.uv);
                 fixed4 finishRoadColor = tex2D(_FinishRoadTex, i.uv);
-                fixed4 groundColor = tex2D(_GroundTex, i.uv);
+                fixed4 underGroundColor = tex2D(_UnderGroundTex, i.uv);
 
                 //fixed4 finalColor = groundColor * _PaintColor;
 
@@ -79,7 +79,7 @@
                     // 가장자리에서 점점 어두워지는 효과 적용
                     float brightness = isEdge ? 0.5 : 1.0;
                     
-                    fixed4 finalColor = groundColor * roadColor;
+                    fixed4 finalColor = underGroundColor * roadColor;
                     finalColor.rgb *= brightness;
                     finalColor.a = 0.3; // 투명도 유지
 
@@ -89,12 +89,12 @@
                 // 🚀 1. 먼저 빠르게 리턴할 수 있는 경우 처리 (불필요한 연산 방지)
                 if (maskColor.a > 0.1)
                 {
-                    return groundColor * maskColor; // 바로 반환 (이후 검사 안 함)
+                    return underGroundColor * maskColor; // 바로 반환 (이후 검사 안 함)
                 }
     
                 if (finishRoadColor.a > 0.1)
                 {
-                    return groundColor * finishRoadColor * 0.4; // 밝기 조절 후 반환 (이후 검사 안 함)
+                    return underGroundColor * finishRoadColor * 0.4; // 밝기 조절 후 반환 (이후 검사 안 함)
                 }
 
                 
