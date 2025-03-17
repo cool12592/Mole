@@ -25,8 +25,10 @@ public class AttackMesh : MonoBehaviour
 
         if(other.transform.parent.TryGetComponent<PlayerHealth>(out PlayerHealth playerHealth))
         {
-          //  if (nickName == playerHealth.PV.Owner.NickName)
-             //   return;
+            if (playerHealth.PV == null)
+                return;
+            if (nickName == playerHealth.PV.Owner.NickName)
+                return;
             playerHealth.Death(nickName);
         }
     }

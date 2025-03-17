@@ -17,6 +17,8 @@ public class Road : MonoBehaviour
 
     bool _isFinishRoad = false;
 
+    public MeshGenerator _myOwner;
+
     private void Awake()
     {
         if(staticRoad != null) 

@@ -119,21 +119,27 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
     public void Death(string attackerName = "")
     {
+        if (attackerName == "")
+            return;
+
+        if (player == null || player.isActive == false)
+            return;
+
         player.isActive = false;
         rigidBody.velocity = Vector2.zero;
-        GameManager.Instance.ReportTheKill(attackerName, PhotonNetwork.NickName);
         //characterAnim.SetTrigger("death");
         spriteRender.sprite = _dieSprite;
 
         spriteRender.color = Color.white;
-        StartCoroutine(CoLateDeath());
+        StartCoroutine(CoLateDeath(attackerName));
     }
 
-    public IEnumerator CoLateDeath()
+    public IEnumerator CoLateDeath(string attackerName)
     {
 
         transform.rotation = Quaternion.identity;
-        GetComponent<MeshGenerator>().enabled = false;
+        var meshGen = GetComponent<MeshGenerator>();
+        meshGen.enabled = false;
         GetComponent<playerScript>().DisConnectCam(); 
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         Collider2D col = GetComponent<Collider2D>();
@@ -148,9 +154,10 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(1.5f);  // 일정 시간 후 삭제
 
-        GetComponent<MeshGenerator>().OnALLDestroy();
+        meshGen.OnALLDestroy();
         if (PV.IsMine)
         {
+            GameManager.Instance.ReportTheKill(attackerName, PV.Owner.NickName);
             GameManager.Instance.ResponePanel.SetActive(true);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered); // AllBuffered로 해야 제대로 사라져 복제버그가 안 생긴다
         }

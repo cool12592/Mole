@@ -31,7 +31,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [SerializeField] TextureAdd _textureADD;
     [SerializeField] bool inHouse = true;
 
-    [SerializeField] GameObject _dust;
+    [SerializeField] SpriteRenderer _dust;
     [SerializeField] SpriteRenderer _dustRockSR;
 
     Vector3 lastExitTr;
@@ -47,6 +47,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     Color myColor;
 
     [SerializeField] Sprite pieceSprite;
+    List<GameObject> removeReserveList = new List<GameObject>();
 
 
     public void AssignColor()
@@ -145,6 +146,27 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         GenerateMeshObject();
 
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer != LayerMask.NameToLayer("Road"))
+            return;
+
+        if(collision.TryGetComponent<Road>(out Road road))
+        {
+            if (road._myOwner == null)
+                return;
+
+            if (road._myOwner == this)
+                return;
+
+            if (PV == null)
+                return;
+
+            road._myOwner.gameObject.GetComponent<PlayerHealth>().Death(PV.Owner.NickName);
+        }
+    }
+
     public void OnTriggerEnter3D(Collider other)
     {
 
@@ -202,12 +224,25 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         foreach (GameObject go in _curInOtherMeshSet)
         {
+            if(go == null)
+            {
+                removeReserveList.Add(go);
+                continue;
+            }
             if (go.transform.position.z < minZ)
             {
                 SetInHouse(false);
                 return;
             }
         }
+
+        foreach(var go in removeReserveList)
+        {
+            _curInOtherMeshSet.Remove(go);
+        }
+        removeReserveList.Clear();
+
+
 
         SetInHouse(true);
     }
@@ -240,7 +275,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     void DeactiveDust()
     {
         flipTimer = 0f;
-        _dust.SetActive(false);
+        _dust.gameObject.SetActive(false);
     }
 
     void ActiveDust()
@@ -249,11 +284,12 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
 
         dustTimer = 0f;
-        _dust.SetActive(true);
+        _dust.gameObject.SetActive(true);
 
         flipTimer += Time.deltaTime;
         if (0.02f < flipTimer)
         {
+            _dust.flipY = !_dust.flipY;
             _dustRockSR.flipX = !_dustRockSR.flipX;
             flipTimer = 0f;
         }
@@ -323,6 +359,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         _myRoadSet.Add(road.collider_);
         OnGenerateMesh += road.ChangeLayer;
         road._myMeshSet = _myMeshSet;
+        road._myOwner = this;
 
         if (shatter)
             road.gameObject.AddComponent<SpriteShatter>().Init(pieceSprite);
@@ -543,12 +580,14 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         foreach(var a in _myMeshSet)
         {
-            Destroy(a);
+            if(a != null) 
+                Destroy(a);
         }
 
         foreach (var b in _myRoadSet)
         {
-            Destroy(b.gameObject);
+            if(b != null) 
+                Destroy(b.gameObject);
         }
     }
 }
