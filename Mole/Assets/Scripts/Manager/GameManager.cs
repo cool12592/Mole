@@ -161,8 +161,8 @@ public class GameManager : MonoBehaviour
             RankingBoard[killer]++;
             UpdateRankingBoard();
 
-            if (RankingBoard[killer] >= 5)
-                OnEndGame();
+            //if (RankingBoard[killer] >= 5)
+            //    OnEndGame();
         }
     }
 
