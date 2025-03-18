@@ -7,12 +7,13 @@ public class SpriteShatter : MonoBehaviour
 
 
 
-    public int rows = 4; // 가로 방향 조각 개수
-    public int cols = 4; // 세로 방향 조각 개수
+    public int rows = 3; // 가로 방향 조각 개수
+    public int cols = 3; // 세로 방향 조각 개수
     public float explosionForce = 5f; // 조각들이 튀는 힘
     public float spread = 1f; // 조각들이 퍼지는 정도
 
     Sprite sprite;
+
     public void Init(Sprite sprite_)
     {
         sprite = sprite_;
@@ -46,11 +47,12 @@ public class SpriteShatter : MonoBehaviour
     {
         GameObject piece = new GameObject("Piece_" + x + "_" + y);
         piece.transform.position = transform.position;
-        piece.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
+        piece.transform.localScale = new Vector3(0.17f,0.17f,0.17f);
 
         SpriteRenderer sr = piece.AddComponent<SpriteRenderer>();
         sr.sortingOrder = 2;
         sr.sprite = sprite;
+        sr.color = new Color(0.4431373f,0.282353f, 0.2156863f);
 
         // 조각에 Rigidbody2D 추가해서 떨어지게 만들기
         Rigidbody2D rb = piece.AddComponent<Rigidbody2D>();

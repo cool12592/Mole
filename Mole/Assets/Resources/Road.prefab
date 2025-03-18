@@ -123,8 +123,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.7298684, y: -0.53786093, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8794907550013367193}
   m_Father: {fileID: 0}
@@ -170,9 +170,9 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7,
+  m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847,
     type: 3}
-  m_Color: {r: 1, g: 0.27120164, b: 0, a: 1}
+  m_Color: {r: 1, g: 0.27120164, b: 0, a: 0.29803923}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -243,3 +243,4 @@ MonoBehaviour:
   myNumber: 0
   nextRoad: {fileID: 0}
   meshDetector: {fileID: 4587609157162955376}
+  _myOwner: {fileID: 0}

@@ -411,9 +411,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             Vector2 perpDirection1 = new Vector2(-direction.y, direction.x).normalized; // 시계 방향 90도 회전
             Vector2 perpDirection2 = new Vector2(direction.y, -direction.x).normalized; // 반시계 방향 90도 회전
 
+#if UNITY_EDITOR            
             Debug.DrawRay(point, perpDirection1 * length, Color.red, 10f);
             Debug.DrawRay(point, perpDirection2 * length, Color.green, 10f);
-
+#endif
             // 첫 번째 수직 방향으로 레이 쏘기
             RaycastHit2D[] hits = Physics2D.RaycastAll(point, perpDirection1, length, hitLayer);
             foreach (var hit in hits)
