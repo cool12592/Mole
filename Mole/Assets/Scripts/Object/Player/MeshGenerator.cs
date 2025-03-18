@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -391,8 +391,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public Vector2 pointA;   // 시작 점
     public Vector2 pointB;   // 끝 점
-    public float spacing = 0.2f;  // 점 간격
-    public float rayLength = 1000f;  // 레이 길이
+    public float spacing = 0.1f;  // 점 간격
+    //public float rayLength = 1000f;  // 레이 길이
     public LayerMask hitLayer;    // 충돌 레이어 설정
 
     void CastRaysAlongLine()
@@ -408,27 +408,30 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             Vector2 point = pointA + direction * (i * spacing); // 선분 위 점
 
             // 수직 방향 2개 (왼쪽, 오른쪽)
-            Vector2 perpDirection1 = new Vector2(-direction.y, direction.x); // 시계 방향 90도 회전
-            Vector2 perpDirection2 = new Vector2(direction.y, -direction.x); // 반시계 방향 90도 회전
+            Vector2 perpDirection1 = new Vector2(-direction.y, direction.x).normalized; // 시계 방향 90도 회전
+            Vector2 perpDirection2 = new Vector2(direction.y, -direction.x).normalized; // 반시계 방향 90도 회전
+
+            Debug.DrawRay(point, perpDirection1 * length, Color.red, 10f);
+            Debug.DrawRay(point, perpDirection2 * length, Color.green, 10f);
 
             // 첫 번째 수직 방향으로 레이 쏘기
-            RaycastHit2D[] hits = Physics2D.RaycastAll(point, perpDirection1, rayLength, hitLayer);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, perpDirection1, length, hitLayer);
             foreach (var hit in hits)
             {
                 if (_myRoadSet.Contains(hit.collider))
                 {
-                    posList.Add(hit.collider.transform.position);
+                    posList.Add(hit.collider.transform.position + new Vector3(perpDirection1.x, perpDirection1.y,0f)*0.7f);
                     break;
                 }
             }
 
             // 두 번째 수직 방향으로 레이 쏘기
-            RaycastHit2D[] hits2 = Physics2D.RaycastAll(point, perpDirection2, rayLength, hitLayer);
+            RaycastHit2D[] hits2 = Physics2D.RaycastAll(point, perpDirection2, length, hitLayer);
             foreach (var hit in hits2)
             {
                 if (_myRoadSet.Contains(hit.collider))
                 {
-                    posList.Add(hit.collider.transform.position);
+                    posList.Add(hit.collider.transform.position + new Vector3(perpDirection2.x, perpDirection2.y,0f)*0.7f);
                     break;
                 }
             }

@@ -519,7 +519,6 @@ MonoBehaviour:
   pointA: {x: 0, y: 0}
   pointB: {x: 0, y: 0}
   spacing: 0.1
-  rayLength: 1000
   hitLayer:
     serializedVersion: 2
     m_Bits: 1024
