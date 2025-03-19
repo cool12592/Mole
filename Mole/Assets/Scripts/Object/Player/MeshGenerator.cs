@@ -421,7 +421,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             {
                 if (_myRoadSet.Contains(hit.collider))
                 {
-                    posList.Add(hit.collider.transform.position + new Vector3(perpDirection1.x, perpDirection1.y,0f)*0.7f);
+                    posList.Add(hit.collider.transform.position);// + new Vector3(perpDirection1.x, perpDirection1.y,0f)*0.7f);
                     break;
                 }
             }
@@ -432,7 +432,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             {
                 if (_myRoadSet.Contains(hit.collider))
                 {
-                    posList.Add(hit.collider.transform.position + new Vector3(perpDirection2.x, perpDirection2.y,0f)*0.7f);
+                    posList.Add(hit.collider.transform.position );//+ new Vector3(perpDirection2.x, perpDirection2.y,0f)*0.7f);
                     break;
                 }
             }

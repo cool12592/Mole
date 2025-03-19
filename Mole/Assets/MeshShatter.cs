@@ -56,20 +56,20 @@ public class MeshShatter : MonoBehaviour
             }
         }
 
-        // 3️⃣ 가로/세로 중간에도 원 추가 (빈 공간 제거)
-        for (int y = 0; y < rows; y++)
-        {
-            for (int x = 0; x < cols; x++)
-            {
-                // 가로 중간 추가 (정확한 중간 위치)
-                if (x < cols - 1)
-                    CreateMeshPiece(bounds, x + maxNum, y, pieceWidth, pieceHeight); // `+ 1000`을 사용해 중간 좌표로 구분
+        // // 3️⃣ 가로/세로 중간에도 원 추가 (빈 공간 제거)
+        // for (int y = 0; y < rows; y++)
+        // {
+        //     for (int x = 0; x < cols; x++)
+        //     {
+        //         // 가로 중간 추가 (정확한 중간 위치)
+        //         if (x < cols - 1)
+        //             CreateMeshPiece(bounds, x + maxNum, y, pieceWidth, pieceHeight); // `+ 1000`을 사용해 중간 좌표로 구분
 
-                // 세로 중간 추가
-                if (y < rows - 1)
-                    CreateMeshPiece(bounds, x, y + maxNum, pieceWidth, pieceHeight);
-            }
-        }
+        //         // 세로 중간 추가
+        //         if (y < rows - 1)
+        //             CreateMeshPiece(bounds, x, y + maxNum, pieceWidth, pieceHeight);
+        //     }
+        // }
 
         // 4️⃣ 원본 Mesh 숨김
         if(fakeMesh != null)
