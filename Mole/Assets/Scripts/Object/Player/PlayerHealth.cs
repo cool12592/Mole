@@ -24,6 +24,8 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     Timer.TimerStruct healthTimer = new Timer.TimerStruct(0.35f);
     [SerializeField] Sprite _dieSprite;
 
+    public bool PlayerActive => player.isActive;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -119,8 +121,6 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
     public void Death(string attackerName = "")
     {
-        if(PV.IsMine == false) return;
-
         if (attackerName == "")
             return;
 
@@ -128,13 +128,19 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
             return;
 
         player.isActive = false;
-        PV.RPC("Death_RPC", RpcTarget.AllBuffered, attackerName); 
+
+        if (PV.IsMine == false) return;
+
+        PV.RPC("Death_RPC", RpcTarget.AllBuffered, attackerName);
+
 
     }
 
     [PunRPC]
     void Death_RPC(string attackerName = "")
     {
+        player.isActive = false;
+
         rigidBody.velocity = Vector2.zero;
         //characterAnim.SetTrigger("death");
         spriteRender.sprite = _dieSprite;

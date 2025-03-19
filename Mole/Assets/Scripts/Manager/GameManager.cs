@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     IEnumerator rankingBoardCoroutine;
     WaitForSeconds waitForSecnds = new WaitForSeconds(1f);
 
+    public Dictionary<int, Color> UserColor = new Dictionary<int, Color>();
+     
     private void Awake()
     {
         if (instance == null)

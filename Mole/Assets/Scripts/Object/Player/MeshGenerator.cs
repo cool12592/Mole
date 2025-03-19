@@ -57,19 +57,33 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
 
     [PunRPC]
-    void RPC_AssignColor()
+    void RPC_AssignColor(float r, float g, float b)
     {
-        var newColor = palette.GetColor();
-        myColor = newColor;
+        var color = new Color(r, g, b);
+        myColor = color;
         GetComponent<playerScript>().NickNameText.color = myColor;
     }
 
     public void AssignColor()
     {
         if (!PhotonNetwork.IsMasterClient) return;
-        if (PV.IsMine) palette.Init();
+        if (PV.IsMine)
+        {
+            palette.Init();
+        }
 
-        PV.RPC("RPC_AssignColor", RpcTarget.AllBuffered);
+        Color color = Color.white;
+        if (GameManager.Instance.UserColor.TryGetValue(PV.OwnerActorNr, out Color outColor))
+        {
+            color = outColor;
+        }
+        else
+        {
+            color = palette.GetColor();
+            GameManager.Instance.UserColor[PV.OwnerActorNr] = color;
+        }
+
+        PV.RPC("RPC_AssignColor", RpcTarget.AllBuffered, color.r, color.g, color.b);
     }
 
     private void Awake()
@@ -142,7 +156,17 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             if (PV == null)
                 return;
 
-            road._myOwner.gameObject.GetComponent<PlayerHealth>().Death(PV.Owner.NickName);
+            var otherHealth = road._myOwner.gameObject.GetComponent<PlayerHealth>();
+            if (otherHealth == null || otherHealth.PlayerActive == false)
+                return;
+
+            otherHealth.Death(PV.Owner.NickName);
+
+            if (PV.IsMine)
+            {
+                _meshGenSound.Play();
+                GetComponent<PlayerMovement>().ShakeCamera();
+            }
         }
     }
 
