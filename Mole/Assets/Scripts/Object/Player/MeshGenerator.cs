@@ -66,8 +66,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void AssignColor()
     {
-        if (!PV.IsMine) return;
-        if (PhotonNetwork.IsMasterClient) palette.Init();
+        if (!PhotonNetwork.IsMasterClient) return;
+        if (PV.IsMine) palette.Init();
 
         PV.RPC("RPC_AssignColor", RpcTarget.AllBuffered);
     }
