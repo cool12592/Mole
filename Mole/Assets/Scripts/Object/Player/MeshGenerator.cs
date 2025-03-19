@@ -56,14 +56,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
 
 
-    static int nextColorIndex = 0; // 🔴 공유할 float 값 (초기값 100)
-
     [PunRPC]
     void RPC_AssignColor()
     {
-        var newColor = palette.GetColor(nextColorIndex);
-        nextColorIndex++;
-
+        var newColor = palette.GetColor();
         myColor = newColor;
         GetComponent<playerScript>().NickNameText.color = myColor;
     }
@@ -71,19 +67,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     public void AssignColor()
     {
         if (!PV.IsMine) return;
+        if (PhotonNetwork.IsMasterClient) palette.Init();
 
         PV.RPC("RPC_AssignColor", RpcTarget.AllBuffered);
     }
-
-    [PunRPC]
-    void RPC_SyncColor(int colorIndex)
-    {
-        var newColor = palette.GetColor(colorIndex);
-        myColor = newColor;
-        GetComponent<playerScript>().NickNameText.color = myColor;
-       
-    }
-
 
     private void Awake()
     {
@@ -259,9 +246,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         else
         {
           //  GetComponent<SpriteRenderer>().color = Color.red;
-
+            
             lastExitTr = transform.position;
             posList.Clear();
+            CreateLoad(transform.position,false);
         }
     }
 
@@ -340,7 +328,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             //}
 
             dustTimer = 0f;
-            CreateLoad(transform.position, shatter);
+            CreateLoadForward(transform.position, shatter);
         }
     }
 
@@ -349,10 +337,20 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (PV.IsMine == false)
             return;
 
-        pos += transform.up * 0.5f;
         pos.z = GetSharedFloat();
 
         photonView.RPC("CreateLoad_RPC", RpcTarget.AllBuffered, pos.x, pos.y, pos.z,shatter);
+    }
+
+    void CreateLoadForward(Vector3 pos, bool shatter = false)
+    {
+        if (PV.IsMine == false)
+            return;
+
+        pos += transform.up * 0.5f;
+        pos.z = GetSharedFloat();
+
+        photonView.RPC("CreateLoad_RPC", RpcTarget.AllBuffered, pos.x, pos.y, pos.z, shatter);
     }
 
     [PunRPC]
