@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AttackMesh : MonoBehaviour
 {
-    string nickName;
+    string nickName = "";
 
     private IEnumerator Start()
     {
@@ -20,6 +20,9 @@ public class AttackMesh : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
+            return;
+
+        if (nickName == "")
             return;
 
 
