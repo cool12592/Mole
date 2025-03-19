@@ -54,48 +54,25 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [SerializeField] AudioSource _meshGenSound;
     [SerializeField] AudioSource _moveSound;
 
+
+
+    static int nextColorIndex = 0; // 🔴 공유할 float 값 (초기값 100)
+
+    [PunRPC]
+    void RPC_AssignColor()
+    {
+        var newColor = palette.GetColor(nextColorIndex);
+        nextColorIndex++;
+
+        myColor = newColor;
+        GetComponent<playerScript>().NickNameText.color = myColor;
+    }
+
     public void AssignColor()
     {
         if (!PV.IsMine) return;
 
-        // 현재 방의 속성 가져오기
-        var roomProps = PhotonNetwork.CurrentRoom.CustomProperties;
-
-        // 현재 플레이어의 ActorNumber 가져오기
-        int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
-        int assignedColorIndex;
-
-        // 🔴 이미 색상이 할당된 경우 기존 값 유지
-        if (roomProps.ContainsKey($"Color_{actorNumber}"))
-        {
-            assignedColorIndex = (int)roomProps[$"Color_{actorNumber}"];
-        }
-        else
-        {
-            // 🔴 방의 다음 색상 인덱스 가져오기
-            int nextColorIndex = 0;
-            if (roomProps.ContainsKey("NextColorIndex"))
-            {
-                nextColorIndex = (int)roomProps["NextColorIndex"];
-            }
-
-            // 🔴 현재 유저에게 색상 할당
-            assignedColorIndex = nextColorIndex;
-
-            // 🔴 다음 색상 인덱스 업데이트 (최대값 넘으면 0으로 초기화)
-            int newColorIndex = (nextColorIndex + 1) % palette.MaxColors;
-
-            // 🔴 방 속성 업데이트 (다음 플레이어를 위한 값 저장)
-            var newProps = new ExitGames.Client.Photon.Hashtable
-            {
-                { $"Color_{actorNumber}", assignedColorIndex }, // 현재 플레이어의 색상 저장
-                { "NextColorIndex", newColorIndex } // 다음 할당을 위한 값 갱신
-            };
-                PhotonNetwork.CurrentRoom.SetCustomProperties(newProps);
-            }
-
-            // 🔴 모든 유저에게 색상 동기화
-            PV.RPC("RPC_SyncColor", RpcTarget.AllBuffered, assignedColorIndex);
+        PV.RPC("RPC_AssignColor", RpcTarget.AllBuffered);
     }
 
     [PunRPC]
@@ -352,7 +329,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
                 shatter = true;
             }
 
-            if(count%7==0)
+            if(count%7==0 && PV.IsMine)
             {
                 _moveSound.volume = 0.3f;
                 _moveSound.Play();
@@ -550,8 +527,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         float height = maxY - minY; // AABB 세로 길이
         float boundingBoxArea = width * height; // 사각형 넓이
 
-        _meshGenSound.Play();
-        GetComponent<PlayerMovement>().ShakeCamera();
+        if (PV.IsMine)
+        {
+            _meshGenSound.Play();
+            GetComponent<PlayerMovement>().ShakeCamera();
+        }
         var particle = Instantiate(_dustParticle,centerPos,Quaternion.identity);
         //var particleScale = boundingBoxArea * 0.1f;
        // particle.transform.localScale *=  particleScale;
