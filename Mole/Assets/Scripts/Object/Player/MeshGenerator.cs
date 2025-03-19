@@ -259,7 +259,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (inHouse)
         {
            // GetComponent<SpriteRenderer>().color = Color.white;
-            if(1 < posList.Count)
+            //if(1 < posList.Count)
             {
                 lastEnterTr = transform.position;
                 lastEnterDirection = transform.up;
@@ -373,10 +373,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (PV.IsMine == false)
             return;
 
-        if (posList.Count < 3)
-            return;
-
-        CreateLoad(transform.position);
+       // CreateLoad(transform.position);
 
         originLastIndex = posList.Count - 1;
         if (lastEnterTr != Vector3.zero && lastEnterTr != Vector3.zero)
@@ -384,6 +381,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         float z = GetSharedFloat();
 
+        if (posList.Count < 3)
+            return;
 
         photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.AllBuffered, posList.ToArray(),z);
         photonView.RPC("ShatterMesh_RPC", RpcTarget.All);
