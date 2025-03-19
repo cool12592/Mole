@@ -51,6 +51,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     List<GameObject> removeReserveList = new List<GameObject>();
     [SerializeField] GameObject _dustParticle;
 
+    [SerializeField] AudioSource _meshGenSound;
+    [SerializeField] AudioSource _moveSound;
 
     public void AssignColor()
     {
@@ -345,10 +347,23 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             {
                 posList.Add(new Vector2(transform.position.x, transform.position.y));
             }
-            if(count%10==0)
+            if (count%10==0)
             {
                 shatter = true;
+
+                
+
             }
+
+            if(count%7==0)
+            {
+                _moveSound.volume = 0.3f;
+                _moveSound.Play();
+            }
+            //if (count%20==0)
+            //{
+            //    _moveSound.Play();
+            //}
 
             dustTimer = 0f;
             CreateLoad(transform.position, shatter);
@@ -359,6 +374,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         if (PV.IsMine == false)
             return;
+
+        pos += transform.up * 0.5f;
         pos.z = GetSharedFloat();
 
         photonView.RPC("CreateLoad_RPC", RpcTarget.AllBuffered, pos.x, pos.y, pos.z,shatter);
@@ -536,6 +553,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         float height = maxY - minY; // AABB 세로 길이
         float boundingBoxArea = width * height; // 사각형 넓이
 
+        _meshGenSound.Play();
         GetComponent<PlayerMovement>().ShakeCamera();
         var particle = Instantiate(_dustParticle,centerPos,Quaternion.identity);
         //var particleScale = boundingBoxArea * 0.1f;
