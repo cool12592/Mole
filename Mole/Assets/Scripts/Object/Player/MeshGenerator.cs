@@ -36,6 +36,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     Vector3 lastExitTr;
     Vector3 lastEnterTr;
+    Vector3 lastEnterDirection;
 
     HashSet<Collider2D> _myRoadSet = new HashSet<Collider2D>();
     HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
@@ -48,6 +49,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     [SerializeField] Sprite pieceSprite;
     List<GameObject> removeReserveList = new List<GameObject>();
+    [SerializeField] GameObject _dustParticle;
 
 
     public void AssignColor()
@@ -260,6 +262,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             if(1 < posList.Count)
             {
                 lastEnterTr = transform.position;
+                lastEnterDirection = transform.up;
                 GenerateMeshObject();
             }
         }
@@ -370,7 +373,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (PV.IsMine == false)
             return;
 
-        if (posList.Count < 2)
+        if (posList.Count < 3)
             return;
 
         CreateLoad(transform.position);
@@ -396,48 +399,50 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     public LayerMask hitLayer;    // 충돌 레이어 설정
 
     void CastRaysAlongLine()
+{
+    pointA = lastExitTr;
+    pointB = lastEnterTr;
+    Vector2 direction = (pointB - pointA).normalized; // 선분 방향
+    float length = Vector2.Distance(pointA, pointB);  // 총 길이
+
+    float NoLenth = 0.1f;
+    // 시작과 끝에서 2 유닛씩 제외
+    float adjustedLength = length - NoLenth*2f; 
+    if (adjustedLength <= 0) return; // 길이가 4 이하라면 레이캐스트 실행 안 함
+
+    Vector2 newPointA = pointA + direction * NoLenth; 
+    Vector2 newPointB = pointB - direction * NoLenth; 
+
+    int numPoints = Mathf.FloorToInt(adjustedLength / spacing); // 새로 찍을 점 개수
+
+    for (int i = 0; i <= numPoints; i++)
     {
-        pointA = lastExitTr;
-        pointB = lastEnterTr;
-        Vector2 direction = (pointB - pointA).normalized; // 선분 방향
-        float length = Vector2.Distance(pointA, pointB);  // 총 길이
-        int numPoints = Mathf.FloorToInt(length / spacing); // 찍을 점 개수
+        Vector2 point = newPointA + direction * (i * spacing); // 새로운 선분 위 점
 
-        for (int i = 0; i <= numPoints; i++)
+        // 수직 방향 2개 (왼쪽, 오른쪽)
+        Vector2 perpDirection1 = new Vector2(-direction.y, direction.x).normalized; // 시계 방향 90도 회전
+        Vector2 perpDirection2 = new Vector2(direction.y, -direction.x).normalized; // 반시계 방향 90도 회전
+
+        float dot = Vector2.Dot(lastEnterDirection, perpDirection1);
+        Vector2 chosenDirection = dot >= 0 ? perpDirection1 : perpDirection2;
+
+        // 첫 번째 수직 방향으로 레이 쏘기
+        RaycastHit2D[] hits = Physics2D.RaycastAll(point, chosenDirection, length, hitLayer);
+        foreach (var hit in hits)
         {
-            Vector2 point = pointA + direction * (i * spacing); // 선분 위 점
-
-            // 수직 방향 2개 (왼쪽, 오른쪽)
-            Vector2 perpDirection1 = new Vector2(-direction.y, direction.x).normalized; // 시계 방향 90도 회전
-            Vector2 perpDirection2 = new Vector2(direction.y, -direction.x).normalized; // 반시계 방향 90도 회전
-
-#if UNITY_EDITOR            
-            Debug.DrawRay(point, perpDirection1 * length, Color.red, 10f);
-            Debug.DrawRay(point, perpDirection2 * length, Color.green, 10f);
-#endif
-            // 첫 번째 수직 방향으로 레이 쏘기
-            RaycastHit2D[] hits = Physics2D.RaycastAll(point, perpDirection1, length, hitLayer);
-            foreach (var hit in hits)
+            if (_myRoadSet.Contains(hit.collider))
             {
-                if (_myRoadSet.Contains(hit.collider))
-                {
-                    posList.Add(hit.collider.transform.position);// + new Vector3(perpDirection1.x, perpDirection1.y,0f)*0.7f);
-                    break;
-                }
-            }
-
-            // 두 번째 수직 방향으로 레이 쏘기
-            RaycastHit2D[] hits2 = Physics2D.RaycastAll(point, perpDirection2, length, hitLayer);
-            foreach (var hit in hits2)
-            {
-                if (_myRoadSet.Contains(hit.collider))
-                {
-                    posList.Add(hit.collider.transform.position );//+ new Vector3(perpDirection2.x, perpDirection2.y,0f)*0.7f);
-                    break;
-                }
+                posList.Add(hit.collider.transform.position + new Vector3(chosenDirection.x, chosenDirection.y, 0f) * 1f);
+                break;
             }
         }
+
+#if UNITY_EDITOR            
+        Debug.DrawRay(point, chosenDirection * length, Color.red, 6f);
+#endif
     }
+}
+
 
     void CreateMesh()
     {
@@ -495,10 +500,37 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         //  정점 리스트를 배열로 변환
         Vector3[] vertices = new Vector3[posList.Count];
+
+        Vector3 sumVec = Vector3.zero;
+        float minX = float.MaxValue, maxX = float.MinValue;
+        float minY = float.MaxValue, maxY = float.MinValue;
+
         for (int i = 0; i < posList.Count; i++)
         {
-            vertices[i] = new Vector3(posList[i].x, posList[i].y, 0);
+            float x = posList[i].x;
+            float y = posList[i].y;
+
+            vertices[i] = new Vector3(x, y, 0);
+            sumVec += new Vector3(x, y, 0);
+
+            // 최소/최대 좌표 업데이트
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
         }
+
+        Vector3 centerPos = sumVec / posList.Count; // 중심 좌표
+        centerPos.z = -10f;
+        float width = maxX - minX; // AABB 가로 길이
+        float height = maxY - minY; // AABB 세로 길이
+        float boundingBoxArea = width * height; // 사각형 넓이
+
+
+        var particle = Instantiate(_dustParticle,centerPos,Quaternion.identity);
+        //var particleScale = boundingBoxArea * 0.1f;
+       // particle.transform.localScale *=  particleScale;
+       // particle.transform.GetChild(0).localScale *=  particleScale;
 
         //  삼각형 인덱스 자동 생성
         List<int> triangles = new List<int>();
