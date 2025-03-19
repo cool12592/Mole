@@ -536,7 +536,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         float height = maxY - minY; // AABB 세로 길이
         float boundingBoxArea = width * height; // 사각형 넓이
 
-
+        GetComponent<PlayerMovement>().ShakeCamera();
         var particle = Instantiate(_dustParticle,centerPos,Quaternion.identity);
         //var particleScale = boundingBoxArea * 0.1f;
        // particle.transform.localScale *=  particleScale;

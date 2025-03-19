@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        impulseSource = GameObject.Find("CinemachineImpulseSource").GetComponent<CinemachineImpulseSource>();
         PV = GetComponent<PhotonView>();
         health = GetComponent<PlayerHealth>();
         player = GetComponent<playerScript>();
@@ -188,6 +190,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
             float angle = Mathf.Atan2(inputDirection.y, inputDirection.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle - 90);
 
+           // ShakeCamera();
 
             if(nextChangeAnimTime < Time.time)
             {
@@ -209,5 +212,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
             _spriteRenderer.sprite = _idleSprite;
             _isIdle = true;
         }
+    }
+
+    CinemachineImpulseSource impulseSource;
+
+    public void ShakeCamera()
+    {
+        impulseSource.GenerateImpulse();
     }
 }
