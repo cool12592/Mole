@@ -26,13 +26,20 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     // 🔴 receiveRotation 변수 추가
     private Quaternion receiveRotation;
 
+    SpriteRenderer _spriteRenderer;
+    [SerializeField] Sprite _idleSprite;
+    [SerializeField] Sprite _runSprite;
+    bool _isIdle = true;
+    [SerializeField] float animChangeTerm = 0.1f;
+    float nextChangeAnimTime = 0f;
+
     // Start is called before the first frame update
     void Start()
     {
         PV = GetComponent<PhotonView>();
         health = GetComponent<PlayerHealth>();
         player = GetComponent<playerScript>();
-
+        _spriteRenderer = GetComponent<SpriteRenderer>();
         characterAnim = GetComponent<Animator>();
         rigidBody = gameObject.GetComponent<Rigidbody2D>();
 
@@ -172,13 +179,35 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 
     public void Move(Vector2 inputDirection)
     {
-        if (player.isActive == false) return;
+        if (player.isActive == false) 
+            return;
         rigidBody.velocity = inputDirection * moveSpeed / moveCoefficient;
 
         if (inputDirection != Vector2.zero)
         {
             float angle = Mathf.Atan2(inputDirection.y, inputDirection.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+
+
+            if(nextChangeAnimTime < Time.time)
+            {
+                nextChangeAnimTime = Time.time + animChangeTerm;
+                if(_isIdle)
+                {
+                    _spriteRenderer.sprite = _runSprite;
+                    _isIdle = false;
+                }
+                else
+                {
+                    _spriteRenderer.sprite = _idleSprite;
+                    _isIdle = true;
+                }
+            }
+        }
+        else
+        {
+            _spriteRenderer.sprite = _idleSprite;
+            _isIdle = true;
         }
     }
 }
