@@ -92,10 +92,10 @@
                     return underGroundColor * maskColor; // 바로 반환 (이후 검사 안 함)
                 }
     
-                if (finishRoadColor.a > 0.1)
-                {
-                    return underGroundColor * finishRoadColor * 0.4; // 밝기 조절 후 반환 (이후 검사 안 함)
-                }
+                // if (finishRoadColor.a > 0.1)
+                // {
+                //     return underGroundColor * finishRoadColor * 0.4; // 밝기 조절 후 반환 (이후 검사 안 함)
+                // }
 
                 
 
