@@ -450,15 +450,18 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         Vector2 chosenDirection = dot >= 0 ? perpDirection1 : perpDirection2;
 
         // 첫 번째 수직 방향으로 레이 쏘기
-        RaycastHit2D[] hits = Physics2D.RaycastAll(point, chosenDirection, length, hitLayer);
-        foreach (var hit in hits)
-        {
-            if (_myRoadSet.Contains(hit.collider))
-            {
+        var hit = Physics2D.Raycast(point, chosenDirection, length, hitLayer);
+            if(hit)
                 posList.Add(hit.collider.transform.position + new Vector3(chosenDirection.x, chosenDirection.y, 0f) * 1f);
-                break;
-            }
-        }
+
+            // foreach (var hit in hits)
+          //  {
+                // if (_myRoadSet.Contains(hit.collider))
+            //    {
+          //      posList.Add(hit.collider.transform.position + new Vector3(chosenDirection.x, chosenDirection.y, 0f) * 1f);
+            //   break;
+          //  }
+       // }
 
 #if UNITY_EDITOR            
         Debug.DrawRay(point, chosenDirection * length, Color.red, 6f);
