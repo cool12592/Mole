@@ -81,7 +81,7 @@
                     
                     fixed4 finalColor = underGroundColor * roadColor;
                     finalColor.rgb *= brightness;
-                    finalColor.a = 0.3; // 투명도 유지
+                    finalColor.a = 0.5; // 투명도 유지
 
                     return finalColor;
                 }
