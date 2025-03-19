@@ -139,14 +139,25 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             CreateLoad(transform.position + offset);
         }
 
-        posList.Add(transform.position + new Vector3(-1f, -1f, 0f));
-        posList.Add(transform.position + new Vector3(-1f, 1f, 0f));
-        posList.Add(transform.position + new Vector3(1f, 1f, 0f));
-        posList.Add(transform.position + new Vector3(1f, -1f, 0f));
+        WriteFirstMeshPoint(20, 2);
 
         yield return null;
         GenerateMeshObject();
 
+    }
+
+    void WriteFirstMeshPoint(int segmentCount, float radius)
+    {
+        posList.Clear();
+        Vector3 center = transform.position;
+
+        for (int i = 0; i < segmentCount; i++)
+        {
+            float angle = (i / (float)segmentCount) * Mathf.PI * 2f;
+            float x = Mathf.Cos(angle) * radius;
+            float y = Mathf.Sin(angle) * radius;
+            posList.Add(center + new Vector3(x, y, 0f));
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
