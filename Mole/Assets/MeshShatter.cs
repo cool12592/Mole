@@ -152,7 +152,7 @@ public class MeshShatter : MonoBehaviour
         rb.gravityScale = 1f;
         rb.AddForce(new Vector2(Random.Range(-spread, spread), Random.Range(0, spread)) * explosionForce, ForceMode2D.Impulse);
 
-        Destroy(piece, 10f);
+        Destroy(piece, 2f);
 
 
     }
