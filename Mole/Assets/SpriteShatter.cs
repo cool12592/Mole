@@ -13,10 +13,11 @@ public class SpriteShatter : MonoBehaviour
     public float spread = 1f; // 조각들이 퍼지는 정도
 
     Sprite sprite;
-
-    public void Init(Sprite sprite_)
+    Vector3 playerUpVector;
+    public void Init(Sprite sprite_, Vector3 playerUpVector_)
     {
         sprite = sprite_;
+        playerUpVector = playerUpVector_;
         Shatter();
     }
 
@@ -46,7 +47,7 @@ public class SpriteShatter : MonoBehaviour
     void CreatePiece(SpriteRenderer original, Texture2D texture, Rect spriteRect, int x, int y, float width, float height)
     {
         GameObject piece = new GameObject("Piece_" + x + "_" + y);
-        piece.transform.position = transform.position;
+        piece.transform.position = transform.position + playerUpVector;
         piece.transform.localScale = new Vector3(0.17f,0.17f,0.17f);
 
         SpriteRenderer sr = piece.AddComponent<SpriteRenderer>();
@@ -59,7 +60,7 @@ public class SpriteShatter : MonoBehaviour
         rb.gravityScale = 1f;
         rb.AddForce(new Vector2(UnityEngine.Random.Range(-spread, spread), UnityEngine.Random.Range(0, spread)) * explosionForce, ForceMode2D.Impulse);
 
-        Destroy(piece, 2f); // 2초 후 자동 삭제z
+        Destroy(piece, 1f); // 2초 후 자동 삭제z
     }
 
 }

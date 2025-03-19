@@ -89,7 +89,9 @@
                 // 🚀 1. 먼저 빠르게 리턴할 수 있는 경우 처리 (불필요한 연산 방지)
                 if (maskColor.a > 0.1)
                 {
-                    return underGroundColor * maskColor; // 바로 반환 (이후 검사 안 함)
+                    fixed4 finalColor = underGroundColor * maskColor * 0.5;
+                    finalColor.a = 0.8;
+                    return finalColor; // 바로 반환 (이후 검사 안 함)
                 }
     
                 // if (finishRoadColor.a > 0.1)

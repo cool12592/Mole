@@ -347,12 +347,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             {
                 posList.Add(new Vector2(transform.position.x, transform.position.y));
             }
-            if (count%10==0)
+            if (count%5==0)
             {
                 shatter = true;
-
-                
-
             }
 
             if(count%7==0)
@@ -393,7 +390,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         road._myOwner = this;
 
         if (shatter)
-            road.gameObject.AddComponent<SpriteShatter>().Init(pieceSprite);
+            road.gameObject.AddComponent<SpriteShatter>().Init(pieceSprite,transform.up*0.5f);
     }
 
     void GenerateMeshObject()

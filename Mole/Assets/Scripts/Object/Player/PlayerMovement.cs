@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     private Rigidbody2D rigidBody;
     public Vector3 receivePos;
 
-    private const float originalSpeed = 270f;
+    private const float originalSpeed = 5f;
     private float moveSpeed = originalSpeed;
     private int dashCount = 2;
     private const float moveCoefficient = 60f;
@@ -183,7 +183,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (player.isActive == false) 
             return;
-        rigidBody.velocity = inputDirection * moveSpeed / moveCoefficient;
+        rigidBody.velocity = inputDirection * moveSpeed;
 
         if (inputDirection != Vector2.zero)
         {
