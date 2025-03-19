@@ -119,6 +119,8 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
     public void Death(string attackerName = "")
     {
+        if(PV.IsMine == false) return;
+
         if (attackerName == "")
             return;
 
@@ -126,21 +128,26 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
             return;
 
         player.isActive = false;
+        PV.RPC("Death_RPC", RpcTarget.AllBuffered, attackerName); 
+
+    }
+
+    [PunRPC]
+    void Death_RPC(string attackerName = "")
+    {
         rigidBody.velocity = Vector2.zero;
         //characterAnim.SetTrigger("death");
         spriteRender.sprite = _dieSprite;
 
-        spriteRender.color = Color.white;
-        StartCoroutine(CoLateDeath(attackerName));
-    }
-
-    public IEnumerator CoLateDeath(string attackerName)
-    {
+        Color dieColor = Color.white;
+        dieColor.a = 0.5f;
+        spriteRender.color = dieColor;
+        var meshGen = GetComponent<MeshGenerator>();
+        meshGen.OnALLDestroy();
+        meshGen.enabled = false;
 
         transform.rotation = Quaternion.identity;
-        var meshGen = GetComponent<MeshGenerator>();
-        meshGen.enabled = false;
-        GetComponent<playerScript>().DisConnectCam(); 
+        GetComponent<playerScript>().DisConnectCam();
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         Collider2D col = GetComponent<Collider2D>();
 
@@ -148,13 +155,17 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         rb.velocity = new Vector2(0, 7f);  // 위로 솟구치기
         rb.gravityScale = 0;  // 중력 제거
 
+        StartCoroutine(CoLateDeath(attackerName));
+    }
+
+    public IEnumerator CoLateDeath(string attackerName)
+    {
         yield return new WaitForSeconds(0.5f);  // 잠시 떠 있음
 
-        rb.gravityScale = 2f;  // 중력 활성화 (떨어지기 시작)
+        GetComponent<Rigidbody2D>().gravityScale = 2f;  // 중력 활성화 (떨어지기 시작)
 
         yield return new WaitForSeconds(1.5f);  // 일정 시간 후 삭제
 
-        meshGen.OnALLDestroy();
         if (PV.IsMine)
         {
             GameManager.Instance.ReportTheKill(attackerName, PV.Owner.NickName);

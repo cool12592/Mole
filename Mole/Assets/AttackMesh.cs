@@ -8,7 +8,7 @@ public class AttackMesh : MonoBehaviour
 
     private IEnumerator Start()
     {
-        yield return new WaitForSeconds(0.05f);
+        yield return null;
         Destroy(this);
     }
 
