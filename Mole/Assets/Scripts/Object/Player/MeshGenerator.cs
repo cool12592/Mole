@@ -1,9 +1,7 @@
-using ExitGames.Client.Photon.StructWrapping;
 using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -57,7 +55,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [SerializeField] AudioSource _meshGenSound;
     [SerializeField] AudioSource _moveSound;
 
-
+    public LayerMask targetLayer;    // 충돌 레이어 설정
 
     [PunRPC]
     void RPC_AssignColor(float r, float g, float b)
@@ -122,7 +120,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         //     CreateLoad(transform.position + offset,true);
         // }
 
-        WriteFirstMeshPoint(20, 2);
+        WriteFirstMeshPoint(20, 1f);
 
         yield return null;
         GenerateMeshObject();
@@ -140,9 +138,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             float x = Mathf.Cos(angle) * radius;
             float y = Mathf.Sin(angle) * radius;
             posList.Add(center + new Vector3(x, y, 0f));
-
-            CreateLoad(center + new Vector3(x, y, 0f),true);
         }
+        photonView.RPC("FirstCreateLoad_RPC", RpcTarget.AllBuffered, center.x, center.y, center.z, radius);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -222,7 +219,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (_myMeshSet.Contains(other.gameObject))
         {
             _curInMyMeshSet.Remove(other.gameObject);
-            posList.Clear();
+           // posList.Clear();
         }
         else
         {
@@ -425,6 +422,24 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             road.gameObject.AddComponent<SpriteShatter>().Init(pieceSprite,transform.up*0.5f);
     }
 
+
+    [PunRPC]
+    void FirstCreateLoad_RPC(float x, float y, float z, float radius)
+    {
+        Vector3 pos = new Vector3(x, y, z);
+        var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
+
+        road.transform.localScale *= (radius*3f);
+
+        road.GetComponent<SpriteRenderer>().color = myColor;
+
+        _myRoadSet.Add(road.collider_);
+        OnGenerateMesh += road.ChangeLayer;
+        road._myMeshSet = _myMeshSet;
+        road._myOwner = this;
+        road.IsNeighCheckRoad = true;
+    }
+
     void SavePath(Dictionary<Road, Road> parentMap, Road target)
     {
         List<Road> roadsToDestroy = new List<Road>();
@@ -433,14 +448,22 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         float g = UnityEngine.Random.Range(0f, 1f);
         float b = UnityEngine.Random.Range(0f, 1f);
         Color color =  new Color(r, g, b, 1f); // 알파값 1 (불투명)
+
+        HashSet<Road> visitedNodes = new HashSet<Road>(); // 🔥 방문 체크용
+
         while (target != null)
         {
+            if(visitedNodes.Contains(target)) 
+                break;
+
+            visitedNodes.Add(target);
+
             var pos = new Vector2(target.transform.position.x, target.transform.position.y);
            // target._sr.color = color;
            // target._sr.enabled = true;
             //target.transform.position = new Vector3(target.transform.position.x,target.transform.position.y,-900f);
             posList.Add(pos);
-            roadsToDestroy.Add(target); // 삭제할 리스트에 추가
+            //roadsToDestroy.Add(target); // 삭제할 리스트에 추가
             target = parentMap.ContainsKey(target) ? parentMap[target] : null;
         }
 
@@ -458,7 +481,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         if (lastEnterRoad == null || lastExitRoad == null)
         {
-            Debug.LogError("먼가잘못됨");
+            UnityEngine.Debug.LogError("먼가잘못됨");
             yield break;
         }
         Queue<Road> queue = new Queue<Road>();
@@ -476,25 +499,27 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
             foreach (Road neighbor in node.GetNeigh())
             {
-                if(neighbor == null || neighbor._isFinishRoad == false)
+                if (neighbor == null || neighbor._isFinishRoad == false)
                     continue;
 
                 if (neighbor == lastEnterRoad) // 목적지 도달
                 {
+                    UnityEngine.Debug.LogError("훔바훔바" + nodeCount);
+
                     parentMap[neighbor] = node; // 부모 저장
                     SavePath(parentMap, lastEnterRoad);
 
-                    // lastExitRoad.transform.position = new Vector3(lastExitRoad.transform.position.x,lastExitRoad.transform.position.y,-999f);
-                    // lastEnterRoad.transform.position = new Vector3(lastEnterRoad.transform.position.x,lastEnterRoad.transform.position.y,-999f);
-                    // lastExitRoad._sr.color = Color.red;
-                    // lastEnterRoad._sr.color = Color.blue;
+                   // lastExitRoad.transform.position = new Vector3(lastExitRoad.transform.position.x, lastExitRoad.transform.position.y, -999f);
+                   // lastEnterRoad.transform.position = new Vector3(lastEnterRoad.transform.position.x, lastEnterRoad.transform.position.y, -999f);
+                    //lastExitRoad._sr.color = Color.red;
+                   // lastEnterRoad._sr.color = Color.blue;
 
-                    // lastEnterRoad.name += checkNum.ToString();
-                    // lastExitRoad.name += checkNum.ToString();
-                    checkNum++;
+                   // lastEnterRoad.name += checkNum.ToString();
+                   // lastExitRoad.name += checkNum.ToString();
+                   // checkNum++;
 
-                    lastExitRoad._sr.enabled = true;
-                    lastEnterRoad._sr.enabled = true;
+                   // lastExitRoad._sr.enabled = true;
+                   // lastEnterRoad._sr.enabled = true;
 
                     yield break;
                 }
@@ -514,7 +539,18 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             }
         }
 
-        Debug.LogError("BFS 탐색 실패!!!!");
+        UnityEngine.Debug.LogError("BFS 탐색 실패!!!!");
+    }
+
+    void SphereCastDetectEnterRoad()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, 3f, targetLayer);
+
+        if (hit.collider != null && hit.collider.gameObject.TryGetComponent<Road>(out Road road))
+        {
+            Debug.DrawLine(transform.position, Vector3.zero, Color.red, 3f);
+            lastEnterRoad = road;
+        }
     }
 
     void GenerateMeshObject()
@@ -535,7 +571,14 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (posList.Count < 3)
             yield break;
 
-       // CreateLoad(transform.position);
+        // CreateLoad(transform.position);
+
+
+        //if(lastEnterRoad == lastExitRoad || lastEnterRoad ==null)
+        //{
+
+        //}
+        SphereCastDetectEnterRoad();
 
         originLastIndex = posList.Count - 1;
         
@@ -726,7 +769,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         mesh.RecalculateNormals();
 
         meshCollider.sharedMesh = mesh;
-        Debug.Log("Mesh 생성 완료! 정점 개수: " + vertices.Length);
+        UnityEngine.Debug.Log("Mesh 생성 완료! 정점 개수: " + vertices.Length);
 
         // 🔥 위치 및 레이어 동기화
         meshObj.transform.position = new Vector3(meshObj.transform.position.x, meshObj.transform.position.y, z);

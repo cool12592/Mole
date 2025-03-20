@@ -87,6 +87,7 @@ MonoBehaviour:
   - ShatterMesh_RPC
   - RPC_AssignColor
   - Death_RPC
+  - FirstCreateLoad_RPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

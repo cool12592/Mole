@@ -782,6 +782,9 @@ MonoBehaviour:
     type: 3}
   _meshGenSound: {fileID: 1033423867004471359}
   _moveSound: {fileID: 2487868733241095554}
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 1024
   groundPieceMat: {fileID: 2100000, guid: 76fb9e8d556ca96418df387a00267cb6, type: 2}
 --- !u!114 &2147442307044310656
 MonoBehaviour:
