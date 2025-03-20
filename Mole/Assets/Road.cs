@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class Road : MonoBehaviour
@@ -15,9 +16,43 @@ public class Road : MonoBehaviour
 
     public HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
 
-    bool _isFinishRoad = false;
+    public bool _isFinishRoad = false;
 
     public MeshGenerator _myOwner;
+
+    public bool IsNeighCheckRoad = false;
+
+    [SerializeField] List<Road> neighRoadList = new List<Road>();
+    public SpriteRenderer _sr;
+    private void OnTriggerEnter2D(Collider2D other) 
+    {
+        if(IsNeighCheckRoad)
+        {
+            if(other.TryGetComponent<Road>(out Road road))
+            {
+                if(road.IsNeighCheckRoad == false)// || road._isFinishRoad == false)
+                    return;
+                
+                neighRoadList.Add(road);
+            }
+        }    
+    }
+
+    public List<Road> GetNeigh()
+    {
+        return neighRoadList;
+    }
+
+    public void DeleteNeigh()
+    {
+        foreach(Road road in neighRoadList)
+        {
+            if(road != null)
+            {
+                road.gameObject.SetActive(false);
+            }
+        }
+    }
 
     private void Awake()
     {
@@ -28,6 +63,7 @@ public class Road : MonoBehaviour
         myNumber = staticNumber;
 
         meshDetector.OnMeshCollide += CollideMesh;
+        _sr = GetComponent<SpriteRenderer>();
     }
 
     public void ChangeLayer()
@@ -56,5 +92,7 @@ public class Road : MonoBehaviour
         }
         Destroy(gameObject);
     }
+
+
 
 }
