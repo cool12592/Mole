@@ -72,6 +72,8 @@ public class Road : MonoBehaviour
 
         gameObject.layer = LayerMask.NameToLayer("FinishRoad");
         _isFinishRoad = true;
+
+        transform.localScale *= 1.5f;
         // collider_.enabled = false;
     }
 

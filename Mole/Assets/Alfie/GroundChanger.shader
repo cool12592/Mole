@@ -80,7 +80,7 @@
                     float brightness = isEdge ? 0.5 : 1.0;
                     
                     fixed4 finalColor = underGroundColor * roadColor;
-                    finalColor.rgb *= brightness;
+                    //finalColor.rgb *= brightness;
                     finalColor.a = 0.5; // 투명도 유지
 
                     return finalColor;

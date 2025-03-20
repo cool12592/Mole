@@ -124,7 +124,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.7298684, y: -0.53786093, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8794907550013367193}
@@ -171,8 +171,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: 22a8cc63860b46f40affbe28164e4b67, type: 3}
   m_Color: {r: 1, g: 0.27120164, b: 0, a: 0.29803923}
   m_FlipX: 0
   m_FlipY: 0
@@ -219,7 +218,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 2.56, y: 2.56}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -244,9 +243,11 @@ MonoBehaviour:
   myNumber: 0
   nextRoad: {fileID: 0}
   meshDetector: {fileID: 4587609157162955376}
+  _isFinishRoad: 0
   _myOwner: {fileID: 0}
   IsNeighCheckRoad: 0
   neighRoadList: []
+  _sr: {fileID: 0}
 --- !u!50 &6314393818928465584
 Rigidbody2D:
   serializedVersion: 4

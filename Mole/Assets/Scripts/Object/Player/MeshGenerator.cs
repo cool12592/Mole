@@ -120,7 +120,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         //     CreateLoad(transform.position + offset,true);
         // }
 
-        WriteFirstMeshPoint(20, 1f);
+        WriteFirstMeshPoint(20, 1.2f);
 
         yield return null;
         GenerateMeshObject();
@@ -395,7 +395,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (PV.IsMine == false)
             return;
 
-        pos += transform.up * 0.5f;
+        pos += transform.up * 0.1f;
         pos.z = GetSharedFloat();
 
         photonView.RPC("CreateLoad_RPC", RpcTarget.AllBuffered, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
@@ -429,7 +429,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         Vector3 pos = new Vector3(x, y, z);
         var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
 
-        road.transform.localScale *= (radius*3f);
+        road.transform.localScale = Vector3.one * radius * 0.7f;
 
         road.GetComponent<SpriteRenderer>().color = myColor;
 
