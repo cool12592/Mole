@@ -13,6 +13,8 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     public GameObject RespawnPanel;
     public GameObject GameEndPanel;
 
+    [SerializeField] AudioSource BGM;
+
     private void Awake()
     {
         PhotonNetwork.SendRate = 60;
@@ -47,7 +49,12 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     {
         DisconnectPanel.SetActive(false);
         spawn();
-       
+
+        if (!BGM.isPlaying)
+        {
+            BGM.Play(); // 현재 재생 중이 아닐 때만 Play()
+        }
+
         //방장입장용 (밑에선안됨)
         if (PhotonNetwork.IsMasterClient)
         {

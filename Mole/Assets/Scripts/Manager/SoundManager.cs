@@ -45,7 +45,7 @@ public class SoundManager : MonoBehaviour
         ShootingSound = transform.Find("shotSound").GetComponent<AudioSource>();
         DashSound = transform.Find("dashSound").GetComponent<AudioSource>();
 
-        bgm = GameObject.Find("SoundManager").transform.Find("bgm").GetComponent<AudioSource>();
+        bgm = transform.Find("BGM").GetComponent<AudioSource>();
         bgm.Play();
     }
 
