@@ -397,7 +397,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (PV.IsMine == false)
             return;
 
-        pos += transform.up * 0.1f;
+        pos += transform.up * 0.7f;
         pos.z = GetSharedFloat();
 
         photonView.RPC("CreateLoad_RPC", RpcTarget.AllBuffered, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GamePalette
   m_EditorClassIdentifier: 
   colors:
-  - {r: 0, g: 0.69565225, b: 1, a: 1}
+  - {r: 0, g: 0.6036329, b: 1, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 1, g: 0.9584457, b: 0, a: 1}
   - {r: 0.10893285, g: 1, b: 0, a: 1}

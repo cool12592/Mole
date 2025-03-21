@@ -749,9 +749,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PV: {fileID: 0}
   receivePos: {x: 0, y: 0, z: 0}
-  _idleSprite: {fileID: 21300000, guid: e86feb35b54e942a0859db6cf2b1f626, type: 3}
-  _runSprite: {fileID: 21300000, guid: 13390bad6982648cf87a6c2b3dbb844d, type: 3}
-  animChangeTerm: 0.1
+  _idleSprite: {fileID: 21300000, guid: 42532c03cfa2044df971188cd9d5942d, type: 3}
+  _runSprite: {fileID: 21300000, guid: 3ace8199634744ed7aaf13e0d75aed8d, type: 3}
+  animChangeTerm: 0.05
 --- !u!114 &5003663037539567242
 MonoBehaviour:
   m_ObjectHideFlags: 0
