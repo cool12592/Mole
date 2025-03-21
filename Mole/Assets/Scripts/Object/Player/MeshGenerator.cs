@@ -789,8 +789,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     [PunRPC]
     void ShatterMesh_RPC()
     {
-        if(meshObj!=null)
+        if (meshObj != null)
+        {
             meshObj.AddComponent<MeshShatter>().Init(_groundPieces, _fallingGround.gameObject);
+        }
     }
 
     bool first = true;
