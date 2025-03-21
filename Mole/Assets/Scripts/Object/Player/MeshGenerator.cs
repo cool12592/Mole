@@ -659,6 +659,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshObj = new GameObject("GeneratedMesh");
             _myMeshSet.Add(meshObj);
 
+            meshObj.AddComponent<MeshShatter>();
             meshCollider = meshObj.AddComponent<MeshCollider>();
             meshFilter = meshObj.AddComponent<MeshFilter>();
             meshRenderer = meshObj.AddComponent<MeshRenderer>();
@@ -791,7 +792,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         if (meshObj != null)
         {
-            meshObj.AddComponent<MeshShatter>().Init(_groundPieces, _fallingGround.gameObject);
+            meshObj.GetComponent<MeshShatter>().Init(_groundPieces, _fallingGround.gameObject);
         }
     }
 
