@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: snapedit_1742396513267
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: 1e1fd48e86bf5644a8bbc9faa3f50de1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 63e26b60295e77b409b097ce64264516, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

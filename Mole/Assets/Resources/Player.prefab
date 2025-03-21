@@ -785,7 +785,7 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 1024
-  groundPieceMat: {fileID: 2100000, guid: 76fb9e8d556ca96418df387a00267cb6, type: 2}
+  groundPieceMat: {fileID: 2100000, guid: 79664077e8e1ab741abcedee51cf929c, type: 2}
 --- !u!114 &2147442307044310656
 MonoBehaviour:
   m_ObjectHideFlags: 0
