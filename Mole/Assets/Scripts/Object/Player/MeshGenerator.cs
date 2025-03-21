@@ -138,8 +138,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             float x = Mathf.Cos(angle) * radius;
             float y = Mathf.Sin(angle) * radius;
             posList.Add(center + new Vector3(x, y, 0f));
+
+            CreateLoad(center + new Vector3(x, y, 0f),true);
+
         }
-        photonView.RPC("FirstCreateLoad_RPC", RpcTarget.AllBuffered, center.x, center.y, center.z, radius);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
