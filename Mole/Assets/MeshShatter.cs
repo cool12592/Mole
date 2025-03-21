@@ -59,8 +59,11 @@ public class MeshShatter : MonoBehaviour
         // 💡 스케일 조정 (필요 시)
 
         float pieceScale = Mathf.Min(width, height);
-        pieceScale = Mathf.Min(pieceScale, maxPieceScale); // ✨ 최대 스케일 제한
-        piece.transform.localScale = Vector3.one * pieceScale;
+        pieceScale = Mathf.Min(pieceScale, maxPieceScale);
+
+        // ✅ 랜덤 오프셋 적용 (예: ±15%)
+        float scaleOffset = Random.Range(0.5f, 1.2f);
+        piece.transform.localScale = Vector3.one * pieceScale * scaleOffset;
 
 
         // 💨 물리 적용
