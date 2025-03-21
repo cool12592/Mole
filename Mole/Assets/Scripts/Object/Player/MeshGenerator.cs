@@ -784,11 +784,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         StartCoroutine(CoPostGenerateMesh());
     }
 
+    [SerializeField] Sprite[] _groundPieces;
+
     [PunRPC]
     void ShatterMesh_RPC()
     {
         if(meshObj!=null)
-            meshObj.AddComponent<MeshShatter>().Init(groundPieceMat, _fallingGround.gameObject);
+            meshObj.AddComponent<MeshShatter>().Init(_groundPieces, _fallingGround.gameObject);
     }
 
     bool first = true;

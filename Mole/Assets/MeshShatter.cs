@@ -16,9 +16,65 @@ public class MeshShatter : MonoBehaviour
     private Material mat;
     private GameObject fakeMesh;
     const int maxNum = 9999999;
-    public void Init(Material mat_, GameObject fakeMesh_)
+    Sprite[] spriteFragments; // Inspector에서 원하는 스프라이트 조각 배열 등록
+
+    void CreateMeshPiece(Bounds bounds, int x, int y, float width, float height)
     {
-        mat = mat_;
+        GameObject piece = new GameObject("SpritePiece_" + x + "_" + y);
+
+        // 6️⃣ 원형 조각 중심 위치 (정확한 중간 위치 보정)
+        float centerX;
+        float centerY;
+
+        if (x >= maxNum)
+        {
+            centerX = bounds.min.x + ((x - maxNum) + 1f) * width;
+            centerY = bounds.min.y + y * height;
+        }
+        else if (y >= maxNum)
+        {
+            centerX = bounds.min.x + x * width;
+            centerY = bounds.min.y + ((y - maxNum) + 1f) * height;
+        }
+        else
+        {
+            centerX = bounds.min.x + (x + 0.5f) * width;
+            centerY = bounds.min.y + (y + 0.5f) * height;
+        }
+
+        Vector3 center = new Vector3(centerX, centerY, 0);
+
+        piece.transform.position = center;
+
+        // 🎨 SpriteRenderer 붙이기
+        SpriteRenderer sr = piece.AddComponent<SpriteRenderer>();
+        
+        // ✅ 원하는 스프라이트 랜덤하게 할당 (또는 순서대로)
+        if (spriteFragments != null && spriteFragments.Length > 0)
+        {
+            int idx = Random.Range(0, spriteFragments.Length);
+            sr.sprite = spriteFragments[idx];
+        }
+
+        // 💡 스케일 조정 (필요 시)
+
+        float pieceScale = Mathf.Min(width, height);
+        pieceScale = Mathf.Min(pieceScale, maxPieceScale); // ✨ 최대 스케일 제한
+        piece.transform.localScale = Vector3.one * pieceScale;
+
+
+        // 💨 물리 적용
+        Rigidbody2D rb = piece.AddComponent<Rigidbody2D>();
+        rb.gravityScale = 1f;
+        rb.AddForce(new Vector2(Random.Range(-spread, spread), Random.Range(0, spread)) * explosionForce, ForceMode2D.Impulse);
+
+        Destroy(piece, 2f);
+    }
+
+
+    public void Init(Sprite[] spriteFragments_, GameObject fakeMesh_)
+    {
+        spriteFragments = spriteFragments_;
         fakeMesh = fakeMesh_;
         StartCoroutine(CoStart());
     }
@@ -29,9 +85,11 @@ public class MeshShatter : MonoBehaviour
         Shatter();
     }
 
+    public float maxPieceScale = 4f; // ✨ 조각 최대 스케일 설정
+
+
     public void Shatter()
     {
-        // 1️⃣ 원본 Mesh 저장
         MeshFilter meshFilter = GetComponent<MeshFilter>();
         if (meshFilter == null || meshFilter.mesh == null)
         {
@@ -44,10 +102,20 @@ public class MeshShatter : MonoBehaviour
         originalTriangles = originalMesh.triangles;
 
         Bounds bounds = originalMesh.bounds;
+
+        // ✅ 조각 수 자동 조절
+        float targetWidth = bounds.size.x / cols;
+        float targetHeight = bounds.size.y / rows;
+
+        if (targetWidth > maxPieceScale || targetHeight > maxPieceScale)
+        {
+            cols = Mathf.CeilToInt(bounds.size.x / maxPieceScale);
+            rows = Mathf.CeilToInt(bounds.size.y / maxPieceScale);
+        }
+
         float pieceWidth = bounds.size.x / cols;
         float pieceHeight = bounds.size.y / rows;
 
-        // 2️⃣ 기존 위치의 원 생성 (기본 조각)
         for (int y = 0; y < rows; y++)
         {
             for (int x = 0; x < cols; x++)
@@ -56,27 +124,12 @@ public class MeshShatter : MonoBehaviour
             }
         }
 
-        // // 3️⃣ 가로/세로 중간에도 원 추가 (빈 공간 제거)
-        // for (int y = 0; y < rows; y++)
-        // {
-        //     for (int x = 0; x < cols; x++)
-        //     {
-        //         // 가로 중간 추가 (정확한 중간 위치)
-        //         if (x < cols - 1)
-        //             CreateMeshPiece(bounds, x + maxNum, y, pieceWidth, pieceHeight); // `+ 1000`을 사용해 중간 좌표로 구분
-
-        //         // 세로 중간 추가
-        //         if (y < rows - 1)
-        //             CreateMeshPiece(bounds, x, y + maxNum, pieceWidth, pieceHeight);
-        //     }
-        // }
-
-        // 4️⃣ 원본 Mesh 숨김
-        if(fakeMesh != null)
+        if (fakeMesh != null)
             fakeMesh.SetActive(false);
     }
 
-    void CreateMeshPiece(Bounds bounds, int x, int y, float width, float height)
+    
+        void CreateMeshPiece22(Bounds bounds, int x, int y, float width, float height)
     {
         // 4️⃣ 조각을 위한 새로운 GameObject 생성
         GameObject piece = new GameObject("Piece_" + x + "_" + y);
