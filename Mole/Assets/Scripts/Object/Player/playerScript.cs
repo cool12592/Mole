@@ -20,6 +20,8 @@ public class playerScript : MonoBehaviourPunCallbacks
     private Button attackButton;
 
     CinemachineVirtualCamera CM;
+
+    [SerializeField] MeshGenerator meshGenerator;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -71,7 +73,7 @@ public class playerScript : MonoBehaviourPunCallbacks
     private void OnReadyState()
     {
         isActive = false; //행동 못 하게
-
+        meshGenerator.enabled = true;
         if (PV.IsMine)
         {
             ChangeRandomPosition();
@@ -86,6 +88,7 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     private void OnResultState()
     {
+        meshGenerator.enabled = false;
         PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
     }
 
