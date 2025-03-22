@@ -101,7 +101,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         PV = GetComponent<PhotonView>();
         AssignColor();
 
-        myKillText = GameObject.Find("Canvas").transform.Find("Gaming").transform.Find("Kill").transform.Find("MyKillCount").GetComponent<Text>();
+        myKillText = GameObject.Find("Canvas").transform.Find("Gaming").transform.Find("Rope").transform.Find("Kill").transform.Find("MyKillCount").GetComponent<Text>();
 
         myKillText.text = "0 Kill";
     }

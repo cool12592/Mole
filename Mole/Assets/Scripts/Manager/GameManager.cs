@@ -323,18 +323,27 @@ public class GameManager : MonoBehaviour
     bool _onTimer = false;
     public void SetTimer(float time_)
     {
+        if(time_<=0f)
+        {
+            time_ = 0f;
+        }
         timer = time_;
         timerText.text = ((int)timer).ToString();
+
+        if(timer<=0f)
+        {
+            OnEndGame();
+        }
     }
 
     public void ActiveTimer()
     {
+        SetTimer(5f);
         timerText.gameObject.SetActive(true);
     }
 
     public void StartTimer()
     {
-        SetTimer(90);
         _onTimer = true;
     }
 
