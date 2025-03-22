@@ -88,6 +88,7 @@ MonoBehaviour:
   - RPC_AssignColor
   - Death_RPC
   - FirstCreateLoad_RPC
+  - TakeAwayOtherLand_RPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

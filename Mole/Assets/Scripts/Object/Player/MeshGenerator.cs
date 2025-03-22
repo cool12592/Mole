@@ -2,6 +2,7 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,8 +40,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     int checkNum = 0;
 
-    HashSet<Collider2D> _myRoadSet = new HashSet<Collider2D>();
-    HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
+    public HashSet<Collider2D> _myRoadSet = new HashSet<Collider2D>();
+    public HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
 
     HashSet<GameObject> _curInMyMeshSet = new HashSet<GameObject>();
     HashSet<GameObject> _curInOtherMeshSet = new HashSet<GameObject>();
@@ -62,7 +63,15 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         var color = new Color(r, g, b);
         myColor = color;
-        GetComponent<playerScript>().NickNameText.color = myColor;
+        var nickname = GetComponent<playerScript>().NickNameText;
+        nickname.color = myColor;
+        
+        if(GameManager.Instance.UserMeshMap.ContainsKey(nickname.text)==false)
+        {
+            GameManager.Instance.UserMeshMap[nickname.text] = this;
+        }
+        else
+            GameManager.Instance.UserMeshMap[nickname.text] = this;
     }
 
     public void AssignColor()
@@ -154,29 +163,69 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (other.gameObject.layer != LayerMask.NameToLayer("Road"))
             return;
 
-        if(other.TryGetComponent<Road>(out Road road))
+        if (other.TryGetComponent<Road>(out Road otherRoad))
         {
-            if (road._myOwner == null)
+            if (otherRoad._myOwner == null)
                 return;
 
-            if (road._myOwner == this)
+            if (otherRoad._myOwner == this)
                 return;
 
             if (PV == null)
                 return;
 
-            var otherHealth = road._myOwner.gameObject.GetComponent<PlayerHealth>();
+            if (PV.IsMine == false)
+                return;
+
+            var otherHealth = otherRoad._myOwner.gameObject.GetComponent<PlayerHealth>();
             if (otherHealth == null || otherHealth.PlayerActive == false)
                 return;
 
-            otherHealth.Death(PV.Owner.NickName);
-
-            if (PV.IsMine)
+            if (otherRoad._myOwner.PV != null)
             {
-                _meshGenSound.Play();
-                GetComponent<PlayerMovement>().ShakeCamera();
+                PV.RPC("TakeAwayOtherLand_RPC", RpcTarget.AllBuffered, otherRoad._myOwner.PV.Owner.NickName);
+                otherHealth.Death(PV.Owner.NickName);
             }
+            
+
         }
+    }
+
+
+
+    [PunRPC]
+    void TakeAwayOtherLand_RPC(string nickName)
+    {
+        var target = GameManager.Instance.UserMeshMap[nickName];
+
+        foreach (var otherMeshObj in target._myMeshSet)
+        {
+            if (otherMeshObj == null)
+                continue;
+
+            otherMeshObj.GetComponent<MeshRenderer>().material.color = myColor;
+            _myMeshSet.Add(otherMeshObj);
+        }
+
+        foreach (var otherRoadCol in target._myRoadSet)
+        {
+            if (otherRoadCol == null)
+                continue;
+
+            var targetRoad = otherRoadCol.gameObject.GetComponent<Road>();
+            if (targetRoad._isFinishRoad == false)
+            {
+                posList.Add(targetRoad.transform.position);
+            }
+
+            _myRoadSet.Add(otherRoadCol);
+            OnGenerateMesh += targetRoad.ChangeLayer;
+            targetRoad._myMeshSet = _myMeshSet;
+            targetRoad._myOwner = this;
+            targetRoad._sr.color = myColor;
+        }
+
+        GenerateMeshObject();
     }
 
     private void OnTriggerExit2D(Collider2D other) 
@@ -834,18 +883,18 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         sharedFloat -= 0.001f; // 🔴 모든 클라이언트에서 sharedFloat 값을 감소
     }
 
-    public void OnALLDestroy()
-    {
-        foreach(var a in _myMeshSet)
-        {
-            if(a != null) 
-                Destroy(a);
-        }
+    //public void OnALLDestroy()
+    //{
+    //    foreach(var a in _myMeshSet)
+    //    {
+    //        if(a != null) 
+    //            Destroy(a);
+    //    }
 
-        foreach (var b in _myRoadSet)
-        {
-            if(b != null) 
-                Destroy(b.gameObject);
-        }
-    }
+    //    foreach (var b in _myRoadSet)
+    //    {
+    //        if(b != null) 
+    //            Destroy(b.gameObject);
+    //    }
+    //}
 }

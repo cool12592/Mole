@@ -39,7 +39,29 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
+
+        string nickName = NickNameInput.text;
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (player.NickName == nickName)
+            {
+                int rnd = Random.Range(0, 100);
+                nickName += rnd.ToString();
+                break;
+            }
+        }
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (player.NickName == nickName)
+            {
+                int rnd = Random.Range(0, 100);
+                nickName += rnd.ToString();
+                break;
+            }
+        }
+
+        PhotonNetwork.LocalPlayer.NickName = nickName;
         RoomOptions roomoption = new RoomOptions { MaxPlayers = 20 };
         PhotonNetwork.JoinOrCreateRoom("Room", roomoption, null);
     }

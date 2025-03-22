@@ -7,11 +7,7 @@ public class Road : MonoBehaviour
 {
 
     public Collider2D collider_;
-    static int staticNumber = 0;
-    public int myNumber = 0;
-    public Road nextRoad;
 
-    static Road staticRoad = null;
     [SerializeField] MeshDetector meshDetector;
 
     public HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
@@ -56,12 +52,6 @@ public class Road : MonoBehaviour
 
     private void Awake()
     {
-        if(staticRoad != null) 
-            staticRoad.nextRoad = this;
-        staticRoad = this;
-        staticNumber++;
-        myNumber = staticNumber;
-
         meshDetector.OnMeshCollide += CollideMesh;
         _sr = GetComponent<SpriteRenderer>();
     }

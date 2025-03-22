@@ -149,7 +149,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         dieColor.a = 0.5f;
         spriteRender.color = dieColor;
         var meshGen = GetComponent<MeshGenerator>();
-        meshGen.OnALLDestroy();
+        //meshGen.OnALLDestroy();
         meshGen.enabled = false;
 
         transform.rotation = Quaternion.identity;

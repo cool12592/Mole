@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour
     public Text RangkingLogText { get; private set; }
     private Queue<KeyValuePair<string, string>> killLogQueue = new Queue<KeyValuePair<string, string>>();
     private Dictionary<string, int> RankingBoard = new Dictionary<string, int>();
-  
+    public Dictionary<string, MeshGenerator> UserMeshMap = new Dictionary<string, MeshGenerator>();
+
     public GameObject myplayer, ResponePanel, ResultPanel;
 
     IEnumerator rankingBoardCoroutine;
