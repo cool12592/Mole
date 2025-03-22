@@ -64,20 +64,20 @@
                 // 🚀 2. roadColor 칠해진 부분만 경계 판별 실행 (불필요한 연산 최소화)
                 if (roadColor.a > 0.1)
                 {
-                    // 텍스처 크기 기반으로 texel 크기 계산 (512x512 텍스처 기준)
-                    float2 texelSize = float2(1.0 / 512.0, 1.0 / 512.0);
+                    // // 텍스처 크기 기반으로 texel 크기 계산 (512x512 텍스처 기준)
+                    // float2 texelSize = float2(1.0 / 512.0, 1.0 / 512.0);
 
-                    // 주변 픽셀 샘플링 (경계를 찾기 위해)
-                    float left   = tex2D(_RoadTex, i.uv + float2(-texelSize.x, 0)).r;
-                    float right  = tex2D(_RoadTex, i.uv + float2(texelSize.x, 0)).r;
-                    float up     = tex2D(_RoadTex, i.uv + float2(0, texelSize.y)).r;
-                    float down   = tex2D(_RoadTex, i.uv + float2(0, -texelSize.y)).r;
+                    // // 주변 픽셀 샘플링 (경계를 찾기 위해)
+                    // float left   = tex2D(_RoadTex, i.uv + float2(-texelSize.x, 0)).r;
+                    // float right  = tex2D(_RoadTex, i.uv + float2(texelSize.x, 0)).r;
+                    // float up     = tex2D(_RoadTex, i.uv + float2(0, texelSize.y)).r;
+                    // float down   = tex2D(_RoadTex, i.uv + float2(0, -texelSize.y)).r;
 
-                    // 경계 판별 (자신은 roadColor지만 주변이 roadColor가 없는 경우)
-                    bool isEdge = (left < 0.1 || right < 0.1 || up < 0.1 || down < 0.1);
+                    // // 경계 판별 (자신은 roadColor지만 주변이 roadColor가 없는 경우)
+                    // bool isEdge = (left < 0.1 || right < 0.1 || up < 0.1 || down < 0.1);
 
-                    // 가장자리에서 점점 어두워지는 효과 적용
-                    float brightness = isEdge ? 0.5 : 1.0;
+                    // // 가장자리에서 점점 어두워지는 효과 적용
+                    // float brightness = isEdge ? 0.5 : 1.0;
                     
                     fixed4 finalColor = underGroundColor * roadColor;
                     //finalColor.rgb *= brightness;

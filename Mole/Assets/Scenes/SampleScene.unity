@@ -53577,7 +53577,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceTexture: {fileID: 8400000, guid: 50f52de789b8f3d40867e44a21eef3c4, type: 2}
   targetTexture: {fileID: 8400000, guid: 8f9bf704b64d6d34092823336f89bfc5, type: 2}
-  tempTexture: {fileID: 8400000, guid: d800be9c74abd8742b0a66751a791e56, type: 2}
   blitMaterial: {fileID: 2100000, guid: f038547dd8dec6a40aa9c2b4614fe5c4, type: 2}
 --- !u!4 &1271155287
 Transform:
@@ -67247,113 +67246,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1986176826}
   m_CullTransparentMesh: 0
---- !u!1 &1998074990
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1998074992}
-  - component: {fileID: 1998074991}
-  - component: {fileID: 1998074993}
-  m_Layer: 0
-  m_Name: FallingGround
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!212 &1998074991
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1998074990}
-  m_Enabled: 0
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: fb50b19b99e83764ca134ac139f6b9b2, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: -100
-  m_Sprite: {fileID: 21300000, guid: be25d1b7d1cd3a04ca6f390106ef2c49, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 19.2, y: 10.8}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
---- !u!4 &1998074992
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1998074990}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.88, y: -1.47, z: 10}
-  m_LocalScale: {x: 1.93, y: 3.33, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1998074993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1998074990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b1530c2791a44248a4a11c63635e2a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fallSpeed: 0.5
-  targetY: -30
-  delay: 0.4
-  meshTexture: {fileID: 8400000, guid: 50f52de789b8f3d40867e44a21eef3c4, type: 2}
-  meshTextureCopy: {fileID: 8400000, guid: 47d0c3b43d668cd4f8aa6a405bcb1ff2, type: 2}
-  _roadTexture: {fileID: 8400000, guid: a71701305b3f1364a8cdd6099e4b6558, type: 2}
-  _finishRoadTexture: {fileID: 8400000, guid: 68ed74c8124e51e40a89f5ba35deb97b, type: 2}
-  paintTexture: {fileID: 8400000, guid: 8f9bf704b64d6d34092823336f89bfc5, type: 2}
-  blitMaterial: {fileID: 2100000, guid: 8e6d91524c053b6418a2be104040f525, type: 2}
-  SpriteShatter: {fileID: 0}
 --- !u!1 &1999928710
 GameObject:
   m_ObjectHideFlags: 0
@@ -68131,7 +68023,6 @@ SceneRoots:
   - {fileID: 1141210216}
   - {fileID: 580111136}
   - {fileID: 251357775}
-  - {fileID: 1998074992}
   - {fileID: 1271155287}
   - {fileID: 1070260771}
   - {fileID: 2136412798}
