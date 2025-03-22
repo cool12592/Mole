@@ -13,7 +13,8 @@ public class GameStateExecute : MonoBehaviour
     public Text ResultText;
 
     WaitForSeconds waitForSecond = new WaitForSeconds(1f);
-    Text SceenText;
+    Text WaitInfoText;
+    GameObject GamingUI;
 
     private void Start()
     { 
@@ -23,6 +24,8 @@ public class GameStateExecute : MonoBehaviour
         GameStateManager.Instance.FightStateAction += OnFightState;
         GameStateManager.Instance.ResultStateAction += OnResultState;
         GameObject.Find("Canvas").transform.Find("gameStartBTN").gameObject.GetComponent<Button>().onClick.AddListener(ChangeReadyState);
+        GamingUI = GameObject.Find("Canvas").transform.Find("Gaming").gameObject;
+
     }
 
     private void init()
@@ -34,7 +37,7 @@ public class GameStateExecute : MonoBehaviour
         ResponePanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
         ResultPanel = GameObject.Find("Canvas").transform.Find("ResultPanel").gameObject;
 
-        SceenText = GameObject.Find("Canvas").transform.Find("WaitText").gameObject.GetComponent<Text>();
+        WaitInfoText = GameObject.Find("Canvas").transform.Find("WaitText").gameObject.GetComponent<Text>();
         ReGameButton = ResultPanel.transform.Find("regameBTN").gameObject.GetComponent<Button>();
         ResultText = ResultPanel.transform.Find("resultText").gameObject.GetComponent<Text>();
     }
@@ -46,11 +49,14 @@ public class GameStateExecute : MonoBehaviour
             StartButton.SetActive(true);
         }
 
-        SceenText.text = "Room Name: " + PhotonNetwork.CurrentRoom.Name + "\n Waiting for host...";
+        WaitInfoText.text = "Room Name: " + PhotonNetwork.CurrentRoom.Name + "\n Waiting for host...";
     }
 
     private void OnReadyState()
     {
+        if (GamingUI != null)
+            GamingUI.SetActive(true);
+        WaitInfoText.text = "";
         if (ReGameButton.IsActive())
             ReGameButton.onClick.Invoke();
 
@@ -68,6 +74,9 @@ public class GameStateExecute : MonoBehaviour
 
     private void OnResultState()
     {
+        if (GamingUI != null)
+            GamingUI.SetActive(false);
+
         AimJoystick.SetActive(false);
         ResponePanel.SetActive(false);
         ResultPanel.SetActive(true);
