@@ -10344,7 +10344,7 @@ GameObject:
   - component: {fileID: 87745094}
   - component: {fileID: 87745093}
   m_Layer: 5
-  m_Name: Name
+  m_Name: MyKillCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10366,7 +10366,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 18.7, y: 0}
+  m_AnchoredPosition: {x: 26.899986, y: 0}
   m_SizeDelta: {x: 100, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &87745093
@@ -10402,7 +10402,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 3 Kill
+  m_Text: 0 Kill
 --- !u!222 &87745094
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -47627,7 +47627,7 @@ GameObject:
   - component: {fileID: 369504349}
   - component: {fileID: 369504348}
   m_Layer: 5
-  m_Name: Rope (1)
+  m_Name: hegol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47649,7 +47649,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -72, y: 1}
+  m_AnchoredPosition: {x: -63.8, y: 1}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &369504348

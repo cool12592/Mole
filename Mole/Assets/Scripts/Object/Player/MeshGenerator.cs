@@ -40,6 +40,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     int checkNum = 0;
 
+    int myKillCount;
+    Text myKillText;
+
+
     public HashSet<Collider2D> _myRoadSet = new HashSet<Collider2D>();
     public HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
 
@@ -100,6 +104,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         PV = GetComponent<PhotonView>();
         AssignColor();
+
+        myKillText = GameObject.Find("Canvas").transform.Find("Gaming").transform.Find("Kill").transform.Find("MyKillCount").GetComponent<Text>();
         dashBtn = GameObject.Find("Canvas").transform.Find("DashButton").gameObject.GetComponent<Button>();
         dashBtn.onClick.AddListener(GenerateMeshObject);
 
@@ -185,6 +191,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             {
                 PV.RPC("TakeAwayOtherLand_RPC", RpcTarget.AllBuffered, otherRoad._myOwner.PV.Owner.NickName);
                 otherHealth.Death(PV.Owner.NickName);
+
+                myKillText.text = myKillCount + " Kill";
             }
             
 
