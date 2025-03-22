@@ -13,7 +13,7 @@ public class GameStateExecute : MonoBehaviour
     public Text ResultText;
 
     WaitForSeconds waitForSecond = new WaitForSeconds(1f);
-
+    Text SceenText;
 
     private void Start()
     { 
@@ -33,6 +33,8 @@ public class GameStateExecute : MonoBehaviour
         AimJoystick = GameObject.Find("Canvas").transform.Find("Aim_Joystick").gameObject;
         ResponePanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
         ResultPanel = GameObject.Find("Canvas").transform.Find("ResultPanel").gameObject;
+
+        SceenText = GameObject.Find("Canvas").transform.Find("WaitText").gameObject.GetComponent<Text>();
         ReGameButton = ResultPanel.transform.Find("regameBTN").gameObject.GetComponent<Button>();
         ResultText = ResultPanel.transform.Find("resultText").gameObject.GetComponent<Text>();
     }
@@ -40,7 +42,11 @@ public class GameStateExecute : MonoBehaviour
     private void OnLobbyState()
     {
         if (PhotonNetwork.IsMasterClient)
+        {
             StartButton.SetActive(true);
+        }
+
+        SceenText.text = "Room Name: " + PhotonNetwork.CurrentRoom.Name + "\n Waiting for host...";
     }
 
     private void OnReadyState()

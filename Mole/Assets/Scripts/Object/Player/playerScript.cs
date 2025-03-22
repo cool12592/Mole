@@ -22,6 +22,7 @@ public class playerScript : MonoBehaviourPunCallbacks
     CinemachineVirtualCamera CM;
 
     [SerializeField] MeshGenerator meshGenerator;
+
     // Start is called before the first frame update
     private void Awake()
     {
