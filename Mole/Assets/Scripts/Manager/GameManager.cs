@@ -157,7 +157,7 @@ public class GameManager : MonoBehaviour
 
         foreach (var rank in sortedRankingBoard)
         {
-            rankStr[count++] = rank.Key +" "+rank.Value+"%";
+            rankStr[count++] = rank.Key +" "+ (int)rank.Value;
         }
 
         
@@ -232,26 +232,20 @@ public class GameManager : MonoBehaviour
         {
             killLogQueue.Enqueue(new KeyValuePair<string, string>(killer, deadPerson));
             killLogOnTheScreen();
-
-            RankingBoard[killer]++;
-            UpdateRankingBoard();
-
-            //if (RankingBoard[killer] >= 5)
-            //    OnEndGame();
         }
     }
 
-    public void ReportTheMakeLand(string nickName, float extent)
+    public void ReportTheMakeLand(string nickName, float addArea)
     {
-        PV.RPC("LadnWrite_RPC", RpcTarget.AllBuffered, nickName, extent); //마스터가 rank업데이트해야함
+        PV.RPC("LadnWrite_RPC", RpcTarget.AllBuffered, nickName, addArea); //마스터가 rank업데이트해야함
     }
 
     [PunRPC]
-    private void LadnWrite_RPC(string killer, float extent)
+    private void LadnWrite_RPC(string killer, float addArea)
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            RankingBoard[killer] += extent;
+            RankingBoard[killer] += addArea;
             UpdateRankingBoard();
         }
     }

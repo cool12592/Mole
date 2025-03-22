@@ -705,7 +705,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         Vector3 sumVec = Vector3.zero;
         float minX = float.MaxValue, maxX = float.MinValue;
         float minY = float.MaxValue, maxY = float.MinValue;
-
+        float totalArea = 0f;
         for (int i = 0; i < posList.Count; i++)
         {
             float x = posList[i].x;
@@ -713,6 +713,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
             vertices[i] = new Vector3(x, y, 0);
             sumVec += new Vector3(x, y, 0);
+
+            if(0<i && i <= posList.Count-2)
+            {
+                Vector2 a = posList[0];
+                Vector2 b = posList[i];
+                Vector2 c = posList[i+1];
+
+                float area = Mathf.Abs((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)) * 0.5f;
+                totalArea += area;
+            }
 
             // 최소/최대 좌표 업데이트
             if (x < minX) minX = x;
@@ -731,6 +741,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         {
             _meshGenSound.Play();
             GetComponent<PlayerMovement>().ShakeCamera();
+
+            GameManager.Instance.ReportTheMakeLand(PV.Owner.NickName, totalArea);
         }
         var particle = Instantiate(_dustParticle, centerPos, Quaternion.identity);
 
@@ -761,6 +773,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         // ✅ Mesh 데이터 적용
         mesh.vertices = vertices;
         mesh.triangles = triangles.ToArray();
+
+
+
        // mesh.uv = uvs;  // ✅ UV 추가
         //mesh.RecalculateNormals();
 
