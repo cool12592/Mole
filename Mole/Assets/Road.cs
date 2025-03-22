@@ -75,7 +75,7 @@ public class Road : MonoBehaviour
         _isFinishRoad = true;
 
         originScale = transform.localScale;
-        transform.localScale *= 1.5f;
+        transform.localScale *= 2f;
     }
 
     void CollideMesh(GameObject go)
