@@ -6,6 +6,7 @@ using Photon.Realtime;
 using UnityEngine.UI;
 using System.IO;
 using System;
+using System.Security.Cryptography;
 
 public class NetworrkManager : MonoBehaviourPunCallbacks
 {
@@ -91,21 +92,17 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     {
 
         string nickName = NickNameInput.text;
-        foreach (Player player in PhotonNetwork.PlayerList)
+        if(nickName == "")
         {
-            if (player.NickName == nickName)
-            {
-                int rnd = UnityEngine.Random.Range(0, 100);
-                nickName += rnd.ToString();
-                break;
-            }
+            int rnd = UnityEngine.Random.Range(0, 10000);
+            nickName += rnd.ToString();
         }
 
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             if (player.NickName == nickName)
             {
-                int rnd = UnityEngine.Random.Range(0, 100);
+                int rnd = UnityEngine.Random.Range(0, 10000);
                 nickName += rnd.ToString();
                 break;
             }
