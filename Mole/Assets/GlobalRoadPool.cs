@@ -9,7 +9,7 @@ public class GlobalRoadPool : MonoBehaviour
     [SerializeField] private Road roadPrefab;
     private int initialPoolSize = 100;
 
-    private Queue<Road> pool = new Queue<Road>();
+    private Stack<Road> pool = new Stack<Road>();
 
     private void Awake()
     {
@@ -37,23 +37,18 @@ public class GlobalRoadPool : MonoBehaviour
             var obj = Instantiate(roadPrefab);
             obj.transform.SetParent(transform);
             obj.gameObject.SetActive(false);
-            pool.Enqueue(obj);
+            pool.Push(obj);
         }
     }
 
     public Road GetRoad(Vector3 position)
     {
-        Road obj;
-
-        if (pool.Count > 0)
-        {
-            obj = pool.Dequeue();
-        }
-        else
+        if (pool.Count == 0)
         {
             CreateNewObject(100);
-            obj = pool.Dequeue();
         }
+
+        Road obj = pool.Pop();
 
         obj.transform.position = position;
         obj.transform.rotation = Quaternion.identity;
@@ -68,6 +63,6 @@ public class GlobalRoadPool : MonoBehaviour
         obj.Release();
         obj.gameObject.SetActive(false);
        // obj.transform.SetParent(transform); // 풀의 자식으로 되돌림
-        pool.Enqueue(obj);
+        pool.Push(obj);
     }
 }

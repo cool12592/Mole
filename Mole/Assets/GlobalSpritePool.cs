@@ -9,7 +9,7 @@ public class GlobalSpritePool : MonoBehaviour
     [SerializeField] private SpritePiece spritePrefab;
     private int initialPoolSize = 100;
 
-    private Queue<SpritePiece> pool = new Queue<SpritePiece>();
+    private Stack<SpritePiece> pool = new Stack<SpritePiece>();
 
     private void Awake()
     {
@@ -37,23 +37,18 @@ public class GlobalSpritePool : MonoBehaviour
             var obj = Instantiate(spritePrefab);
             obj.transform.SetParent(transform);
             obj.gameObject.SetActive(false);
-            pool.Enqueue(obj);
+            pool.Push(obj);
         }
     }
 
     public SpritePiece GetPiece(Vector3 position)
     {
-        SpritePiece obj;
-
-        if (pool.Count > 0)
-        {
-            obj = pool.Dequeue();
-        }
-        else
+        if (pool.Count == 0)
         {
             CreateNewObject(100);
-            obj = pool.Dequeue();
         }
+
+        SpritePiece obj = pool.Pop();
 
         obj.transform.position = position;
         obj.transform.rotation = Quaternion.identity;
@@ -73,6 +68,6 @@ public class GlobalSpritePool : MonoBehaviour
         yield return new WaitForSeconds(time);
         obj.gameObject.SetActive(false);
        // obj.transform.SetParent(transform); // 풀의 자식으로 되돌림
-        pool.Enqueue(obj);
+        pool.Push(obj);
     }
 }

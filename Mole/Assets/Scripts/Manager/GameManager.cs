@@ -23,7 +23,16 @@ public class GameManager : MonoBehaviour
     WaitForSeconds waitForSecnds = new WaitForSeconds(1f);
 
     public Dictionary<int, Color> UserColor = new Dictionary<int, Color>();
-     
+    int MemberCount = 0;
+    HashSet<string> deadPersonSet = new HashSet<string>();
+
+    public void StartGame()
+    {
+        _isGameEnd = false;
+        if (PhotonNetwork.IsMasterClient)
+            MemberCount = RankingBoard.Count;
+    }
+
     private void Awake()
     {
         if (instance == null)
@@ -137,9 +146,20 @@ public class GameManager : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            deadPersonSet.Add(nickName);
             if (RankingBoard.ContainsKey(nickName))
                 RankingBoard.Remove(nickName);
             UpdateRankingBoard();
+        }
+    }
+
+    void WriteDeadPeson(string deadNickName)
+    {
+        deadPersonSet.Add(deadNickName);
+
+        if(MemberCount == deadPersonSet.Count)
+        {
+            OnEndGame();
         }
     }
 
@@ -243,8 +263,12 @@ public class GameManager : MonoBehaviour
     [PunRPC]
     private void killWriteRPC(string killer, string deadPerson)
     {
+        RankingBoard[deadPerson] = 0f;
+        UpdateRankingBoard();
+
         if (PhotonNetwork.IsMasterClient)
         {
+            deadPersonSet.Add(deadPerson);
             killLogQueue.Enqueue(new KeyValuePair<string, string>(killer, deadPerson));
             killLogOnTheScreen();
         }
@@ -256,11 +280,11 @@ public class GameManager : MonoBehaviour
     }
 
     [PunRPC]
-    private void LadnWrite_RPC(string killer, float addArea)
+    private void LadnWrite_RPC(string nickName, float addArea)
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            RankingBoard[killer] += addArea;
+            RankingBoard[nickName] += addArea;
             UpdateRankingBoard();
         }
     }
@@ -299,8 +323,13 @@ public class GameManager : MonoBehaviour
         ScreenText.text = str;
     }
 
+    bool _isGameEnd = false;
+
     private void OnEndGame()
     {
+        if (_isGameEnd) return;
+        _isGameEnd = true;
+
         if (PhotonNetwork.IsMasterClient)
         {
             GameStateManager.Instance.ChangeGameStateForAllUser(GameStateManager.GameState.Result);
@@ -338,7 +367,7 @@ public class GameManager : MonoBehaviour
 
     public void ActiveTimer()
     {
-        SetTimer(5f);
+        SetTimer(15f);
         timerText.gameObject.SetActive(true);
     }
 
