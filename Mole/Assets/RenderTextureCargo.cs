@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class RenderTextureCargo : MonoBehaviour
 {
-    public RenderTexture sourceTexture;
     public RenderTexture targetTexture;
     public Material blitMaterial;
 
