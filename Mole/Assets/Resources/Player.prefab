@@ -852,8 +852,6 @@ MonoBehaviour:
   _recordObj: {fileID: 8213540584583598257, guid: bc3dac1735d8e2b43be40dd27ca1687d,
     type: 3}
   PV: {fileID: 0}
-  _fallingGround: {fileID: 0}
-  _textureADD: {fileID: 2147442307044310656}
   inHouse: 1
   _dust: {fileID: 2899531883608483867}
   _dustRockSR: {fileID: 1678369328577501713}

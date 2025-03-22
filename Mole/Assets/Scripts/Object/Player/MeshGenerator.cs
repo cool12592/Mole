@@ -19,7 +19,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     List<Vector2> posList = new List<Vector2>();
     [SerializeField] GameObject _recordObj;
     public PhotonView PV;
-    private Button dashBtn;
 
     float dustTimer = 0f;
     float flipTimer = 0f;
@@ -27,8 +26,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     Vector3 lastPos;
 
     Action OnGenerateMesh;
-    [SerializeField] FallingGround _fallingGround;
-    [SerializeField] TextureAdd _textureADD;
     [SerializeField] bool inHouse = true;
 
     [SerializeField] SpriteRenderer _dust;
@@ -36,7 +33,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     Road lastExitRoad;
     Road lastEnterRoad;
-    Vector3 lastEnterDirection;
 
     int checkNum = 0;
 
@@ -50,7 +46,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     HashSet<GameObject> _curInMyMeshSet = new HashSet<GameObject>();
     HashSet<GameObject> _curInOtherMeshSet = new HashSet<GameObject>();
 
-    [SerializeField] GamePalette palette;  // 팔레트 오브젝트 (씬에 있어야 함)
+    [SerializeField] GamePalette palette;  
     Color myColor;
 
     [SerializeField] Sprite pieceSprite;
@@ -105,18 +101,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         PV = GetComponent<PhotonView>();
         AssignColor();
 
-        myKillText = GameObject.Find("Canvas").transform.Find("Gaming").transform.Find("Kill").transform.Find("MyKillCount").GetComponent<Text>();
-        dashBtn = GameObject.Find("Canvas").transform.Find("DashButton").gameObject.GetComponent<Button>();
-        dashBtn.onClick.AddListener(GenerateMeshObject);
-
-        _fallingGround = GameObject.Find("FallingGround").GetComponent<FallingGround>();
-       
-        _fallingGround = Instantiate(_fallingGround);
-        _fallingGround.GetComponent<SpriteRenderer>().enabled = true;
-        _fallingGround.gameObject.SetActive(false);
-        _fallingGround.GetComponent<SpriteRenderer>().sortingOrder = 0;
-
-        
+        myKillText = GameObject.Find("Canvas").transform.Find("Gaming").transform.Find("Kill").transform.Find("MyKillCount").GetComponent<Text>();  
     }
 
     private IEnumerator Start()
@@ -342,7 +327,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             //if(1 < posList.Count)
             {
                 //lastEnterRoad = transform.position;
-                lastEnterDirection = transform.up;
                 GenerateMeshObject();
             }
         }
@@ -616,7 +600,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
 
         if (posList.Count < 3)
+        {
+            photonView.RPC("BabyLand", RpcTarget.All);
             return;
+        }
         StartCoroutine(CoGenerateMeshObject());
     }
 
@@ -645,9 +632,15 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
 
 
-        photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.AllBuffered, posList.ToArray(),z);
+        photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z);
         photonView.RPC("ShatterMesh_RPC", RpcTarget.All);
 
+    }
+
+    [PunRPC]
+    void BabyLand()
+    {
+        FinishLand();
     }
 
    // [Header("hmm")]
@@ -833,11 +826,17 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         meshObj.transform.position = new Vector3(meshObj.transform.position.x, meshObj.transform.position.y, z);
         meshObj.layer = Mathf.RoundToInt(Mathf.Log(changeLayer.value, 2));
 
+        FinishLand();
+    }
+
+    void FinishLand()
+    {
         posList.Clear();
         lastExitRoad = null;
         lastEnterRoad = null;
 
-        StartCoroutine(CoPostGenerateMesh());
+        OnGenerateMesh?.Invoke();
+        OnGenerateMesh = null;
     }
 
     [SerializeField] Sprite[] _groundPieces;
@@ -847,33 +846,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         if (meshObj != null)
         {
-            meshObj.GetComponent<MeshShatter>().Init(_groundPieces, _fallingGround.gameObject);
+            meshObj.GetComponent<MeshShatter>().Init(_groundPieces);
         }
     }
-
-    bool first = true;
-
-    IEnumerator CoPostGenerateMesh()
-    {
-        yield return null;
-        _fallingGround.BlendRenderTextures();
-        yield return null;
-
-        _textureADD.BlendRenderTextures();
-
-        OnGenerateMesh?.Invoke();
-        OnGenerateMesh = null;
-
-        if (first)
-        {
-            first = false;
-            yield break;
-        }
-        _fallingGround.StartFalling();
-
-       // yield return null;
-    }
-
 
     static float sharedFloat = 0f; // 🔴 공유할 float 값 (초기값 100)
 

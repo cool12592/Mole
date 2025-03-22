@@ -90,6 +90,7 @@ MonoBehaviour:
   - FirstCreateLoad_RPC
   - TakeAwayOtherLand_RPC
   - LadnWrite_RPC
+  - BabyLand
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

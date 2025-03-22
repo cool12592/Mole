@@ -14,7 +14,6 @@ public class MeshShatter : MonoBehaviour
     private Vector3[] originalVertices;
     private int[] originalTriangles;
     private Material mat;
-    private GameObject fakeMesh;
     const int maxNum = 9999999;
     Sprite[] spriteFragments; // Inspector에서 원하는 스프라이트 조각 배열 등록
 
@@ -75,10 +74,9 @@ public class MeshShatter : MonoBehaviour
     }
 
 
-    public void Init(Sprite[] spriteFragments_, GameObject fakeMesh_)
+    public void Init(Sprite[] spriteFragments_)
     {
         spriteFragments = spriteFragments_;
-        fakeMesh = fakeMesh_;
         StartCoroutine(CoStart());
     }
 
@@ -126,9 +124,6 @@ public class MeshShatter : MonoBehaviour
                 CreateMeshPiece(bounds, x, y, pieceWidth, pieceHeight);
             }
         }
-
-        if (fakeMesh != null)
-            fakeMesh.SetActive(false);
     }
 
     
