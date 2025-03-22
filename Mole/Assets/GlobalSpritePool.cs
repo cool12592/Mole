@@ -41,7 +41,7 @@ public class GlobalSpritePool : MonoBehaviour
         }
     }
 
-    public SpritePiece GetPiece(Vector3 position, Transform parent = null)
+    public SpritePiece GetPiece(Vector3 position)
     {
         SpritePiece obj;
 
@@ -57,7 +57,7 @@ public class GlobalSpritePool : MonoBehaviour
 
         obj.transform.position = position;
         obj.transform.rotation = Quaternion.identity;
-        obj.transform.SetParent(parent);
+       // obj.transform.SetParent(parent);
         obj.gameObject.SetActive(true);
 
         return obj;
@@ -72,7 +72,7 @@ public class GlobalSpritePool : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         obj.gameObject.SetActive(false);
-        obj.transform.SetParent(transform); // 풀의 자식으로 되돌림
+       // obj.transform.SetParent(transform); // 풀의 자식으로 되돌림
         pool.Enqueue(obj);
     }
 }

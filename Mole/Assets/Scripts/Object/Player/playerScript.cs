@@ -24,12 +24,12 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     [SerializeField] MeshGenerator meshGenerator;
 
-
     // Start is called before the first frame update
     private void Awake()
     {
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName.ToString() : PV.Owner.NickName.ToString();
         // NickNameText.color = PV.IsMine ? Color.green : Color.red;
+        movement = GetComponent<PlayerMovement>();
 
         if (PV.IsMine)
         {   
@@ -37,6 +37,7 @@ public class playerScript : MonoBehaviourPunCallbacks
            // GameObject.Find("ObjectPoolParent").transform.GetChild(0).gameObject.SetActive(true);
             InitCamera();            
         }
+
     }
 
     void InitCamera()
@@ -158,6 +159,7 @@ public class playerScript : MonoBehaviourPunCallbacks
 
 
     [SerializeField] GameObject _moveParticle;
+    PlayerMovement movement;
     private void OnReadyState()
     {
         isActive = false; //행동 못 하게
@@ -167,7 +169,7 @@ public class playerScript : MonoBehaviourPunCallbacks
         if (PV.IsMine)
         {
             ChangeRandomPosition();
-            GetComponent<PlayerMovement>().DashInit();
+            movement.DashInit();
         }
     }
 
@@ -175,7 +177,6 @@ public class playerScript : MonoBehaviourPunCallbacks
     {
         isActive = true;
         _moveParticle.SetActive(true);
-
     }
 
     private void OnResultState()

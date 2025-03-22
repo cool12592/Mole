@@ -91,6 +91,8 @@ MonoBehaviour:
   - TakeAwayOtherLand_RPC
   - LadnWrite_RPC
   - BabyLand
+  - SetCountDown_RPC
+  - SynchTimer_RPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

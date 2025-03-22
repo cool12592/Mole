@@ -54,6 +54,8 @@ public class GameStateExecute : MonoBehaviour
 
     private void OnReadyState()
     {
+        GameManager.Instance.ActiveTimer();
+
         if (GamingUI != null)
             GamingUI.SetActive(true);
         WaitInfoText.text = "";
@@ -69,11 +71,14 @@ public class GameStateExecute : MonoBehaviour
 
     private void OnFightState()
     {
+        GameManager.Instance.StartTimer();
        // AimJoystick.SetActive(true);
     }
 
     private void OnResultState()
     {
+        GameManager.Instance.EndTimer();
+
         if (GamingUI != null)
             GamingUI.SetActive(false);
 
@@ -92,20 +97,40 @@ public class GameStateExecute : MonoBehaviour
         }
     }
 
+    [SerializeField] GameObject[] CountDownImages;
+
     IEnumerator ReadyCoroutine()
     {
-        GameManager.Instance.PV.RPC("SetScreenTextRPC", RpcTarget.AllBuffered, "3", 200);
+        GameManager.Instance.PV.RPC("SetScreenTextRPC", RpcTarget.All, "", 100);
+
+        PV.RPC("SetCountDown_RPC", RpcTarget.All, 0);
         yield return waitForSecond;
-        GameManager.Instance.PV.RPC("SetScreenTextRPC", RpcTarget.AllBuffered, "2", 200);
+        PV.RPC("SetCountDown_RPC", RpcTarget.All, 1);
         yield return waitForSecond;
-        GameManager.Instance.PV.RPC("SetScreenTextRPC", RpcTarget.AllBuffered, "1", 200);
+        PV.RPC("SetCountDown_RPC", RpcTarget.All, 2);
         yield return waitForSecond;
-        GameManager.Instance.PV.RPC("SetScreenTextRPC", RpcTarget.AllBuffered, "게임 시작!", 200);
+        PV.RPC("SetCountDown_RPC", RpcTarget.All, 3);
 
 
-        PV.RPC("ChangeGameStateForAllUser", RpcTarget.AllBuffered, GameStateManager.GameState.Fight);
+        PV.RPC("ChangeGameStateForAllUser", RpcTarget.All, GameStateManager.GameState.Fight);
 
         yield return waitForSecond;
-        GameManager.Instance.PV.RPC("SetScreenTextRPC", RpcTarget.AllBuffered, "", 100);
+        PV.RPC("SetCountDown_RPC", RpcTarget.All, 4);
+    }
+
+    [PunRPC]
+    void SetCountDown_RPC(int ind)
+    {
+        if(CountDownImages.Length <= ind)
+        {
+            CountDownImages[CountDownImages.Length-1].SetActive(false);
+            return;
+        }
+
+        if(ind!=0)
+        {
+            CountDownImages[ind - 1].SetActive(false);
+        }
+        CountDownImages[ind].SetActive(true);
     }
 }

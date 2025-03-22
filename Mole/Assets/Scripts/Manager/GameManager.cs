@@ -73,9 +73,24 @@ public class GameManager : MonoBehaviour
     {
         while (true)
         {
+            SynchTimer();
             SynchRankingBoard();
             yield return waitForSecnds;
         }
+    }
+
+    private void SynchTimer()
+    {
+        if (_onTimer == false)
+            return;
+        if (PhotonNetwork.IsMasterClient)
+            PV.RPC("SynchTimer_RPC", RpcTarget.All, timer); 
+    }
+
+    [PunRPC]
+    private void SynchTimer_RPC(float timer_)
+    {
+        SetTimer(timer_);
     }
 
     private void SynchRankingBoard()
@@ -296,6 +311,45 @@ public class GameManager : MonoBehaviour
                 RankingBoard[RankingBoard.Keys.ToList()[i]] = 0;
             }
             UpdateRankingBoard();
+        }
+    }
+
+
+
+    ///timer
+    ///
+    [SerializeField] Text timerText;
+    float timer = 0f;
+    bool _onTimer = false;
+    public void SetTimer(float time_)
+    {
+        timer = time_;
+        timerText.text = ((int)timer).ToString();
+    }
+
+    public void ActiveTimer()
+    {
+        timerText.gameObject.SetActive(true);
+    }
+
+    public void StartTimer()
+    {
+        SetTimer(90);
+        _onTimer = true;
+    }
+
+    public void EndTimer()
+    {
+        timerText.gameObject.SetActive(false);
+        _onTimer = false;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (_onTimer && PhotonNetwork.IsMasterClient)
+        {
+            timer -= Time.deltaTime;
         }
     }
 

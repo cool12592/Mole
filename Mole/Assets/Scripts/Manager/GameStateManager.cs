@@ -46,7 +46,6 @@ public class GameStateManager : MonoBehaviour
     {
         PV = GetComponent<PhotonView>();
         NowGameState = GameState.None;
-        gameObject.AddComponent<GameStateExecute>();
     }
 
     [PunRPC]
