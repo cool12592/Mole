@@ -26,7 +26,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     IEnumerator ShrinkScaleCoroutine(Vector3 targetScale, Action onComplete)
     {
-        float duration = 1f;
+        float duration = 0.5f;
         Vector3 startScale = FadeOutMaskObj.localScale;
         float time = 0f;
 
