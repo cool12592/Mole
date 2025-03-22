@@ -240,8 +240,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collider_: {fileID: 67316864639300267}
-  myNumber: 0
-  nextRoad: {fileID: 0}
   meshDetector: {fileID: 4587609157162955376}
   _isFinishRoad: 0
   _myOwner: {fileID: 0}

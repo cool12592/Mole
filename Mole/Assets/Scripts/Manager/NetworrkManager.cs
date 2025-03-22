@@ -5,15 +5,65 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using System.IO;
+using System;
 
 public class NetworrkManager : MonoBehaviourPunCallbacks
 {
     public InputField NickNameInput;
+    public InputField PrivateRoomInput;
+
     public GameObject DisconnectPanel;
     public GameObject RespawnPanel;
     public GameObject GameEndPanel;
 
     [SerializeField] AudioSource BGM;
+
+    [SerializeField] GameObject MainRobbyUI;
+    [SerializeField] GameObject MultiRobbyUI;
+
+    [SerializeField] Transform FadeOutMaskObj;
+    bool _isStarting = false;
+
+    IEnumerator ShrinkScaleCoroutine(Vector3 targetScale, Action onComplete)
+    {
+        float duration = 1f;
+        Vector3 startScale = FadeOutMaskObj.localScale;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            float t = time / duration;
+            FadeOutMaskObj.localScale = Vector3.Lerp(startScale, targetScale, t);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        FadeOutMaskObj.localScale = targetScale;
+        onComplete?.Invoke();
+        _isStarting = false;
+    }
+
+    public void ActiveMultiUI()
+    {
+        MainRobbyUI.SetActive(false);
+        MultiRobbyUI.gameObject.SetActive(true);
+        NickNameInput.text = "";
+        PrivateRoomInput.text = "";
+    }
+
+    public void ActiveMainUI()
+    {
+        MainRobbyUI.SetActive(true);
+        MultiRobbyUI.gameObject.SetActive(false);
+    }
+
+    public void StartButton()
+    {
+        if (_isStarting)
+            return;
+        _isStarting = true;
+        StartCoroutine(ShrinkScaleCoroutine(Vector3.zero,Connect));
+    }
 
     private void Awake()
     {
@@ -45,7 +95,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         {
             if (player.NickName == nickName)
             {
-                int rnd = Random.Range(0, 100);
+                int rnd = UnityEngine.Random.Range(0, 100);
                 nickName += rnd.ToString();
                 break;
             }
@@ -55,15 +105,35 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         {
             if (player.NickName == nickName)
             {
-                int rnd = Random.Range(0, 100);
+                int rnd = UnityEngine.Random.Range(0, 100);
                 nickName += rnd.ToString();
                 break;
             }
         }
 
         PhotonNetwork.LocalPlayer.NickName = nickName;
-        RoomOptions roomoption = new RoomOptions { MaxPlayers = 20 };
-        PhotonNetwork.JoinOrCreateRoom("Room", roomoption, null);
+
+        if(PrivateRoomInput.text != "")
+        {
+            RoomOptions roomoption = new RoomOptions { MaxPlayers = 6 };
+            PhotonNetwork.JoinOrCreateRoom(PrivateRoomInput.text, roomoption, null);
+        }
+        else
+        {
+            PhotonNetwork.JoinRandomRoom();
+        }
+    }
+
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        CreateNewRoom();
+    }
+
+    void CreateNewRoom()
+    {
+        string roomName = (UnityEngine.Random.Range(0, 10000)).ToString();
+        RoomOptions roomOptions = new RoomOptions { MaxPlayers = 6 };
+        PhotonNetwork.CreateRoom(roomName, roomOptions, null);
     }
 
     //내입장에서 내가 들어왔을 때 이거호출
@@ -130,7 +200,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
         do
         {
-            spawnPosition = new Vector3(Random.Range(-12f, 12f), Random.Range(-12f, 12f),0f); // 3D 좌표
+            spawnPosition = new Vector3(UnityEngine.Random.Range(-12f, 12f), UnityEngine.Random.Range(-12f, 12f),0f); // 3D 좌표
 
             // 스폰 위치에 플레이어가 있는지 체크
             bool hasPlayer = Physics.CheckSphere(spawnPosition, checkRadius, LayerMask.GetMask("Player"));
@@ -139,6 +209,10 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
             {
                 PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
                 GameManager.Instance.ResponePanel.SetActive(false);
+
+
+                StartCoroutine(ShrinkScaleCoroutine(Vector3.one * 2f, null));
+
                 return;
             }
 
@@ -151,7 +225,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     public void NewGameSpawn()
     {
-        PhotonNetwork.Instantiate("Player", new Vector3(Random.Range(-10f, 10f), Random.Range(-5f, 5f), 0), Quaternion.identity);
+        PhotonNetwork.Instantiate("Player", new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-5f, 5f), 0), Quaternion.identity);
         GameManager.Instance.ResultPanel.SetActive(false);
 
         GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Lobby);
