@@ -52374,6 +52374,25 @@ MonoBehaviour:
   myplayer: {fileID: 0}
   ResponePanel: {fileID: 0}
   ResultPanel: {fileID: 0}
+  otherRankBackGroundSprite: {fileID: 21300000, guid: ebf25475b93600e48a77c8dd15a7a1c4,
+    type: 3}
+  myRankBackGroundSprite: {fileID: 21300000, guid: 84b03a826e7c1154d83ceb026388c9c7,
+    type: 3}
+  RankTexts:
+  - {fileID: 1751154114}
+  - {fileID: 1106431060}
+  - {fileID: 1091664712}
+  - {fileID: 1423742239}
+  RankImages:
+  - {fileID: 1946330608}
+  - {fileID: 1135061528}
+  - {fileID: 1688103249}
+  - {fileID: 1440298270}
+  RankObjs:
+  - {fileID: 1946330606}
+  - {fileID: 1135061526}
+  - {fileID: 1688103247}
+  - {fileID: 1440298268}
 --- !u!4 &1271460584
 Transform:
   m_ObjectHideFlags: 0

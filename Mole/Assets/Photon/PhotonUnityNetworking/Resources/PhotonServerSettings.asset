@@ -89,6 +89,7 @@ MonoBehaviour:
   - Death_RPC
   - FirstCreateLoad_RPC
   - TakeAwayOtherLand_RPC
+  - LadnWrite_RPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

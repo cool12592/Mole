@@ -6,14 +6,15 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Linq;
 using System;
+using UnityEngine.Windows;
 public class GameManager : MonoBehaviour
 {
     public PhotonView PV;
     private static GameManager instance = null;
     private Text ScreenText;
-    public Text RangkingLogText { get; private set; }
+   // public Text RangkingLogText { get; private set; }
     private Queue<KeyValuePair<string, string>> killLogQueue = new Queue<KeyValuePair<string, string>>();
-    private Dictionary<string, int> RankingBoard = new Dictionary<string, int>();
+    private Dictionary<string, float> RankingBoard = new Dictionary<string, float>();
     public Dictionary<string, MeshGenerator> UserMeshMap = new Dictionary<string, MeshGenerator>();
 
     public GameObject myplayer, ResponePanel, ResultPanel;
@@ -51,7 +52,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         ScreenText = GameObject.Find("Canvas").transform.Find("ScreenText").gameObject.GetComponent<Text>();
-        RangkingLogText = GameObject.Find("Canvas").transform.Find("RankingLog").gameObject.GetComponent<Text>();
+       // RangkingLogText = GameObject.Find("Canvas").transform.Find("RankingLog").gameObject.GetComponent<Text>();
         ResponePanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
         ResultPanel = GameObject.Find("Canvas").transform.Find("ResultPanel").gameObject;
     }
@@ -84,7 +85,7 @@ public class GameManager : MonoBehaviour
     }
 
     [PunRPC]
-    private void SynchRankingBoardRPC(Dictionary<string, int> rankingBoard)
+    private void SynchRankingBoardRPC(Dictionary<string, float> rankingBoard)
     {
         RankingBoard = rankingBoard;
     }
@@ -127,25 +128,96 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    [SerializeField] Sprite otherRankBackGroundSprite;
+    [SerializeField] Sprite myRankBackGroundSprite;
+    [SerializeField] Text[] RankTexts;
+    [SerializeField] Image[] RankImages;
+
+    [SerializeField] GameObject[] RankObjs;
+
     private void UpdateRankingBoard()
     {
         if (!PhotonNetwork.IsMasterClient) return;
 
+
+        if (RankingBoard == null || RankingBoard.Count == 0)
+            return;
+
         var sortedRankingBoard = RankingBoard.OrderByDescending(num => num.Value); //벨류값으로 내림차순
-        string rankStr="";
-      
-        foreach (var rank in sortedRankingBoard)
+
+
+        string[] rankStr = { "", "", "", "", "", "" };
+
+        for(int i=0; i< rankStr.Length;i++)
         {
-            rankStr += rank.Key + " : " + rank.Value + "킬\n";
+            rankStr[i] = "";
         }
 
-        PV.RPC("updateRankingTextRPC", RpcTarget.AllBuffered, rankStr);
+        int count = 0;
+
+        foreach (var rank in sortedRankingBoard)
+        {
+            rankStr[count++] = rank.Key +" "+rank.Value+"%";
+        }
+
+        
+        PV.RPC("updateRankingTextRPC", RpcTarget.AllBuffered, rankStr,count);
     }
 
+
     [PunRPC]
-    private void updateRankingTextRPC(string rankStr)
+    private void updateRankingTextRPC(string[] rankStr,int length)
     {
-        RangkingLogText.text = rankStr;
+        string myNickname = PhotonNetwork.NickName;
+        int count = -1;
+        int myRank = 999;
+        string myStr = "";
+        int lastRnak = rankStr.Length;
+
+        for (int i = 0; i < RankObjs.Length; i++)
+        {
+            RankObjs[i].gameObject.SetActive(false);
+        }
+
+        foreach (string str in rankStr)
+        {
+            count++;
+            if (count == length)
+                break;
+
+            string[] parts = str.Split(' ');
+            string nickName = parts[0];
+            string point = parts[1];
+
+            if (count <= 2)
+            {
+                RankImages[count].sprite = otherRankBackGroundSprite;
+                RankTexts[count].text = str;
+                RankObjs[count].SetActive(true);
+            }
+
+            if (nickName == myNickname)
+            {
+                myRank = count;
+                myStr = str;
+
+                if (2 <= count)
+                    break;
+            }
+        }
+
+        if (myRank <= 2)
+        {
+            RankImages[myRank].sprite = myRankBackGroundSprite;
+        }
+        else
+        {
+            RankObjs[RankObjs.Length - 1].SetActive(true);
+            RankImages[RankImages.Length - 1].sprite = myRankBackGroundSprite;
+            RankTexts[RankTexts.Length - 1].text = myStr;
+        }
+
+
     }
 
     public void ReportTheKill(string killer, string deadPerson)
@@ -168,6 +240,22 @@ public class GameManager : MonoBehaviour
             //    OnEndGame();
         }
     }
+
+    public void ReportTheMakeLand(string nickName, float extent)
+    {
+        PV.RPC("LadnWrite_RPC", RpcTarget.AllBuffered, nickName, extent); //마스터가 rank업데이트해야함
+    }
+
+    [PunRPC]
+    private void LadnWrite_RPC(string killer, float extent)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            RankingBoard[killer] += extent;
+            UpdateRankingBoard();
+        }
+    }
+
 
     private void killLogOnTheScreen()
     {

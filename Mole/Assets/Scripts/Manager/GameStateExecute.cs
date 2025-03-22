@@ -80,7 +80,7 @@ public class GameStateExecute : MonoBehaviour
         AimJoystick.SetActive(false);
         ResponePanel.SetActive(false);
         ResultPanel.SetActive(true);
-        ResultText.text = "경기 결과\n" + GameManager.Instance.RangkingLogText.text;
+        //ResultText.text = "경기 결과\n" + GameManager.Instance.RangkingLogText.text;
 
     }
 
