@@ -39,8 +39,8 @@ public class GameStateExecute : MonoBehaviour
 
     private void OnLobbyState()
     {
-       // if (PhotonNetwork.IsMasterClient)
-         //   StartButton.SetActive(true);
+        if (PhotonNetwork.IsMasterClient)
+            StartButton.SetActive(true);
     }
 
     private void OnReadyState()

@@ -532,7 +532,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         if (lastEnterRoad == null || lastExitRoad == null)
         {
-            UnityEngine.Debug.LogError("먼가잘못됨");
             yield break;
         }
         Queue<Road> queue = new Queue<Road>();
@@ -555,7 +554,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
                 if (neighbor == lastEnterRoad) // 목적지 도달
                 {
-                    UnityEngine.Debug.LogError("훔바훔바" + nodeCount);
 
                     parentMap[neighbor] = node; // 부모 저장
                     SavePath(parentMap, lastEnterRoad);
