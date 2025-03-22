@@ -168,10 +168,12 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     {
         yield return new WaitForSeconds(0.5f);  // 잠시 떠 있음
 
-        GetComponent<Rigidbody2D>().gravityScale = 2f;  // 중력 활성화 (떨어지기 시작)
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 2f;  // 중력 활성화 (떨어지기 시작)
 
         yield return new WaitForSeconds(1.5f);  // 일정 시간 후 삭제
 
+        rb.gravityScale = 0f;  
         player.Goast();
         if (PV.IsMine)
         {
