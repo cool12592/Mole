@@ -156,10 +156,14 @@ public class playerScript : MonoBehaviourPunCallbacks
         GameStateManager.Instance.ResultStateAction -= OnResultState;
     }
 
+
+    [SerializeField] GameObject _moveParticle;
     private void OnReadyState()
     {
         isActive = false; //행동 못 하게
         meshGenerator.enabled = true;
+        if (_moveParticle != null)
+            _moveParticle.SetActive(false);
         if (PV.IsMine)
         {
             ChangeRandomPosition();
@@ -169,7 +173,9 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     private void OnFightState()
     {
-        isActive = true; 
+        isActive = true;
+        _moveParticle.SetActive(true);
+
     }
 
     private void OnResultState()

@@ -799,6 +799,7 @@ MonoBehaviour:
   moveJoystick: {fileID: 0}
   aimJoystick: {fileID: 0}
   meshGenerator: {fileID: 5003663037539567242}
+  _moveParticle: {fileID: 7632980249345971223}
 --- !u!114 &2241514368879471466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1239,6 +1240,12 @@ PrefabInstance:
 --- !u!4 &7632980249345971220 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6014910468221324043, guid: 0534665c9d9f54870bb49448285dd548,
+    type: 3}
+  m_PrefabInstance: {fileID: 4221150670822743839}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7632980249345971223 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6014910468221324040, guid: 0534665c9d9f54870bb49448285dd548,
     type: 3}
   m_PrefabInstance: {fileID: 4221150670822743839}
   m_PrefabAsset: {fileID: 0}

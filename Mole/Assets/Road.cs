@@ -22,6 +22,8 @@ public class Road : MonoBehaviour
     public SpriteRenderer _sr;
 
     List<Road> RemoveList= new List<Road>();
+
+    Vector3 originScale = Vector3.one;
     private void OnTriggerEnter2D(Collider2D other) 
     {
         if(IsNeighCheckRoad)
@@ -55,7 +57,14 @@ public class Road : MonoBehaviour
     private void Awake()
     {
         meshDetector.OnMeshCollide += CollideMesh;
-        _sr = GetComponent<SpriteRenderer>();
+    }
+
+    public void Release()
+    {
+        gameObject.layer = LayerMask.NameToLayer("Road");
+        _isFinishRoad = false;
+        transform.localScale = originScale;
+        _myMeshSet.Clear();
     }
 
     public void ChangeLayer()
@@ -65,6 +74,7 @@ public class Road : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("FinishRoad");
         _isFinishRoad = true;
 
+        originScale = transform.localScale;
         transform.localScale *= 1.5f;
     }
 
@@ -78,7 +88,7 @@ public class Road : MonoBehaviour
         {
             return;
         }
-        Destroy(gameObject);
+        GlobalRoadPool.Instance.Release(this);
     }
 
 }

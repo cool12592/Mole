@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 67316864639300267}
   - component: {fileID: -5154976001687268517}
   - component: {fileID: 6314393818928465584}
+  - component: {fileID: 603920981756488597}
   m_Layer: 7
   m_Name: Road
   m_TagString: Untagged
@@ -244,8 +245,7 @@ MonoBehaviour:
   _isFinishRoad: 0
   _myOwner: {fileID: 0}
   IsNeighCheckRoad: 0
-  neighRoadList: []
-  _sr: {fileID: 0}
+  _sr: {fileID: 1794218829877025456}
 --- !u!50 &6314393818928465584
 Rigidbody2D:
   serializedVersion: 4
@@ -273,3 +273,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &603920981756488597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8213540584583598257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3ee4f6ceeca20940aa6bf77c6299e21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sr: {fileID: 1794218829877025456}

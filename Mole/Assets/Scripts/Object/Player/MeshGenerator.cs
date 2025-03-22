@@ -40,7 +40,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     Text myKillText;
 
 
-    public HashSet<Collider2D> _myRoadSet = new HashSet<Collider2D>();
+    public HashSet<Road> _myRoadSet = new HashSet<Road>();
     public HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
 
     HashSet<GameObject> _curInMyMeshSet = new HashSet<GameObject>();
@@ -200,22 +200,21 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             _myMeshSet.Add(otherMeshObj);
         }
 
-        foreach (var otherRoadCol in target._myRoadSet)
+        foreach (var otherRoad in target._myRoadSet)
         {
-            if (otherRoadCol == null)
+            if (otherRoad == null)
                 continue;
 
-            var targetRoad = otherRoadCol.gameObject.GetComponent<Road>();
-            if (targetRoad._isFinishRoad == false)
+            if (otherRoad._isFinishRoad == false)
             {
-                posList.Add(targetRoad.transform.position);
+                posList.Add(otherRoad.transform.position);
             }
 
-            _myRoadSet.Add(otherRoadCol);
-            OnGenerateMesh += targetRoad.ChangeLayer;
-            targetRoad._myMeshSet = _myMeshSet;
-            targetRoad._myOwner = this;
-            targetRoad._sr.color = myColor;
+            _myRoadSet.Add(otherRoad);
+            OnGenerateMesh += otherRoad.ChangeLayer;
+            otherRoad._myMeshSet = _myMeshSet;
+            otherRoad._myOwner = this;
+            otherRoad._sr.color = myColor;
         }
 
         GenerateMeshObject();
@@ -448,10 +447,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     void CreateLoad_RPC(float x, float y, float z,bool isNeighCheckRoad,bool shatter)
     {
         Vector3 pos = new Vector3(x, y, z);
-        var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
+        var road = GlobalRoadPool.Instance.GetRoad(pos);
         
-        road.GetComponent<SpriteRenderer>().color = myColor;
-        _myRoadSet.Add(road.collider_);
+        road._sr.color = myColor;
+        _myRoadSet.Add(road);
         OnGenerateMesh += road.ChangeLayer;
         road._myMeshSet = _myMeshSet;
         road._myOwner = this;
@@ -462,7 +461,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
 
         if (shatter)
-            road.gameObject.AddComponent<SpriteShatter>().Init(pieceSprite,transform.up*0.5f);
+        {
+            road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up * 0.5f);
+        }
+
     }
 
 
@@ -470,13 +472,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     void FirstCreateLoad_RPC(float x, float y, float z, float radius)
     {
         Vector3 pos = new Vector3(x, y, z);
-        var road = Instantiate(_recordObj, pos, Quaternion.identity).GetComponent<Road>();
+        var road = GlobalRoadPool.Instance.GetRoad(pos);
 
         road.transform.localScale = Vector3.one * radius * 0.7f;
 
-        road.GetComponent<SpriteRenderer>().color = myColor;
+        road._sr.color = myColor;
 
-        _myRoadSet.Add(road.collider_);
+        _myRoadSet.Add(road);
         OnGenerateMesh += road.ChangeLayer;
         road._myMeshSet = _myMeshSet;
         road._myOwner = this;
@@ -633,8 +635,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
 
         photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z);
-        photonView.RPC("ShatterMesh_RPC", RpcTarget.All);
-
     }
 
     [PunRPC]
@@ -721,9 +721,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         Vector3 centerPos = sumVec / posList.Count; // 중심 좌표
         centerPos.z = -10f;
-        float width = maxX - minX; // AABB 가로 길이
-        float height = maxY - minY; // AABB 세로 길이
-        float boundingBoxArea = width * height; // 사각형 넓이
+        //float width = maxX - minX; // AABB 가로 길이
+        //float height = maxY - minY; // AABB 세로 길이
+        //float boundingBoxArea = width * height; // 사각형 넓이
 
         if (PV.IsMine)
         {
@@ -732,13 +732,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
         var particle = Instantiate(_dustParticle, centerPos, Quaternion.identity);
 
-        // ✅ UV 매핑 설정
-        for (int i = 0; i < posList.Count; i++)
-        {
-            float u = (posList[i].x - minX) / width;   // X 정규화 (0~1)
-            float v = (posList[i].y - minY) / height;  // Y 정규화 (0~1)
-            uvs[i] = new Vector2(u, v);
-        }
+        //// ✅ UV 매핑 설정
+        //for (int i = 0; i < posList.Count; i++)
+        //{
+        //    float u = (posList[i].x - minX) / width;   // X 정규화 (0~1)
+        //    float v = (posList[i].y - minY) / height;  // Y 정규화 (0~1)
+        //    uvs[i] = new Vector2(u, v);
+        //}
 
         // 삼각형 인덱스 자동 생성
         List<int> triangles = new List<int>();
@@ -759,15 +759,18 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         // ✅ Mesh 데이터 적용
         mesh.vertices = vertices;
         mesh.triangles = triangles.ToArray();
-        mesh.uv = uvs;  // ✅ UV 추가
-        mesh.RecalculateNormals();
+       // mesh.uv = uvs;  // ✅ UV 추가
+        //mesh.RecalculateNormals();
 
         meshCollider.sharedMesh = mesh;
-        UnityEngine.Debug.Log("Mesh 생성 완료! 정점 개수: " + vertices.Length);
+      //  UnityEngine.Debug.Log("Mesh 생성 완료! 정점 개수: " + vertices.Length);
 
         // 🔥 위치 및 레이어 동기화
         meshObj.transform.position = new Vector3(meshObj.transform.position.x, meshObj.transform.position.y, z);
         meshObj.layer = Mathf.RoundToInt(Mathf.Log(changeLayer.value, 2));
+
+
+        Destroy(particle, 2f);
 
         FinishLand();
 
@@ -804,16 +807,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void OnDestroy()
     {
-        foreach (var a in _myMeshSet)
+        foreach (var mesh in _myMeshSet)
         {
-            if (a != null)
-                Destroy(a);
+            if (mesh != null)
+                Destroy(mesh);
         }
 
-        foreach (var b in _myRoadSet)
+        foreach (var road in _myRoadSet)
         {
-            if (b != null)
-                Destroy(b.gameObject);
+            if (road != null)
+                GlobalRoadPool.Instance.Release(road);
         }
     }
 }
