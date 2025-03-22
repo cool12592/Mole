@@ -18,36 +18,38 @@ public class Road : MonoBehaviour
 
     public bool IsNeighCheckRoad = false;
 
-    [SerializeField] List<Road> neighRoadList = new List<Road>();
+    [SerializeField] HashSet<Road> neighRoadSet = new HashSet<Road>();
     public SpriteRenderer _sr;
+
+    List<Road> RemoveList= new List<Road>();
     private void OnTriggerEnter2D(Collider2D other) 
     {
         if(IsNeighCheckRoad)
         {
             if(other.TryGetComponent<Road>(out Road road))
             {
-                if(road.IsNeighCheckRoad == false)// || road._isFinishRoad == false)
+                if(road.IsNeighCheckRoad == false)
                     return;
                 
-                neighRoadList.Add(road);
+                neighRoadSet.Add(road);
             }
         }    
     }
 
-    public List<Road> GetNeigh()
+    private void OnTriggerExit2D(Collider2D other)
     {
-        return neighRoadList;
-    }
-
-    public void DeleteNeigh()
-    {
-        foreach(Road road in neighRoadList)
+        if (IsNeighCheckRoad)
         {
-            if(road != null)
+            if (other.TryGetComponent<Road>(out Road road))
             {
-                road.gameObject.SetActive(false);
+                neighRoadSet.Remove(road);
             }
         }
+    }
+
+    public HashSet<Road> GetNeigh()
+    {
+        return neighRoadSet;
     }
 
     private void Awake()
@@ -64,12 +66,6 @@ public class Road : MonoBehaviour
         _isFinishRoad = true;
 
         transform.localScale *= 1.5f;
-        // collider_.enabled = false;
-    }
-
-    public void ChangeColor()
-    {
-        //GetComponent<SpriteRenderer>().color = Color.black;
     }
 
     void CollideMesh(GameObject go)
@@ -84,7 +80,5 @@ public class Road : MonoBehaviour
         }
         Destroy(gameObject);
     }
-
-
 
 }

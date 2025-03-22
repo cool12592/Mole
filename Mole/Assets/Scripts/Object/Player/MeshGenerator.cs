@@ -643,63 +643,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         FinishLand();
     }
 
-   // [Header("hmm")]
-
-//     public Vector2 pointA;   // 시작 점
-//     public Vector2 pointB;   // 끝 점
-//     public float spacing = 0.1f;  // 점 간격
-//     //public float rayLength = 1000f;  // 레이 길이
-//     public LayerMask hitLayer;    // 충돌 레이어 설정
-
-//     void CastRaysAlongLine()
-//     {
-//     pointA = lastExitRoad;
-//     pointB = lastEnterRoad;
-//     Vector2 direction = (pointB - pointA).normalized; // 선분 방향
-//     float length = Vector2.Distance(pointA, pointB);  // 총 길이
-
-//     float NoLenth = 0.1f;
-//     // 시작과 끝에서 2 유닛씩 제외
-//     float adjustedLength = length - NoLenth*2f; 
-//     if (adjustedLength <= 0) return; // 길이가 4 이하라면 레이캐스트 실행 안 함
-
-//     Vector2 newPointA = pointA + direction * NoLenth; 
-//     Vector2 newPointB = pointB - direction * NoLenth; 
-
-//     int numPoints = Mathf.FloorToInt(adjustedLength / spacing); // 새로 찍을 점 개수
-
-//     for (int i = 0; i <= numPoints; i++)
-//     {
-//         Vector2 point = newPointA + direction * (i * spacing); // 새로운 선분 위 점
-
-//         // 수직 방향 2개 (왼쪽, 오른쪽)
-//         Vector2 perpDirection1 = new Vector2(-direction.y, direction.x).normalized; // 시계 방향 90도 회전
-//         Vector2 perpDirection2 = new Vector2(direction.y, -direction.x).normalized; // 반시계 방향 90도 회전
-
-//         float dot = Vector2.Dot(lastEnterDirection, perpDirection1);
-//         Vector2 chosenDirection = dot >= 0 ? perpDirection1 : perpDirection2;
-
-//         // 첫 번째 수직 방향으로 레이 쏘기
-//         var hit = Physics2D.Raycast(point, chosenDirection, length, hitLayer);
-//             if(hit)
-//                 posList.Add(hit.collider.transform.position + new Vector3(chosenDirection.x, chosenDirection.y, 0f) * 1f);
-
-//             // foreach (var hit in hits)
-//           //  {
-//                 // if (_myRoadSet.Contains(hit.collider))
-//             //    {
-//           //      posList.Add(hit.collider.transform.position + new Vector3(chosenDirection.x, chosenDirection.y, 0f) * 1f);
-//             //   break;
-//           //  }
-//        // }
-
-// #if UNITY_EDITOR            
-//         Debug.DrawRay(point, chosenDirection * length, Color.red, 6f);
-// #endif
-//     }
-// }
-
-
     void CreateMesh()
     {
         if (meshObj == null)
@@ -827,6 +770,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         meshObj.layer = Mathf.RoundToInt(Mathf.Log(changeLayer.value, 2));
 
         FinishLand();
+
+        if (meshObj != null)
+            meshObj.GetComponent<MeshShatter>().Init(_groundPieces);
+
     }
 
     void FinishLand()
@@ -840,15 +787,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     }
 
     [SerializeField] Sprite[] _groundPieces;
-
-    [PunRPC]
-    void ShatterMesh_RPC()
-    {
-        if (meshObj != null)
-        {
-            meshObj.GetComponent<MeshShatter>().Init(_groundPieces);
-        }
-    }
 
     static float sharedFloat = 0f; // 🔴 공유할 float 값 (초기값 100)
 
@@ -864,18 +802,18 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         sharedFloat -= 0.001f; // 🔴 모든 클라이언트에서 sharedFloat 값을 감소
     }
 
-    //public void OnALLDestroy()
-    //{
-    //    foreach(var a in _myMeshSet)
-    //    {
-    //        if(a != null) 
-    //            Destroy(a);
-    //    }
+    public void OnDestroy()
+    {
+        foreach (var a in _myMeshSet)
+        {
+            if (a != null)
+                Destroy(a);
+        }
 
-    //    foreach (var b in _myRoadSet)
-    //    {
-    //        if(b != null) 
-    //            Destroy(b.gameObject);
-    //    }
-    //}
+        foreach (var b in _myRoadSet)
+        {
+            if (b != null)
+                Destroy(b.gameObject);
+        }
+    }
 }
