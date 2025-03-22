@@ -192,7 +192,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
                 PV.RPC("TakeAwayOtherLand_RPC", RpcTarget.AllBuffered, otherRoad._myOwner.PV.Owner.NickName);
                 otherHealth.Death(PV.Owner.NickName);
 
-                myKillText.text = myKillCount + " Kill";
+                myKillText.text = ++myKillCount + " Kill";
             }
             
 

@@ -153,7 +153,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         meshGen.enabled = false;
 
         transform.rotation = Quaternion.identity;
-        GetComponent<playerScript>().DisConnectCam();
+        player.DisConnectCam();
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         Collider2D col = GetComponent<Collider2D>();
 
@@ -172,11 +172,12 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(1.5f);  // 일정 시간 후 삭제
 
+        player.Goast();
         if (PV.IsMine)
         {
             GameManager.Instance.ReportTheKill(attackerName, PV.Owner.NickName);
-            GameManager.Instance.ResponePanel.SetActive(true);
-            PV.RPC("DestroyRPC", RpcTarget.AllBuffered); // AllBuffered로 해야 제대로 사라져 복제버그가 안 생긴다
+            //GameManager.Instance.ResponePanel.SetActive(true);
+            //PV.RPC("DestroyRPC", RpcTarget.AllBuffered); // AllBuffered로 해야 제대로 사라져 복제버그가 안 생긴다
         }
     }
 

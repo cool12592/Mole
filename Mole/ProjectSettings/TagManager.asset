@@ -20,10 +20,10 @@ TagManager:
   - FinishRoad
   - FinishRenderTexture
   - Minimap
-  - 
-  - 
-  - 
-  - 
+  - WallTarget
+  - Wall
+  - GoastWall
+  - Goast
   - 
   - 
   - 

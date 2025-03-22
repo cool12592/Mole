@@ -12,6 +12,7 @@ public class playerScript : MonoBehaviourPunCallbacks
     public PhotonView PV;
     public Text NickNameText;
     public bool isActive = true;
+    public bool isGoast = false;
 
     [SerializeField]
     private GameObject moveJoystick;
@@ -23,11 +24,12 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     [SerializeField] MeshGenerator meshGenerator;
 
+
     // Start is called before the first frame update
     private void Awake()
     {
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName.ToString() : PV.Owner.NickName.ToString();
-       // NickNameText.color = PV.IsMine ? Color.green : Color.red;
+        // NickNameText.color = PV.IsMine ? Color.green : Color.red;
 
         if (PV.IsMine)
         {   
@@ -40,9 +42,21 @@ public class playerScript : MonoBehaviourPunCallbacks
     void InitCamera()
     {
         // 2D 카메라
-        CM = GameObject.Find("CMCamera").GetComponent<CinemachineVirtualCamera>();
+        if (CM == null)
+        {
+            CM = GameObject.Find("CMCamera").GetComponent<CinemachineVirtualCamera>();
+        }
+
         CM.Follow = transform;
         CM.LookAt = transform;
+        CM.m_Lens.OrthographicSize = 10;
+
+    }
+
+    public void SetNewTargetCamera(GameObject newTarget)
+    {
+        CM.Follow = newTarget.transform;
+        CM.LookAt = newTarget.transform;
     }
 
     public void DisConnectCam()
@@ -52,6 +66,77 @@ public class playerScript : MonoBehaviourPunCallbacks
             CM.Follow = null;
             CM.LookAt = null;
         }
+    }
+
+    public void Goast()
+    {
+        transform.position = Vector3.zero;
+
+        if (PV.IsMine)
+        {
+            CM.Follow = transform;
+            CM.LookAt = transform;
+            CM.m_Lens.OrthographicSize = 18f;
+            GameObject.Find("GoastWall").transform.GetChild(0).gameObject.SetActive(true);
+
+        }
+
+        int childCount = transform.childCount;
+
+        for (int i = 0; i < childCount - 1; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+
+        transform.GetChild(0).gameObject.layer = LayerMask.NameToLayer("Goast");
+
+        GetComponent<SpriteRenderer>().enabled = false;
+        isGoast = true;
+        GetComponent<PlayerMovement>().moveSpeed = 50;
+    }
+
+    public void CheatGoast()
+    {
+        {
+            isActive = false;
+
+            var meshGen = GetComponent<MeshGenerator>();
+            meshGen.enabled = false;
+
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            Collider2D col = GetComponent<Collider2D>();
+
+            col.enabled = false;  // 충돌 비활성화
+            rb.gravityScale = 0;  // 중력 제거
+
+        }
+
+        transform.position = Vector3.zero;
+
+
+        if (PV.IsMine)
+        {
+            CM.Follow = transform;
+            CM.LookAt = transform;
+            CM.m_Lens.OrthographicSize = 18f;
+            GameObject.Find("GoastWall").transform.GetChild(0).gameObject.SetActive(true);
+
+        }
+
+
+
+        int childCount = transform.childCount;
+
+        for (int i = 0; i < childCount - 1; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+
+        transform.GetChild(0).gameObject.layer = LayerMask.NameToLayer("Goast");
+
+        GetComponent<SpriteRenderer>().enabled = false;
+        isGoast = true;
+        GetComponent<PlayerMovement>().moveSpeed = 50;
     }
 
     private void Start()
@@ -98,5 +183,11 @@ public class playerScript : MonoBehaviourPunCallbacks
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         transform.position = new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-5f, 5f), 0);
         GetComponent<Animator>().SetBool("walk", false);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.V))
+            CheatGoast();
     }
 }
