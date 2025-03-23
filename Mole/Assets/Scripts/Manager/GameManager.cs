@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     IEnumerator rankingBoardCoroutine;
     WaitForSeconds waitForSecnds = new WaitForSeconds(1f);
 
-    int MemberCount = 0;
+    int AllMemberCount = 0;
     Dictionary<string, int> deadPersonDict = new Dictionary<string, int>(); //hash set rpc인자로 안되네...
 
     public string[] UserNames;
@@ -31,8 +31,7 @@ public class GameManager : MonoBehaviour
     {
         deadPersonDict.Clear();
         _isGameEnd = false;
-        if (PhotonNetwork.IsMasterClient)
-            MemberCount = RankingBoard.Count;
+        AllMemberCount = RankingBoard.Count;
     }
 
     private void Awake()
@@ -238,7 +237,7 @@ public class GameManager : MonoBehaviour
         deadPersonDict[deadNickName] = 1;
         PV.RPC("SynchDeadPerson_RPC", RpcTarget.Others, deadPersonDict);
 
-        if (MemberCount == deadPersonDict.Count + 1)
+        if (AllMemberCount == deadPersonDict.Count + 1)
         {
             OnEndGame();
         }
