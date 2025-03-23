@@ -46,7 +46,7 @@ public class GameStateExecute : MonoBehaviour
 
         ActiveReadyButton();
 
-        WaitInfoText.text = "Room Number : " + PhotonNetwork.CurrentRoom.Name + "\n Waiting for Host Start...";
+        WaitInfoText.text = "Room Number : " + PhotonNetwork.CurrentRoom.Name + "\n Waiting for user...";
     }
 
     public void ActiveReadyButton()
