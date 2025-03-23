@@ -99,6 +99,7 @@ MonoBehaviour:
   - ResetSharedFloat_RPC
   - SynchUserNames_RPC
   - ForceReady_RPC
+  - Request_RPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
-using Photon.Realtime;
 using System.Linq;
-using System;
-using UnityEngine.Windows;
 public class GameManager : MonoBehaviour
 {
     public PhotonView PV;
@@ -40,7 +37,26 @@ public class GameManager : MonoBehaviour
         resultPanels[(int)resultPanel].SetActive(false);
     }
 
+
+    IEnumerator CoWaitRequest()
+    {
+        yield return new WaitForSeconds(2f); // 안전빵
+
+        ActiveMultiResultPanel();
+    }
+
     public void ActiveResultPanel(ResultPanel resultPanel)
+    {
+        if(resultPanel == ResultPanel.MultiResult)
+        {
+            StartCoroutine(CoWaitRequest());
+            return;
+        }
+
+        resultPanels[(int)resultPanel].SetActive(true);
+    }
+
+    public void ActiveMultiResultPanel()
     {
         int ind = 0;
         foreach (var obj in ResultObjs)
@@ -63,11 +79,11 @@ public class GameManager : MonoBehaviour
             ResultTexts[count].text = nick;
             ResultTexts[count].text += " " + ((int)RankingBoard[nick]).ToString();
 
-            if(nick == PhotonNetwork.LocalPlayer.NickName)
+            if (nick == PhotonNetwork.LocalPlayer.NickName)
             {
                 ResultImages[count].sprite = myRankBackGroundSprite;
             }
-            
+
             count++;
         }
 
@@ -76,7 +92,7 @@ public class GameManager : MonoBehaviour
             .Select(pair => pair.Key)              // key만 추출
             .ToList();
 
-        for (int i = count; i< count + sortedKeys2.Count;i++)
+        for (int i = count; i < count + sortedKeys2.Count; i++)
         {
             int sortedKeyIndex = i - count;
             ResultObjs[i].SetActive(true);
@@ -89,9 +105,22 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        resultPanels[(int)resultPanel].SetActive(true);
+        resultPanels[(int)ResultPanel.MultiResult].SetActive(true);
     }
 
+
+    public void StartLobby()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            //마스터는 마지막으로 rankingboard 초기화
+            for (int i = 0; i < RankingBoard.Count; i++)
+            {
+                RankingBoard[RankingBoard.Keys.ToList()[i]] = 0;
+            }
+            UpdateRankingBoard();
+        }
+    }
     public void StartGame()
     {
         deadPersonDict.Clear();
@@ -454,7 +483,7 @@ public class GameManager : MonoBehaviour
             return;
         KeyValuePair<string, string> killLogInfo = killLogQueue.Dequeue();
         PV.RPC("killLogOnTheScreenRPC", RpcTarget.All, killLogInfo.Key, killLogInfo.Value);
-        StartCoroutine(EraseScreenText(3f));
+        StartCoroutine(EraseScreenText(2f));
     }
 
     IEnumerator EraseScreenText(float delayTime)
@@ -493,13 +522,6 @@ public class GameManager : MonoBehaviour
         _isGameEnd = true;
 
         GameStateManager.Instance.ChangeGameStateForAllUser(GameStateManager.GameState.Result);
-
-        //마스터는 마지막으로 rankingboard 초기화
-        for (int i = 0; i < RankingBoard.Count; i++)
-        {
-            RankingBoard[RankingBoard.Keys.ToList()[i]] = 0;
-        }
-        UpdateRankingBoard();
     }
 
 

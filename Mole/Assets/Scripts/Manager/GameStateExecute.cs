@@ -40,6 +40,8 @@ public class GameStateExecute : MonoBehaviour
 
     private void OnLobbyState()
     {
+        GameManager.Instance.StartLobby();
+
         KillText.text = "0 Kill";
         GamingUI1.SetActive(true);
         GamingUI2.SetActive(true);
