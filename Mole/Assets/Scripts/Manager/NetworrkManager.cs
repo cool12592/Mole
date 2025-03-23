@@ -25,8 +25,12 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     [SerializeField] Transform FadeOutMaskObj;
     bool _isStarting = false;
 
+    [SerializeField] GameObject screenTouch;
+
     IEnumerator ShrinkScaleCoroutine(Vector3 targetScale, Action onComplete)
     {
+        screenTouch.SetActive(false);
+
         float duration = 0.5f;
         Vector3 startScale = FadeOutMaskObj.localScale;
         float time = 0f;
@@ -42,6 +46,9 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         FadeOutMaskObj.localScale = targetScale;
         onComplete?.Invoke();
         _isStarting = false;
+
+        screenTouch.SetActive(true);
+
     }
 
     public void ActiveMultiUI()

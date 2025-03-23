@@ -65906,6 +65906,7 @@ MonoBehaviour:
   MainRobbyUI: {fileID: 1934221084}
   MultiRobbyUI: {fileID: 1309376884}
   FadeOutMaskObj: {fileID: 1134492646}
+  screenTouch: {fileID: 1630474215}
   GameStateExecute: {fileID: 1141210217}
 --- !u!4 &1317366505
 Transform:

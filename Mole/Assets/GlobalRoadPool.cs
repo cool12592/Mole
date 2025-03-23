@@ -7,7 +7,7 @@ public class GlobalRoadPool : MonoBehaviour
     public static GlobalRoadPool Instance { get; private set; }
 
     [SerializeField] private Road roadPrefab;
-    private int initialPoolSize = 1;
+    private int initialPoolSize = 100;
 
     private Stack<Road> pool = new Stack<Road>();
 
@@ -47,7 +47,7 @@ public class GlobalRoadPool : MonoBehaviour
     {
         if (pool.Count == 0)
         {
-            CreateNewObject(1);
+            CreateNewObject(100);
         }
 
         Road obj = pool.Pop();
