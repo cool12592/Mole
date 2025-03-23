@@ -52,7 +52,7 @@ public class SoundManager : MonoBehaviour
     public void PlayShootingSound()
     {
         if (!ShootingSound.isPlaying)
-            PV.RPC("ShotSoundRPC", RpcTarget.AllBuffered);
+            PV.RPC("ShotSoundRPC", RpcTarget.All);
     }
 
     [PunRPC]
@@ -65,7 +65,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayDashSound()
     {
-        PV.RPC("DashSoundRPC", RpcTarget.AllBuffered);
+        PV.RPC("DashSoundRPC", RpcTarget.All);
     }
 
     [PunRPC]

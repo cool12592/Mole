@@ -93,6 +93,10 @@ MonoBehaviour:
   - BabyLand
   - SetCountDown_RPC
   - SynchTimer_RPC
+  - SynchDeadPerson_RPC
+  - RPC_ResetSharedFloat
+  - DecreaseSharedFloat_RPC
+  - ResetSharedFloat_RPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

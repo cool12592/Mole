@@ -104,6 +104,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         myKillText = GameObject.Find("Canvas").transform.Find("Gaming").transform.Find("Rope").transform.Find("Kill").transform.Find("MyKillCount").GetComponent<Text>();
 
         myKillText.text = "0 Kill";
+
+        ResetSharedFloat();
     }
 
     private IEnumerator Start()
@@ -176,7 +178,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
             if (otherRoad._myOwner.PV != null)
             {
-                PV.RPC("TakeAwayOtherLand_RPC", RpcTarget.AllBuffered, otherRoad._myOwner.PV.Owner.NickName);
+                PV.RPC("TakeAwayOtherLand_RPC", RpcTarget.All, otherRoad._myOwner.PV.Owner.NickName);
                 otherHealth.Death(PV.Owner.NickName);
 
                 myKillText.text = ++myKillCount + " Kill";
@@ -219,7 +221,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             otherRoad._sr.color = myColor;
         }
 
-        GenerateMeshObject();
+        GenerateMeshObject(needBfs : false);
     }
 
     private void OnTriggerExit2D(Collider2D other) 
@@ -598,7 +600,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
     }
 
-    void GenerateMeshObject()
+    void GenerateMeshObject(bool needBfs = true)
     {
          if (PV.IsMine == false)
             return;
@@ -608,10 +610,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             photonView.RPC("BabyLand", RpcTarget.All);
             return;
         }
-        StartCoroutine(CoGenerateMeshObject());
+        StartCoroutine(CoGenerateMeshObject(needBfs));
     }
 
-    IEnumerator CoGenerateMeshObject()
+    IEnumerator CoGenerateMeshObject(bool needBfs = true)
     {
         if (PV.IsMine == false)
             yield break;
@@ -630,7 +632,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         originLastIndex = posList.Count - 1;
         
-        yield return StartCoroutine(CoBFSSearch());
+        if(needBfs)
+            yield return StartCoroutine(CoBFSSearch());
 
         float z = GetSharedFloat();
 
@@ -812,18 +815,32 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public float GetSharedFloat()
     {
-        PV.RPC("RPC_DecreaseSharedFloat", RpcTarget.AllBuffered); // 🔴 값 감소 요청
-        return sharedFloat; // 🔴 로컬 값 반환 (즉시 반영)
+        PV.RPC("DecreaseSharedFloat_RPC", RpcTarget.All); 
+        return sharedFloat; 
     }
 
     [PunRPC]
-    void RPC_DecreaseSharedFloat()
+    void DecreaseSharedFloat_RPC()
     {
-        sharedFloat -= 0.001f; // 🔴 모든 클라이언트에서 sharedFloat 값을 감소
+        sharedFloat -= 0.001f; 
+    }
+
+    public void ResetSharedFloat()
+    {
+        if (PhotonNetwork.IsMasterClient)
+            PV.RPC("ResetSharedFloat_RPC", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void ResetSharedFloat_RPC()
+    {
+        sharedFloat = 0f; 
     }
 
     public void OnDestroy()
     {
+        myKillText.text = "0 Kill";
+
         foreach (var mesh in _myMeshSet)
         {
             if (mesh != null)

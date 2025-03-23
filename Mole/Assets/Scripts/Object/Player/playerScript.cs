@@ -69,18 +69,18 @@ public class playerScript : MonoBehaviourPunCallbacks
         }
     }
 
+
     public void Goast()
     {
-        transform.position = Vector3.zero;
+        //transform.position = Vector3.zero;
 
         if (PV.IsMine)
         {
             CM.Follow = transform;
             CM.LookAt = transform;
             CM.m_Lens.OrthographicSize = 18f;
-            GameObject.Find("GoastWall").transform.GetChild(0).gameObject.SetActive(true);
-
         }
+
 
         int childCount = transform.childCount;
 
@@ -182,7 +182,8 @@ public class playerScript : MonoBehaviourPunCallbacks
     private void OnResultState()
     {
         meshGenerator.enabled = false;
-        PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+
+        PV.RPC("DestroyRPC", RpcTarget.All);
     }
 
     private void ChangeRandomPosition()

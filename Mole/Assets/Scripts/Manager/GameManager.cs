@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
 
     public Dictionary<int, Color> UserColor = new Dictionary<int, Color>();
     int MemberCount = 0;
-    HashSet<string> deadPersonSet = new HashSet<string>();
+    Dictionary<string, int> deadPersonDict = new Dictionary<string, int>(); //hash set rpc인자로 안되네...
 
     public void StartGame()
     {
@@ -82,7 +82,6 @@ public class GameManager : MonoBehaviour
     {
         while (true)
         {
-            SynchTimer();
             SynchRankingBoard();
             yield return waitForSecnds;
         }
@@ -93,7 +92,10 @@ public class GameManager : MonoBehaviour
         if (_onTimer == false)
             return;
         if (PhotonNetwork.IsMasterClient)
-            PV.RPC("SynchTimer_RPC", RpcTarget.All, timer); 
+        {
+            PV.RPC("SynchTimer_RPC", RpcTarget.Others, timer);
+            SetTimer(timer);
+        }
     }
 
     [PunRPC]
@@ -105,7 +107,7 @@ public class GameManager : MonoBehaviour
     private void SynchRankingBoard()
     {
         if (PhotonNetwork.IsMasterClient)
-            PV.RPC("SynchRankingBoardRPC", RpcTarget.AllBuffered, RankingBoard); //방장떠날때 대비 이것도 동기화해줘야됨
+            PV.RPC("SynchRankingBoardRPC", RpcTarget.Others, RankingBoard); //방장떠날때 대비 이것도 동기화해줘야됨
     }
 
     [PunRPC]
@@ -122,7 +124,7 @@ public class GameManager : MonoBehaviour
                 RankingBoard.Add(nickName, 0);
             UpdateRankingBoard();
 
-            if (PhotonNetwork.LocalPlayer.NickName != nickName)
+            if (PhotonNetwork.LocalPlayer.NickName != nickName) //방장입장에서 나 아닌 다른 유저면
                 InitGameState(nickName);
         }
     }
@@ -130,7 +132,7 @@ public class GameManager : MonoBehaviour
     private void InitGameState(string nickName)
     {
         if (PhotonNetwork.IsMasterClient)
-            PV.RPC("InitGameStateRPC", RpcTarget.AllBuffered, nickName, (int)GameStateManager.Instance.NowGameState);
+            PV.RPC("InitGameStateRPC", RpcTarget.Others, nickName, (int)GameStateManager.Instance.NowGameState);
     }
 
     [PunRPC]
@@ -146,7 +148,7 @@ public class GameManager : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            deadPersonSet.Add(nickName);
+            WriteDeadPeson(nickName);
             if (RankingBoard.ContainsKey(nickName))
                 RankingBoard.Remove(nickName);
             UpdateRankingBoard();
@@ -155,12 +157,22 @@ public class GameManager : MonoBehaviour
 
     void WriteDeadPeson(string deadNickName)
     {
-        deadPersonSet.Add(deadNickName);
+        if (PhotonNetwork.IsMasterClient == false)
+            return;
 
-        if(MemberCount == deadPersonSet.Count)
+        deadPersonDict[deadNickName] = 1;
+        PV.RPC("SynchDeadPerson_RPC", RpcTarget.Others, deadPersonDict);
+
+        if (MemberCount == deadPersonDict.Count + 1)
         {
             OnEndGame();
         }
+    }
+
+    [PunRPC]
+    void SynchDeadPerson_RPC(Dictionary<string,int> deadPersonDict_)
+    {
+        deadPersonDict = deadPersonDict_;
     }
 
     [SerializeField] Sprite otherRankBackGroundSprite;
@@ -196,7 +208,7 @@ public class GameManager : MonoBehaviour
         }
 
         
-        PV.RPC("updateRankingTextRPC", RpcTarget.AllBuffered, rankStr,count);
+        PV.RPC("updateRankingTextRPC", RpcTarget.All, rankStr,count);
     }
 
 
@@ -257,7 +269,7 @@ public class GameManager : MonoBehaviour
 
     public void ReportTheKill(string killer, string deadPerson)
     {
-        PV.RPC("killWriteRPC", RpcTarget.AllBuffered, killer, deadPerson); //마스터가 rank업데이트해야함
+        PV.RPC("killWriteRPC", RpcTarget.MasterClient, killer, deadPerson); //마스터가 rank업데이트해야함
     }
 
     [PunRPC]
@@ -268,7 +280,7 @@ public class GameManager : MonoBehaviour
 
         if (PhotonNetwork.IsMasterClient)
         {
-            deadPersonSet.Add(deadPerson);
+            WriteDeadPeson(deadPerson);
             killLogQueue.Enqueue(new KeyValuePair<string, string>(killer, deadPerson));
             killLogOnTheScreen();
         }
@@ -276,7 +288,7 @@ public class GameManager : MonoBehaviour
 
     public void ReportTheMakeLand(string nickName, float addArea)
     {
-        PV.RPC("LadnWrite_RPC", RpcTarget.AllBuffered, nickName, addArea); //마스터가 rank업데이트해야함
+        PV.RPC("LadnWrite_RPC", RpcTarget.MasterClient, nickName, addArea); //마스터가 rank업데이트해야함
     }
 
     [PunRPC]
@@ -295,14 +307,14 @@ public class GameManager : MonoBehaviour
         if (killLogQueue.Count() == 0 || ScreenText.text.Length != 0)
             return;
         KeyValuePair<string, string> killLogInfo = killLogQueue.Dequeue();
-        PV.RPC("killLogOnTheScreenRPC", RpcTarget.AllBuffered, killLogInfo.Key, killLogInfo.Value);
+        PV.RPC("killLogOnTheScreenRPC", RpcTarget.All, killLogInfo.Key, killLogInfo.Value);
         StartCoroutine(EraseScreenText(3f));
     }
 
     IEnumerator EraseScreenText(float delayTime)
     {
         yield return new WaitForSeconds(delayTime);
-        PV.RPC("SetScreenTextRPC", RpcTarget.AllBuffered,"",100);
+        PV.RPC("SetScreenTextRPC", RpcTarget.All,"",100);
 
         if (killLogQueue.Count > 0) //대기하는 애 있으면 출력
         {
@@ -327,20 +339,21 @@ public class GameManager : MonoBehaviour
 
     private void OnEndGame()
     {
-        if (_isGameEnd) return;
+        if (PhotonNetwork.IsMasterClient == false)
+            return;
+        
+        if (_isGameEnd) 
+            return;
         _isGameEnd = true;
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            GameStateManager.Instance.ChangeGameStateForAllUser(GameStateManager.GameState.Result);
+        GameStateManager.Instance.ChangeGameStateForAllUser(GameStateManager.GameState.Result);
 
-            //마스터는 마지막으로 rankingboard 초기화
-            for (int i = 0; i < RankingBoard.Count; i++)
-            {
-                RankingBoard[RankingBoard.Keys.ToList()[i]] = 0;
-            }
-            UpdateRankingBoard();
+        //마스터는 마지막으로 rankingboard 초기화
+        for (int i = 0; i < RankingBoard.Count; i++)
+        {
+            RankingBoard[RankingBoard.Keys.ToList()[i]] = 0;
         }
+        UpdateRankingBoard();
     }
 
 
@@ -357,9 +370,9 @@ public class GameManager : MonoBehaviour
             time_ = 0f;
         }
         timer = time_;
-        timerText.text = ((int)timer).ToString();
+        timerText.text = timer.ToString("F2");
 
-        if(timer<=0f)
+        if (timer<=0f)
         {
             OnEndGame();
         }
@@ -388,6 +401,8 @@ public class GameManager : MonoBehaviour
         if (_onTimer && PhotonNetwork.IsMasterClient)
         {
             timer -= Time.deltaTime;
+
+            SynchTimer();
         }
     }
 

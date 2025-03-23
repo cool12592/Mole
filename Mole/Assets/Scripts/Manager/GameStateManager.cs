@@ -51,7 +51,7 @@ public class GameStateManager : MonoBehaviour
     [PunRPC]
     public void ChangeGameStateForAllUser(GameState gameState)
     {
-        PV.RPC("ChangeGameStateRPC", RpcTarget.AllBuffered, (int)gameState);
+        PV.RPC("ChangeGameStateRPC", RpcTarget.All, (int)gameState);
     }
 
     [PunRPC]

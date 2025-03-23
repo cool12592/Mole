@@ -56,6 +56,7 @@ public class Road : MonoBehaviour
 
     private void Awake()
     {
+        originScale = new Vector3(0.6f, 0.6f, 0.6f);
         meshDetector.OnMeshCollide += CollideMesh;
     }
 
@@ -64,18 +65,18 @@ public class Road : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Road");
         _isFinishRoad = false;
         transform.localScale = originScale;
-        _myMeshSet.Clear();
+        _myMeshSet = null;
     }
 
     public void ChangeLayer()
     {
         if (this == null) return;
+        if (_isFinishRoad) return;
 
         gameObject.layer = LayerMask.NameToLayer("FinishRoad");
         _isFinishRoad = true;
 
-        originScale = transform.localScale;
-        transform.localScale *= 2f;
+        transform.localScale = originScale * 2f;
     }
 
     void CollideMesh(GameObject go)

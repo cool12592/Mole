@@ -131,7 +131,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
         if (PV.IsMine == false) return;
 
-        PV.RPC("Death_RPC", RpcTarget.AllBuffered, attackerName);
+        PV.RPC("Death_RPC", RpcTarget.All, attackerName);
 
 
     }
@@ -175,11 +175,12 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
         rb.gravityScale = 0f;  
         player.Goast();
+
         if (PV.IsMine)
         {
             GameManager.Instance.ReportTheKill(attackerName, PV.Owner.NickName);
             //GameManager.Instance.ResponePanel.SetActive(true);
-            //PV.RPC("DestroyRPC", RpcTarget.AllBuffered); // AllBuffered로 해야 제대로 사라져 복제버그가 안 생긴다
+           // PV.RPC("DestroyRPC", RpcTarget.AllBuffered); // AllBuffered로 해야 제대로 사라져 복제버그가 안 생긴다
         }
     }
 
