@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<string, float> RankingBoard = new Dictionary<string, float>();
     public Dictionary<string, MeshGenerator> UserMeshMap = new Dictionary<string, MeshGenerator>();
 
-    public GameObject myplayer, ResponePanel, ResultPanel;
+    public GameObject myplayer, ResponePanel;
 
     IEnumerator rankingBoardCoroutine;
     WaitForSeconds waitForSecnds = new WaitForSeconds(1f);
@@ -26,7 +26,25 @@ public class GameManager : MonoBehaviour
     Dictionary<string, int> deadPersonDict = new Dictionary<string, int>(); //hash set rpc인자로 안되네...
 
     public string[] UserNames;
-    
+
+    [SerializeField] GameObject[] resultPanels;
+    public enum ResultPanel {SingleVictory,SingleDefeat,MultiResult,MultiDefeat}
+
+
+    public void DeactiveMultiDefeatPanel()
+    {
+        resultPanels[(int)ResultPanel.MultiDefeat].SetActive(false);
+    }
+    public void DeactiveResultPanel(ResultPanel resultPanel)
+    {
+        resultPanels[(int)resultPanel].SetActive(false);
+    }
+
+    public void ActiveResultPanel(ResultPanel resultPanel)
+    {
+        resultPanels[(int)resultPanel].SetActive(true);
+    }
+
     public void StartGame()
     {
         deadPersonDict.Clear();
@@ -64,7 +82,6 @@ public class GameManager : MonoBehaviour
         ScreenText = GameObject.Find("Canvas").transform.Find("ScreenText").gameObject.GetComponent<Text>();
        // RangkingLogText = GameObject.Find("Canvas").transform.Find("RankingLog").gameObject.GetComponent<Text>();
         ResponePanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
-        ResultPanel = GameObject.Find("Canvas").transform.Find("ResultPanel").gameObject;
     }
 
     public void StartRankingBoardCoroutine()

@@ -223,7 +223,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     public void NewGameSpawn()
     {
         PhotonNetwork.Instantiate("Player", new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-5f, 5f), 0), Quaternion.identity);
-        GameManager.Instance.ResultPanel.SetActive(false);
+        GameManager.Instance.DeactiveResultPanel(GameManager.ResultPanel.MultiResult);
 
         GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Lobby);
     }

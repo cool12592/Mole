@@ -103,6 +103,8 @@ public class playerScript : MonoBehaviourPunCallbacks
             CM.Follow = transform;
             CM.LookAt = transform;
             CM.m_Lens.OrthographicSize = 18f;
+
+            GameManager.Instance.ActiveResultPanel(GameManager.ResultPanel.MultiDefeat);
         }
 
 
