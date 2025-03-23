@@ -246,6 +246,7 @@ MonoBehaviour:
   _myOwner: {fileID: 0}
   IsNeighCheckRoad: 0
   _sr: {fileID: 1794218829877025456}
+  IsInPool: 0
 --- !u!50 &6314393818928465584
 Rigidbody2D:
   serializedVersion: 4
