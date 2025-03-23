@@ -14,8 +14,9 @@ public class GameStateExecute : MonoBehaviour
 
     WaitForSeconds waitForSecond = new WaitForSeconds(1f);
     Text WaitInfoText;
-    GameObject GamingUI;
-
+    [SerializeField] GameObject GamingUI1;
+    [SerializeField] GameObject GamingUI2;
+    [SerializeField] Text KillText;
 
 
     private void Start()
@@ -25,8 +26,6 @@ public class GameStateExecute : MonoBehaviour
         GameStateManager.Instance.ReadyStateAction += OnReadyState;
         GameStateManager.Instance.FightStateAction += OnFightState;
         GameStateManager.Instance.ResultStateAction += OnResultState;
-        GamingUI = GameObject.Find("Canvas").transform.Find("Gaming").gameObject;
-
     }
 
     private void init()
@@ -41,6 +40,10 @@ public class GameStateExecute : MonoBehaviour
 
     private void OnLobbyState()
     {
+        KillText.text = "0 Kill";
+        GamingUI1.SetActive(true);
+        GamingUI2.SetActive(true);
+
         ActiveReadyButton();
 
         WaitInfoText.text = "Room Number : " + PhotonNetwork.CurrentRoom.Name + "\n Waiting for Host Start...";
@@ -57,8 +60,6 @@ public class GameStateExecute : MonoBehaviour
         GameManager.Instance.StartGame(); 
         GameManager.Instance.ActiveTimer();
 
-        if (GamingUI != null)
-            GamingUI.SetActive(true);
         WaitInfoText.text = "";
        
         if (PhotonNetwork.IsMasterClient)
@@ -75,9 +76,8 @@ public class GameStateExecute : MonoBehaviour
     {
         GameManager.Instance.EndTimer();
 
-        if (GamingUI != null)
-            GamingUI.SetActive(false);
-
+        GamingUI1.SetActive(false);
+        GamingUI2.SetActive(false);
         AimJoystick.SetActive(false);
         ResponePanel.SetActive(false);
 

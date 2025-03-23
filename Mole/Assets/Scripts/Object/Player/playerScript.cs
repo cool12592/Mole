@@ -211,7 +211,7 @@ public class playerScript : MonoBehaviourPunCallbacks
         meshGenerator.OnALLDestroy();
         meshGenerator.enabled = false;
 
-        PV.RPC("DestroyRPC", RpcTarget.All);
+        PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
     }
 
     private void ChangeRandomPosition()

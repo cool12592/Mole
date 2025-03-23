@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     WaitForSeconds waitForSecnds = new WaitForSeconds(1f);
 
     int AllMemberCount = 0;
-    Dictionary<string, int> deadPersonDict = new Dictionary<string, int>(); //hash set rpc인자로 안되네...
+    Dictionary<string,int> deadPersonDict = new Dictionary<string,int>(); 
 
     public string[] UserNames;
 
@@ -42,6 +42,53 @@ public class GameManager : MonoBehaviour
 
     public void ActiveResultPanel(ResultPanel resultPanel)
     {
+        int ind = 0;
+        foreach (var obj in ResultObjs)
+        {
+            ResultImages[ind++].sprite = otherRankBackGroundSprite;
+            obj.SetActive(false);
+        }
+
+        List<string> sortedKeys = RankingBoard
+            .OrderByDescending(pair => pair.Value) // value로 내림차순 정렬
+            .Select(pair => pair.Key)              // key만 추출
+            .ToList();
+
+        int count = 0;
+        foreach (var nick in sortedKeys)
+        {
+            if (RankingBoard[nick] == 0)
+                break;
+            ResultObjs[count].SetActive(true);
+            ResultTexts[count].text = nick;
+            ResultTexts[count].text += " " + ((int)RankingBoard[nick]).ToString();
+
+            if(nick == PhotonNetwork.LocalPlayer.NickName)
+            {
+                ResultImages[count].sprite = myRankBackGroundSprite;
+            }
+            
+            count++;
+        }
+
+        List<string> sortedKeys2 = deadPersonDict
+            .OrderByDescending(pair => pair.Value) // value로 내림차순 정렬
+            .Select(pair => pair.Key)              // key만 추출
+            .ToList();
+
+        for (int i = count; i< count + sortedKeys2.Count;i++)
+        {
+            int sortedKeyIndex = i - count;
+            ResultObjs[i].SetActive(true);
+            ResultTexts[i].text = sortedKeys2[sortedKeyIndex];
+            ResultTexts[i].text += " (Die)";
+
+            if (sortedKeys2[sortedKeyIndex] == PhotonNetwork.LocalPlayer.NickName)
+            {
+                ResultImages[i].sprite = myRankBackGroundSprite;
+            }
+        }
+
         resultPanels[(int)resultPanel].SetActive(true);
     }
 
@@ -251,7 +298,13 @@ public class GameManager : MonoBehaviour
         if (PhotonNetwork.IsMasterClient == false)
             return;
 
-        deadPersonDict[deadNickName] = 1;
+        if(deadPersonDict.ContainsKey(deadNickName))
+        {
+            return;
+        }
+        deadPersonDict[deadNickName] = deadPersonDict.Count;
+
+
         PV.RPC("SynchDeadPerson_RPC", RpcTarget.Others, deadPersonDict);
 
         if (AllMemberCount == deadPersonDict.Count + 1)
@@ -362,7 +415,7 @@ public class GameManager : MonoBehaviour
 
     public void ReportTheKill(string killer, string deadPerson)
     {
-        PV.RPC("killWriteRPC", RpcTarget.MasterClient, killer, deadPerson); //마스터가 rank업데이트해야함
+        PV.RPC("killWriteRPC", RpcTarget.All, killer, deadPerson);
     }
 
     [PunRPC]
@@ -498,5 +551,12 @@ public class GameManager : MonoBehaviour
             SynchTimer();
         }
     }
+
+
+
+    [SerializeField] Text[] ResultTexts;
+    [SerializeField] GameObject[] ResultObjs;
+    [SerializeField] Image[] ResultImages;
+
 
 }

@@ -72,9 +72,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         PV = GetComponent<PhotonView>();
 
-        myKillText = GameObject.Find("Canvas").transform.Find("Gaming").transform.Find("Rope").transform.Find("Kill").transform.Find("MyKillCount").GetComponent<Text>();
-
-        myKillText.text = "0 Kill";
+        myKillText = GameObject.Find("Canvas").transform.Find("Rope").transform.Find("Kill").transform.Find("MyKillCount").GetComponent<Text>();
 
         ResetSharedFloat();
 
