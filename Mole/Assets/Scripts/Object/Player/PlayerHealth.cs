@@ -44,7 +44,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         RunTimer();
         if (Input.GetKeyDown(KeyCode.T)) TakeDamage(PhotonNetwork.NickName);
 
-        if (Input.GetKeyDown(KeyCode.H)) Death();
+        //if (Input.GetKeyDown(KeyCode.H)) Death();
 
     }
 
@@ -115,34 +115,40 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
         if (healthImage.fillAmount <= 0 && player.isActive)
         {
-            Death();
+            //Death();
         }
     }
 
-    public void Death(string attackerName = "")
+    public void Death(playerScript attacker, string attackerName)
     {
+        if (PhotonNetwork.IsMasterClient == false)
+            return;
+
         if (attackerName == "")
             return;
 
         if (player == null || player.isActive == false)
             return;
 
+        if (attacker.isActive == false) //죽은애가 다시 못죽이게
+            return;
+
+        if (attackerName == PV.Owner.NickName)
+            return;
+
         player.isActive = false;
-
-        if (PV.IsMine == false) return;
-
         PV.RPC("Death_RPC", RpcTarget.All, attackerName);
-
-
     }
 
     [PunRPC]
-    void Death_RPC(string attackerName = "")
+    void Death_RPC(string attackerName)
     {
+        var attackerMesh = GameManager.Instance.UserMeshMap[attackerName];
+        attackerMesh.TakeAwayLand(PV.Owner.NickName);
+
         player.isActive = false;
 
         rigidBody.velocity = Vector2.zero;
-        //characterAnim.SetTrigger("death");
         spriteRender.sprite = _dieSprite;
 
         Color dieColor = Color.white;

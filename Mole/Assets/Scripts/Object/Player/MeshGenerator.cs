@@ -1,4 +1,6 @@
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -60,13 +62,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     private static int RoadLayer;
     private static int FinishRoadLayer;
 
+    playerScript player;
+
     public void SetMyColor(Color color)
     {
         myColor = color;
     }
 
     private void Awake()
-    { 
+    {
+        player = GetComponent<playerScript>();
         RoadLayer = LayerMask.NameToLayer("Road");
         FinishRoadLayer = LayerMask.NameToLayer("FinishRoad");
 
@@ -131,40 +136,31 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (other.TryGetComponent<Road>(out Road otherRoad))
         {
+            if (PhotonNetwork.IsMasterClient == false)
+                return;
+
             if (otherRoad._myOwner == null)
                 return;
 
             if (otherRoad._myOwner == this)
                 return;
 
-            if (PV == null)
-                return;
-
-            if (PV.IsMine == false)
+            if (otherRoad._myOwner.PV == null || PV == null)
                 return;
 
             var otherHealth = otherRoad._myOwner.gameObject.GetComponent<PlayerHealth>();
             if (otherHealth == null || otherHealth.PlayerActive == false)
                 return;
 
-            if (otherRoad._myOwner.PV != null)
-            {
-                PV.RPC("TakeAwayOtherLand_RPC", RpcTarget.All, otherRoad._myOwner.PV.Owner.NickName);
-                otherHealth.Death(PV.Owner.NickName);
-
-                myKillText.text = ++myKillCount + " Kill";
-            }
-            
-
+            otherHealth.Death(player, PV.Owner.NickName);
         }
     }
 
-
-
-    [PunRPC]
-    void TakeAwayOtherLand_RPC(string nickName)
+    public void TakeAwayLand(string targetNick)
     {
-        var target = GameManager.Instance.UserMeshMap[nickName];
+        myKillText.text = ++myKillCount + " Kill";
+
+        var target = GameManager.Instance.UserMeshMap[targetNick];
 
         foreach (var otherMeshObj in target._myMeshSet)
         {
@@ -192,8 +188,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             otherRoad._sr.color = myColor;
         }
 
-        GenerateMeshObject(needBfs : false);
+        GenerateMeshObject(needBfs: false);
     }
+
 
     private void OnTriggerExit2D(Collider2D other) 
     {                        
@@ -643,10 +640,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshRenderer = meshObj.GetComponent<MeshRenderer>();
             meshRenderer.material = meshMaterial;
             meshRenderer.material.color = myColor;
-
         }
 
-        meshObj.AddComponent<AttackMesh>().Init(PV.Owner.NickName);
+        meshObj.AddComponent<AttackMesh>().Init(player, PV.Owner.NickName);
         meshObj.transform.position = Vector3.zero;
 
     }

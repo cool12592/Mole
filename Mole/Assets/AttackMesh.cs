@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine;
 public class AttackMesh : MonoBehaviour
 {
     string nickName = "";
-
+    playerScript player;
     private IEnumerator Start()
     {
         yield return null;
@@ -13,13 +14,20 @@ public class AttackMesh : MonoBehaviour
         Destroy(this);
     }
 
-    public void Init(string nickName_)
+    public void Init(playerScript player_, string nickName_)
     {
         nickName = nickName_;
+        player = player_;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (PhotonNetwork.IsMasterClient == false)
+            return;
+
+        if (player == null)
+            return;
+
         if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
             return;
 
@@ -33,7 +41,9 @@ public class AttackMesh : MonoBehaviour
                 return;
             if (nickName == playerHealth.PV.Owner.NickName)
                 return;
-            playerHealth.Death(nickName);
+
+
+            playerHealth.Death(player, nickName);
         }
     }
 }
