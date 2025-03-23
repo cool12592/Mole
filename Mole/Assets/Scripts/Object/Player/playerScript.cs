@@ -186,6 +186,7 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     [SerializeField] GameObject _moveParticle;
     PlayerMovement movement;
+
     private void OnReadyState()
     {
         isActive = false; //행동 못 하게

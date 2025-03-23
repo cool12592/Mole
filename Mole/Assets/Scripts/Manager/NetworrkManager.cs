@@ -236,8 +236,10 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         {
             if(GameStateManager.Instance.NowGameState == GameStateManager.GameState.Lobby)
             {
-                GameStateManager.Instance.ActiveStartBtn();
+                GameStateExecute.ActiveReadyButton();
             }
         }
     }
+
+    [SerializeField] GameStateExecute GameStateExecute;
 }

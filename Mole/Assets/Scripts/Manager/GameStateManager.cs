@@ -105,21 +105,4 @@ public class GameStateManager : MonoBehaviour
         ResultStateAction?.Invoke();
     }
 
-
-    [SerializeField] GameObject startBtn;
-    public void ActiveStartBtn()
-    {
-        if(PhotonNetwork.IsMasterClient)
-        {
-            startBtn.SetActive(true);
-        }
-    }
-
-    public void DeactiveStartBtn()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            startBtn.SetActive(false);
-        }
-    }
 }

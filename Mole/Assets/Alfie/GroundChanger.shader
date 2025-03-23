@@ -50,14 +50,6 @@
                 fixed4 roadColor = tex2D(_RoadTex, i.uv);
                 fixed4 underGroundColor = tex2D(_UnderGroundTex, i.uv);
 
-               
-                if (maskColor.a > 0.1)
-                {
-                    fixed4 finalColor = underGroundColor * maskColor;// * 0.5;
-                    finalColor.a = 0.8;
-                    return finalColor; // 바로 반환 (이후 검사 안 함)
-                }
-
                 if (roadColor.a > 0.1)
                 {
                     fixed4 finalColor = underGroundColor * roadColor;
@@ -65,6 +57,13 @@
                     finalColor.a = 0.2; // 투명도 유지
 
                     return finalColor;
+                }
+
+                if (maskColor.a > 0.1)
+                {
+                    fixed4 finalColor = underGroundColor * maskColor;// * 0.5;
+                    finalColor.a = 0.8;
+                    return finalColor; // 바로 반환 (이후 검사 안 함)
                 }
     
                 clip(-1); // 해당 픽셀을 완전히 삭제 (투명)

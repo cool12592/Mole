@@ -9,12 +9,14 @@ public class GameStateExecute : MonoBehaviour
     public PhotonView PV;
 
     public GameObject AimJoystick, ResponePanel, ResultPanel;
-    public Button ReGameButton;
+    [SerializeField] Button MultiReGameButton, StartBtn,ReadyBtn;
     public Text ResultText;
 
     WaitForSeconds waitForSecond = new WaitForSeconds(1f);
     Text WaitInfoText;
     GameObject GamingUI;
+
+
 
     private void Start()
     { 
@@ -33,18 +35,21 @@ public class GameStateExecute : MonoBehaviour
 
         AimJoystick = GameObject.Find("Canvas").transform.Find("Aim_Joystick").gameObject;
         ResponePanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
-        ResultPanel = GameObject.Find("Canvas").transform.Find("ResultPanel").gameObject;
 
         WaitInfoText = GameObject.Find("Canvas").transform.Find("WaitText").gameObject.GetComponent<Text>();
-        ReGameButton = ResultPanel.transform.Find("regameBTN").gameObject.GetComponent<Button>();
-        ResultText = ResultPanel.transform.Find("resultText").gameObject.GetComponent<Text>();
     }
 
     private void OnLobbyState()
     {
-        GameStateManager.Instance.ActiveStartBtn();
+        ActiveReadyButton();
 
         WaitInfoText.text = "Room Number : " + PhotonNetwork.CurrentRoom.Name + "\n Waiting for Host Start...";
+    }
+
+    public void ActiveReadyButton()
+    {
+        if (PhotonNetwork.IsMasterClient)
+            ReadyBtn.gameObject.SetActive(true);
     }
 
     private void OnReadyState()
@@ -55,12 +60,7 @@ public class GameStateExecute : MonoBehaviour
         if (GamingUI != null)
             GamingUI.SetActive(true);
         WaitInfoText.text = "";
-        if (ReGameButton.IsActive())
-            ReGameButton.onClick.Invoke();
-
-        GameStateManager.Instance.DeactiveStartBtn();
-
-
+       
         if (PhotonNetwork.IsMasterClient)
             StartCoroutine(ReadyCoroutine());
     }
@@ -80,16 +80,42 @@ public class GameStateExecute : MonoBehaviour
 
         AimJoystick.SetActive(false);
         ResponePanel.SetActive(false);
-        ResultPanel.SetActive(true);
+
+        GameManager.Instance.DeactiveResultPanel(GameManager.ResultPanel.MultiDefeat);
+        GameManager.Instance.ActiveResultPanel(GameManager.ResultPanel.MultiResult);
         //ResultText.text = "경기 결과\n" + GameManager.Instance.RangkingLogText.text;
 
     }
 
-    public void ChangeReadyState()
+    public void ClickReady()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient == false)
+            return;
+
+        PV.RPC("ForceReady_RPC", RpcTarget.All);
+        ReadyBtn.gameObject.SetActive(false);
+        StartBtn.gameObject.SetActive(true);
+
+
+    }
+
+    public void ClickStart()
+    {
+        if (PhotonNetwork.IsMasterClient == false)
+            return;
+
+        ReadyBtn.gameObject.SetActive(false);
+        StartBtn.gameObject.SetActive(false);
+
+        GameStateManager.Instance.ChangeGameStateForAllUser(GameStateManager.GameState.Ready);
+    }
+
+    [PunRPC]
+    void ForceReady_RPC()
+    {
+        if (MultiReGameButton.IsActive())
         {
-            GameStateManager.Instance.ChangeGameStateForAllUser(GameStateManager.GameState.Ready);
+            MultiReGameButton.onClick.Invoke();
         }
     }
 
