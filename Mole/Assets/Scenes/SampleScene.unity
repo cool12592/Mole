@@ -11763,7 +11763,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 1st
+  m_Text: 2st
 --- !u!222 &200496228
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -48836,7 +48836,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &431771356
 RectTransform:
   m_ObjectHideFlags: 0
@@ -55672,7 +55672,7 @@ MonoBehaviour:
     type: 3}
   myRankBackGroundSprite: {fileID: 21300000, guid: 84b03a826e7c1154d83ceb026388c9c7,
     type: 3}
-  RankTexts:
+  RankInfoTexts:
   - {fileID: 1751154114}
   - {fileID: 1106431060}
   - {fileID: 1091664712}
@@ -55687,6 +55687,11 @@ MonoBehaviour:
   - {fileID: 1135061526}
   - {fileID: 1688103247}
   - {fileID: 1440298268}
+  RankNumberTexts:
+  - {fileID: 2092822520}
+  - {fileID: 200496227}
+  - {fileID: 1434694636}
+  - {fileID: 1430835753}
   timerText: {fileID: 55744714}
 --- !u!4 &1271460584
 Transform:
@@ -67372,7 +67377,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 1st
+  m_Text: 3st
 --- !u!222 &1434694637
 CanvasRenderer:
   m_ObjectHideFlags: 0

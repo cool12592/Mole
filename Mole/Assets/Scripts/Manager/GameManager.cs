@@ -268,10 +268,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] Sprite otherRankBackGroundSprite;
     [SerializeField] Sprite myRankBackGroundSprite;
-    [SerializeField] Text[] RankTexts;
+    [SerializeField] Text[] RankInfoTexts;
     [SerializeField] Image[] RankImages;
-
     [SerializeField] GameObject[] RankObjs;
+    [SerializeField] Text[] RankNumberTexts;
 
     private void UpdateRankingBoard()
     {
@@ -330,7 +330,7 @@ public class GameManager : MonoBehaviour
             if (count <= 2)
             {
                 RankImages[count].sprite = otherRankBackGroundSprite;
-                RankTexts[count].text = str;
+                RankInfoTexts[count].text = str;
                 RankObjs[count].SetActive(true);
             }
 
@@ -352,7 +352,9 @@ public class GameManager : MonoBehaviour
         {
             RankObjs[RankObjs.Length - 1].SetActive(true);
             RankImages[RankImages.Length - 1].sprite = myRankBackGroundSprite;
-            RankTexts[RankTexts.Length - 1].text = myStr;
+            RankInfoTexts[RankInfoTexts.Length - 1].text = myStr;
+
+            RankNumberTexts[RankNumberTexts.Length - 1].text = myRank.ToString() + "st";
         }
 
 
