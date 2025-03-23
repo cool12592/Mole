@@ -58,6 +58,11 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (!BGM.isPlaying)
+            {
+                BGM.Stop(); 
+            }
+
             if (PhotonNetwork.IsConnected)
                 PhotonNetwork.Disconnect();
             else

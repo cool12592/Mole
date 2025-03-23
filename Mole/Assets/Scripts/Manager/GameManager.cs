@@ -635,7 +635,7 @@ public class GameManager : MonoBehaviour
 
     public void OnClickUpTimer()
     {
-        if(timer <=80)
+        if(timer <=170)
         {
             timer += 10;
             SynchTimer();
