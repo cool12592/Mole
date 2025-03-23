@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using System.Linq;
+using System;
 public class GameManager : MonoBehaviour
 {
     public PhotonView PV;
@@ -580,5 +581,43 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject[] ResultObjs;
     [SerializeField] Image[] ResultImages;
 
+
+
+    [SerializeField] Transform FadeOutMaskObj;
+    bool _isStarting = false;
+
+    [SerializeField] GameObject screenTouch;
+
+    public void StartShrinkScaleCoroutine(Vector3 targetScale, Action onComplete)
+    {
+        if (_isStarting)
+            return;
+        _isStarting = true;
+        StartCoroutine(ShrinkScaleCoroutine(targetScale, onComplete));
+    }
+
+    IEnumerator ShrinkScaleCoroutine(Vector3 targetScale, Action onComplete)
+    {
+        screenTouch.SetActive(false);
+
+        float duration = 0.5f;
+        Vector3 startScale = FadeOutMaskObj.localScale;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            float t = time / duration;
+            FadeOutMaskObj.localScale = Vector3.Lerp(startScale, targetScale, t);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        FadeOutMaskObj.localScale = targetScale;
+        screenTouch.SetActive(true);
+        _isStarting = false;
+
+        onComplete?.Invoke();
+
+    }
 
 }

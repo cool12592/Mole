@@ -195,7 +195,7 @@ public class playerScript : MonoBehaviourPunCallbacks
             _moveParticle.SetActive(false);
         if (PV.IsMine)
         {
-            ChangeRandomPosition();
+            SetRandomPosition();
             movement.DashInit();
         }
     }
@@ -214,16 +214,44 @@ public class playerScript : MonoBehaviourPunCallbacks
         PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
     }
 
-    private void ChangeRandomPosition()
-    {
-        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-        transform.position = new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-5f, 5f), 0);
-        GetComponent<Animator>().SetBool("walk", false);
-    }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.V))
             CheatGoast();
+    }
+
+    private void SetRandomPosition()
+    {
+        movement.noSyncTime = true;
+
+        transform.rotation = Quaternion.identity;
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+
+        Vector3 spawnPosition;
+        int maxAttempts = 10000;
+        int attempt = 0;
+        float checkRadius = 3f;
+
+        do
+        {
+            spawnPosition = new Vector3(UnityEngine.Random.Range(-12f, 12f), UnityEngine.Random.Range(-12f, 12f), 0f); // 3D 좌표
+
+            // 스폰 위치에 플레이어가 있는지 체크
+            bool hasPlayer = Physics.CheckSphere(spawnPosition, checkRadius, LayerMask.GetMask("Player"));
+
+            if (!hasPlayer) // 아무도 없으면 스폰
+            {
+                transform.position = spawnPosition;
+                movement.noSyncTime = false;
+                return;
+            }
+
+            attempt++;
+
+        } while (attempt < maxAttempts);
+
+        movement.noSyncTime = false;
+        Debug.LogWarning("스폰할 수 있는 위치를 찾을 수 없습니다.");
     }
 }

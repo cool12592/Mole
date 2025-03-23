@@ -22,35 +22,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject MainRobbyUI;
     [SerializeField] GameObject MultiRobbyUI;
 
-    [SerializeField] Transform FadeOutMaskObj;
-    bool _isStarting = false;
-
-    [SerializeField] GameObject screenTouch;
-
-    IEnumerator ShrinkScaleCoroutine(Vector3 targetScale, Action onComplete)
-    {
-        screenTouch.SetActive(false);
-
-        float duration = 0.5f;
-        Vector3 startScale = FadeOutMaskObj.localScale;
-        float time = 0f;
-
-        while (time < duration)
-        {
-            float t = time / duration;
-            FadeOutMaskObj.localScale = Vector3.Lerp(startScale, targetScale, t);
-            time += Time.deltaTime;
-            yield return null;
-        }
-
-        FadeOutMaskObj.localScale = targetScale;
-        onComplete?.Invoke();
-        _isStarting = false;
-
-        screenTouch.SetActive(true);
-
-    }
-
+    
     public void ActiveMultiUI()
     {
         MainRobbyUI.SetActive(false);
@@ -67,17 +39,13 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     public void StartButton()
     {
-        if (_isStarting)
-            return;
-        _isStarting = true;
-
-        StartCoroutine(ShrinkScaleCoroutine(Vector3.zero, Connect));
+        GameManager.Instance.StartShrinkScaleCoroutine(Vector3.zero, Connect);
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         PhotonNetwork.Disconnect();
-        StartCoroutine(ShrinkScaleCoroutine(Vector3.one * 2f, null));
+        GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null);
     }
 
     private void Awake()
@@ -222,7 +190,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
                 GameManager.Instance.ResponePanel.SetActive(false);
 
 
-                StartCoroutine(ShrinkScaleCoroutine(Vector3.one * 2f, null));
+                GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null);
 
                 return;
             }

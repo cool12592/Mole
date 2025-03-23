@@ -89,11 +89,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    public bool noSyncTime = false;
     private void otherPositionSync()
     {
         if (PV.IsMine == false)
         {
-            if ((transform.position - receivePos).sqrMagnitude >= 100)
+            if (noSyncTime || (transform.position - receivePos).sqrMagnitude >= 10)
                 transform.position = receivePos;
             else
                 transform.position = Vector3.Lerp(transform.position, receivePos, Time.deltaTime * 10);
