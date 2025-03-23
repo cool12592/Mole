@@ -28,8 +28,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     private Quaternion receiveRotation;
 
     SpriteRenderer _spriteRenderer;
-    [SerializeField] Sprite _idleSprite;
-    [SerializeField] Sprite _runSprite;
+    public Sprite _idleSprite;
+    public Sprite _runSprite;
     bool _isIdle = true;
     [SerializeField] float animChangeTerm = 0.1f;
     float nextChangeAnimTime = 0f;

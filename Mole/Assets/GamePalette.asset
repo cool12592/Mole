@@ -12,15 +12,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ac8fda84e9d65443aebf8e2cff80959, type: 3}
   m_Name: GamePalette
   m_EditorClassIdentifier: 
-  colors:
-  - {r: 0, g: 0.6036329, b: 1, a: 1}
-  - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 1, g: 0.9584457, b: 0, a: 1}
-  - {r: 0.10893285, g: 1, b: 0, a: 1}
-  - {r: 1, g: 0, b: 0.5860157, a: 1}
-  - {r: 0, g: 1, b: 0.95960426, a: 1}
-  - {r: 0.7587352, g: 0, b: 1, a: 1}
-  - {r: 1, g: 0.5719801, b: 0, a: 1}
-  - {r: 0, g: 1, b: 0.443995, a: 1}
-  - {r: 0.58611536, g: 0, b: 1, a: 1}
-  - {r: 0.34117648, g: 0.21176472, b: 0.14901961, a: 1}
+  colorInfos:
+  - color: {r: 0.17254902, g: 0.74509805, b: 1, a: 1}
+    spries:
+    - {fileID: 21300000, guid: e86feb35b54e942a0859db6cf2b1f626, type: 3}
+    - {fileID: 21300000, guid: 13390bad6982648cf87a6c2b3dbb844d, type: 3}
+    - {fileID: 21300000, guid: f7fd465abf24a4b66833e8c7f916cc34, type: 3}
+  - color: {r: 0.9098039, g: 0.18039216, b: 0.18039216, a: 1}
+    spries:
+    - {fileID: 21300000, guid: e06d17a40a8a84f8bbd411d1dbe4d055, type: 3}
+    - {fileID: 21300000, guid: 04ba7939a8e7241838da58f5143efd83, type: 3}
+    - {fileID: 21300000, guid: eb653f3895e3c4a0d8a19ad6f21440cc, type: 3}
+  - color: {r: 0.18039216, g: 0.85882354, b: 0.25882354, a: 1}
+    spries:
+    - {fileID: 21300000, guid: e0ff9e440f7f741f580e3033939ab416, type: 3}
+    - {fileID: 21300000, guid: 7bcd1be0c9cd640a8bd7ab51731effdc, type: 3}
+    - {fileID: 21300000, guid: f655510fc1f444ad793744ea82fc53bb, type: 3}
+  - color: {r: 1, g: 0.38431373, b: 0.7176471, a: 1}
+    spries:
+    - {fileID: 21300000, guid: 0463cfc551576438893e994a34874ca6, type: 3}
+    - {fileID: 21300000, guid: a039bdba1bc5f4ba695a71b9923005ac, type: 3}
+    - {fileID: 21300000, guid: b209a5318814e4c609dac7904e6264e6, type: 3}
+  - color: {r: 0.72156864, g: 0.27058825, b: 1, a: 1}
+    spries:
+    - {fileID: 21300000, guid: ad35cf59dcbdd4d98a0e4f30614f1f0f, type: 3}
+    - {fileID: 21300000, guid: fa840ea4bd9c94859a97bdd827664bf9, type: 3}
+    - {fileID: 21300000, guid: 12cdcfda059e1452083b8a8bdb55f439, type: 3}
+  - color: {r: 1, g: 0.42313161, b: 0, a: 1}
+    spries:
+    - {fileID: 21300000, guid: db3857b0ea8274f34a07b22d97893f50, type: 3}
+    - {fileID: 21300000, guid: 61ed20599665a4ea29126303c0dec640, type: 3}
+    - {fileID: 21300000, guid: cc83c4c4f127e45d7913f84c9ccac691, type: 3}

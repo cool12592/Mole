@@ -22,7 +22,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
     private enum ColorList { Original, DamagedColor };
     Timer.TimerStruct healthTimer = new Timer.TimerStruct(0.35f);
-    [SerializeField] Sprite _dieSprite;
+    public Sprite _dieSprite;
 
     public bool PlayerActive => player.isActive;
 

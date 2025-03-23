@@ -22,12 +22,14 @@ public class GameManager : MonoBehaviour
     IEnumerator rankingBoardCoroutine;
     WaitForSeconds waitForSecnds = new WaitForSeconds(1f);
 
-    public Dictionary<int, Color> UserColor = new Dictionary<int, Color>();
     int MemberCount = 0;
     Dictionary<string, int> deadPersonDict = new Dictionary<string, int>(); //hash set rpc인자로 안되네...
 
+    public string[] UserNames;
+    
     public void StartGame()
     {
+        deadPersonDict.Clear();
         _isGameEnd = false;
         if (PhotonNetwork.IsMasterClient)
             MemberCount = RankingBoard.Count;
@@ -116,6 +118,29 @@ public class GameManager : MonoBehaviour
         RankingBoard = rankingBoard;
     }
 
+
+    private void SynchUserNames()
+    {
+        string[] userNames_ = { "", "", "", "", "", "" };
+        for(int i=0;i< UserNames.Length; i++)
+        {
+            userNames_[i] = UserNames[i];
+        }
+        PV.RPC("SynchUserNames_RPC", RpcTarget.AllBuffered, UserNames);
+
+    }
+
+    [PunRPC]
+    private void SynchUserNames_RPC(string[] userNames_)
+    {
+        for (int i = 0; i < userNames_.Length; i++)
+        {
+            UserNames[i] = userNames_[i];
+        }
+    }
+
+
+
     public void UserJoin(string nickName)
     {
         if (PhotonNetwork.IsMasterClient)
@@ -124,9 +149,56 @@ public class GameManager : MonoBehaviour
                 RankingBoard.Add(nickName, 0);
             UpdateRankingBoard();
 
+
+            UserNames[FindEmptyNameIndex()] = nickName;
+            SynchUserNames();
             if (PhotonNetwork.LocalPlayer.NickName != nickName) //방장입장에서 나 아닌 다른 유저면
                 InitGameState(nickName);
         }
+    }
+
+    public int FindMyNameIndex(string nick)
+    {
+        for (int i = 0; i < UserNames.Length; i++)
+        {
+            if (UserNames[i] == nick)
+                return i;
+        }
+
+        return -1;
+    }
+
+    void DeleteUserName(string nick)
+    {
+        for (int i = 0; i < UserNames.Length; i++)
+        {
+            if (UserNames[i] == nick)
+                UserNames[i] = "";
+        }
+    }
+    int FindEmptyNameIndex()
+    {
+        HashSet<string> names = new HashSet<string>();
+        foreach(var player in PhotonNetwork.PlayerList)
+        {
+            names.Add(player.NickName);
+        }
+
+        for(int i=0;i<UserNames.Length;i++)
+        {
+            if(names.Contains(UserNames[i]) == false)
+            {
+                UserNames[i] = "";
+            }
+        }
+
+        for (int i = 0; i < UserNames.Length; i++)
+        {
+            if (UserNames[i] == "")
+                return i;
+        }
+
+        return 0;
     }
 
     private void InitGameState(string nickName)
@@ -148,6 +220,9 @@ public class GameManager : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            DeleteUserName(nickName);
+            SynchUserNames();
+
             WriteDeadPeson(nickName);
             if (RankingBoard.ContainsKey(nickName))
                 RankingBoard.Remove(nickName);

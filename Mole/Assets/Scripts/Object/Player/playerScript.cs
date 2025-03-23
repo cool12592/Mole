@@ -6,6 +6,7 @@ using Photon.Realtime;
 using UnityEngine.UI;
 using Unity.Collections; // NativeArray
 using Cinemachine;
+using System.Drawing;
 
 public class playerScript : MonoBehaviourPunCallbacks
 {
@@ -23,13 +24,15 @@ public class playerScript : MonoBehaviourPunCallbacks
     CinemachineVirtualCamera CM;
 
     [SerializeField] MeshGenerator meshGenerator;
+    PlayerHealth health;
+    [SerializeField] GamePalette palette;
 
     // Start is called before the first frame update
     private void Awake()
     {
-        NickNameText.text = PV.IsMine ? PhotonNetwork.NickName.ToString() : PV.Owner.NickName.ToString();
-        // NickNameText.color = PV.IsMine ? Color.green : Color.red;
+        health = GetComponent<PlayerHealth>();
         movement = GetComponent<PlayerMovement>();
+        NickNameText.text = PV.IsMine ? PhotonNetwork.NickName.ToString() : PV.Owner.NickName.ToString();
 
         if (PV.IsMine)
         {   
@@ -38,6 +41,27 @@ public class playerScript : MonoBehaviourPunCallbacks
             InitCamera();            
         }
 
+        StartCoroutine(CoColorSetting());
+    }
+
+    private IEnumerator CoColorSetting()
+    {
+        yield return new WaitUntil(() => GameManager.Instance.FindMyNameIndex(PV.Owner.NickName)!=-1);
+        SettingColor(palette.GetColorInfo(GameManager.Instance.FindMyNameIndex(NickNameText.text)));
+    }
+
+    void SettingColor(GamePalette.ColorInfo colorInfo)
+    {
+        if (colorInfo == null)
+            return;
+
+        NickNameText.color = colorInfo.color;
+        movement._idleSprite = colorInfo.spries[0];
+        movement._runSprite = colorInfo.spries[1];
+        health._dieSprite = colorInfo.spries[2];
+
+        meshGenerator.SetMyColor(colorInfo.color);
+        GetComponent<SpriteRenderer>().sprite = colorInfo.spries[0];
     }
 
     void InitCamera()

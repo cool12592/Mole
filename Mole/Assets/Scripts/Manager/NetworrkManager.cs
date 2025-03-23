@@ -227,4 +227,17 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
         GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Lobby);
     }
+
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        // 여기서 마스터 전용 로직 처리 가능
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if(GameStateManager.Instance.NowGameState == GameStateManager.GameState.Lobby)
+            {
+                GameStateManager.Instance.ActiveStartBtn();
+            }
+        }
+    }
 }

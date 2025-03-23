@@ -799,6 +799,7 @@ MonoBehaviour:
   moveJoystick: {fileID: 0}
   aimJoystick: {fileID: 0}
   meshGenerator: {fileID: 5003663037539567242}
+  palette: {fileID: 11400000, guid: ed52dd3026c19864885d2f24f10366eb, type: 2}
   _moveParticle: {fileID: 7632980249345971223}
 --- !u!114 &2241514368879471466
 MonoBehaviour:

@@ -8,7 +8,7 @@ public class GameStateExecute : MonoBehaviour
 {
     public PhotonView PV;
 
-    public GameObject StartButton, AimJoystick, ResponePanel, ResultPanel;
+    public GameObject AimJoystick, ResponePanel, ResultPanel;
     public Button ReGameButton;
     public Text ResultText;
 
@@ -23,7 +23,6 @@ public class GameStateExecute : MonoBehaviour
         GameStateManager.Instance.ReadyStateAction += OnReadyState;
         GameStateManager.Instance.FightStateAction += OnFightState;
         GameStateManager.Instance.ResultStateAction += OnResultState;
-        GameObject.Find("Canvas").transform.Find("gameStartBTN").gameObject.GetComponent<Button>().onClick.AddListener(ChangeReadyState);
         GamingUI = GameObject.Find("Canvas").transform.Find("Gaming").gameObject;
 
     }
@@ -32,7 +31,6 @@ public class GameStateExecute : MonoBehaviour
     {
         PV = GetComponent<PhotonView>();
 
-        StartButton = GameObject.Find("Canvas").transform.Find("gameStartBTN").gameObject;
         AimJoystick = GameObject.Find("Canvas").transform.Find("Aim_Joystick").gameObject;
         ResponePanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
         ResultPanel = GameObject.Find("Canvas").transform.Find("ResultPanel").gameObject;
@@ -44,12 +42,9 @@ public class GameStateExecute : MonoBehaviour
 
     private void OnLobbyState()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            StartButton.SetActive(true);
-        }
+        GameStateManager.Instance.ActiveStartBtn();
 
-        WaitInfoText.text = "Room Name: " + PhotonNetwork.CurrentRoom.Name + "\n Waiting for host...";
+        WaitInfoText.text = "Room Number : " + PhotonNetwork.CurrentRoom.Name + "\n Waiting for Host Start...";
     }
 
     private void OnReadyState()
@@ -63,8 +58,8 @@ public class GameStateExecute : MonoBehaviour
         if (ReGameButton.IsActive())
             ReGameButton.onClick.Invoke();
 
-        if (PhotonNetwork.IsMasterClient)
-            StartButton.SetActive(false);
+        GameStateManager.Instance.DeactiveStartBtn();
+
 
         if (PhotonNetwork.IsMasterClient)
             StartCoroutine(ReadyCoroutine());

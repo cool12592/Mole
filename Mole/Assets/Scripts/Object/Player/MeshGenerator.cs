@@ -2,7 +2,6 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -61,57 +60,25 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     private static int RoadLayer;
     private static int FinishRoadLayer;
 
-    [PunRPC]
-    void RPC_AssignColor(float r, float g, float b)
+    public void SetMyColor(Color color)
     {
-        var color = new Color(r, g, b);
         myColor = color;
-        var nickname = GetComponent<playerScript>().NickNameText;
-        nickname.color = myColor;
-        
-        if(GameManager.Instance.UserMeshMap.ContainsKey(nickname.text)==false)
-        {
-            GameManager.Instance.UserMeshMap[nickname.text] = this;
-        }
-        else
-            GameManager.Instance.UserMeshMap[nickname.text] = this;
-    }
-
-    public void AssignColor()
-    {
-        if (!PhotonNetwork.IsMasterClient) return;
-        if (PV.IsMine)
-        {
-            palette.Init();
-        }
-
-        Color color = Color.white;
-        if (GameManager.Instance.UserColor.TryGetValue(PV.OwnerActorNr, out Color outColor))
-        {
-            color = outColor;
-        }
-        else
-        {
-            color = palette.GetColor();
-            GameManager.Instance.UserColor[PV.OwnerActorNr] = color;
-        }
-
-        PV.RPC("RPC_AssignColor", RpcTarget.AllBuffered, color.r, color.g, color.b);
     }
 
     private void Awake()
-    {
+    { 
         RoadLayer = LayerMask.NameToLayer("Road");
         FinishRoadLayer = LayerMask.NameToLayer("FinishRoad");
 
         PV = GetComponent<PhotonView>();
-        AssignColor();
 
         myKillText = GameObject.Find("Canvas").transform.Find("Gaming").transform.Find("Rope").transform.Find("Kill").transform.Find("MyKillCount").GetComponent<Text>();
 
         myKillText.text = "0 Kill";
 
         ResetSharedFloat();
+
+        GameManager.Instance.UserMeshMap[PV.Owner.NickName] = this;
     }
 
     private IEnumerator Start()
