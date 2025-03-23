@@ -52,7 +52,10 @@ public class GameStateExecute : MonoBehaviour
     public void ActiveReadyButton()
     {
         if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = true;
             ReadyBtn.gameObject.SetActive(true);
+        }
     }
 
     private void OnReadyState()
@@ -104,6 +107,7 @@ public class GameStateExecute : MonoBehaviour
         if (PhotonNetwork.IsMasterClient == false)
             return;
 
+        PhotonNetwork.CurrentRoom.IsOpen = false;
         ReadyBtn.gameObject.SetActive(false);
         StartBtn.gameObject.SetActive(false);
 

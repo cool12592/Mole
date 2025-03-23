@@ -63,7 +63,14 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         if (_isStarting)
             return;
         _isStarting = true;
-        StartCoroutine(ShrinkScaleCoroutine(Vector3.zero,Connect));
+
+        StartCoroutine(ShrinkScaleCoroutine(Vector3.zero, Connect));
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        PhotonNetwork.Disconnect();
+        StartCoroutine(ShrinkScaleCoroutine(Vector3.one * 2f, null));
     }
 
     private void Awake()
