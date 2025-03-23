@@ -63,7 +63,6 @@ public class GameStateExecute : MonoBehaviour
     private void OnReadyState()
     {
         GameManager.Instance.StartGame(); 
-        GameManager.Instance.ActiveTimer();
 
         WaitInfoText.text = "";
        

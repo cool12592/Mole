@@ -112,8 +112,13 @@ public class GameManager : MonoBehaviour
 
     public void StartLobby()
     {
+        ActiveTimer();
+
         if (PhotonNetwork.IsMasterClient)
         {
+            timerUpButton.SetActive(true);
+            timerDownButton.SetActive(true);
+
             //마스터는 마지막으로 rankingboard 초기화
             for (int i = 0; i < RankingBoard.Count; i++)
             {
@@ -127,6 +132,12 @@ public class GameManager : MonoBehaviour
         deadPersonDict.Clear();
         _isGameEnd = false;
         AllMemberCount = RankingBoard.Count;
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            timerUpButton.SetActive(false);
+            timerDownButton.SetActive(false);
+        }
     }
 
     private void Awake()
@@ -184,8 +195,6 @@ public class GameManager : MonoBehaviour
 
     private void SynchTimer()
     {
-        if (_onTimer == false)
-            return;
         if (PhotonNetwork.IsMasterClient)
         {
             PV.RPC("SynchTimer_RPC", RpcTarget.Others, timer);
@@ -530,6 +539,9 @@ public class GameManager : MonoBehaviour
     ///timer
     ///
     [SerializeField] Text timerText;
+    [SerializeField] GameObject timerUpButton;
+    [SerializeField] GameObject timerDownButton;
+
     float timer = 0f;
     bool _onTimer = false;
     public void SetTimer(float time_)
@@ -549,7 +561,7 @@ public class GameManager : MonoBehaviour
 
     public void ActiveTimer()
     {
-        SetTimer(15f);
+        SetTimer(90);
         timerText.gameObject.SetActive(true);
     }
 
@@ -618,6 +630,24 @@ public class GameManager : MonoBehaviour
 
         onComplete?.Invoke();
 
+    }
+
+
+    public void OnClickUpTimer()
+    {
+        if(timer <=80)
+        {
+            timer += 10;
+            SynchTimer();
+        }
+    }
+    public void OnClickDownTimer()
+    {
+        if (20 <= timer)
+        {
+            timer -= 10;
+            SynchTimer();
+        }
     }
 
 }
