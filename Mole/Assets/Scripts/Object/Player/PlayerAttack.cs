@@ -54,7 +54,7 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
         attackTimer.ResetCoolTime();
         SoundManager.Instance.PlayShootingSound();
         OnAttackAnimation();
-        PV.RPC("ShootRPC", RpcTarget.AllBuffered, PhotonNetwork.NickName);
+        PV.RPC("ShootRPC", RpcTarget.All, PhotonNetwork.NickName);
     }
 
     [PunRPC]

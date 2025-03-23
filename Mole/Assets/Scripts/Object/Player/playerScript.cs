@@ -181,6 +181,7 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     private void OnResultState()
     {
+        meshGenerator.OnALLDestroy();
         meshGenerator.enabled = false;
 
         PV.RPC("DestroyRPC", RpcTarget.All);

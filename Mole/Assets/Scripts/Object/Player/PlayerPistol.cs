@@ -50,8 +50,8 @@ public class PlayerPistol : MonoBehaviourPunCallbacks
         Quaternion angleAxis = Quaternion.AngleAxis(angle - 180.0f, Vector3.forward);
         Quaternion rotation = Quaternion.Slerp(gunObject.transform.rotation, angleAxis, 20.0f * Time.deltaTime);
 
-        PV.RPC("GunFlipRPC", RpcTarget.AllBuffered, direction.x);
-        PV.RPC("GunLookingAtRPC", RpcTarget.AllBuffered, rotation);
+        PV.RPC("GunFlipRPC", RpcTarget.All, direction.x);
+        PV.RPC("GunLookingAtRPC", RpcTarget.All, rotation);
     }
 
     [PunRPC]

@@ -21,9 +21,12 @@ public class Road : MonoBehaviour
     [SerializeField] HashSet<Road> neighRoadSet = new HashSet<Road>();
     public SpriteRenderer _sr;
 
-    List<Road> RemoveList= new List<Road>();
 
-    Vector3 originScale = Vector3.one;
+    private static int RoadLayer;
+    private static int FinishRoadLayer;
+
+    public bool IsInPool = false;
+
     private void OnTriggerEnter2D(Collider2D other) 
     {
         if(IsNeighCheckRoad)
@@ -56,16 +59,19 @@ public class Road : MonoBehaviour
 
     private void Awake()
     {
-        originScale = new Vector3(0.6f, 0.6f, 0.6f);
+        RoadLayer = LayerMask.NameToLayer("Road");
+        FinishRoadLayer = LayerMask.NameToLayer("FinishRoad");
         meshDetector.OnMeshCollide += CollideMesh;
     }
 
-    public void Release()
+    public void Init()
     {
-        gameObject.layer = LayerMask.NameToLayer("Road");
-        _isFinishRoad = false;
-        transform.localScale = originScale;
+        _myOwner = null;
         _myMeshSet = null;
+
+        neighRoadSet.Clear();
+        gameObject.layer = RoadLayer;
+        _isFinishRoad = false;
     }
 
     public void ChangeLayer()
@@ -73,10 +79,10 @@ public class Road : MonoBehaviour
         if (this == null) return;
         if (_isFinishRoad) return;
 
-        gameObject.layer = LayerMask.NameToLayer("FinishRoad");
+        gameObject.layer = FinishRoadLayer;
         _isFinishRoad = true;
 
-        transform.localScale = originScale * 2f;
+        transform.localScale *= 2f;
     }
 
     void CollideMesh(GameObject go)

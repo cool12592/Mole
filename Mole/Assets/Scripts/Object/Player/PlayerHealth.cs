@@ -89,7 +89,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
     private void ChangeColor(ColorList color)
     {
-        PV.RPC("ChangeColorRPC", RpcTarget.AllBuffered, (int)color);
+        PV.RPC("ChangeColorRPC", RpcTarget.All, (int)color);
     }
 
     [PunRPC]

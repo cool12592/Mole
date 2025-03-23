@@ -58,6 +58,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public LayerMask targetLayer;    // 충돌 레이어 설정
 
+    private static int RoadLayer;
+    private static int FinishRoadLayer;
+
     [PunRPC]
     void RPC_AssignColor(float r, float g, float b)
     {
@@ -98,6 +101,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
+        RoadLayer = LayerMask.NameToLayer("Road");
+        FinishRoadLayer = LayerMask.NameToLayer("FinishRoad");
+
         PV = GetComponent<PhotonView>();
         AssignColor();
 
@@ -150,12 +156,12 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("FinishRoad"))
+        if (other.gameObject.layer == FinishRoadLayer)
         {
             lastEnterRoad = other.GetComponent<Road>();
         }
 
-        if (other.gameObject.layer != LayerMask.NameToLayer("Road"))
+        if (other.gameObject.layer != RoadLayer)
             return;
 
         if (other.TryGetComponent<Road>(out Road otherRoad))
@@ -226,7 +232,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     private void OnTriggerExit2D(Collider2D other) 
     {                        
-        if (other.gameObject.layer == LayerMask.NameToLayer("FinishRoad"))
+        if (other.gameObject.layer == FinishRoadLayer)
         {
             if(2<posList.Count)
                 return;
@@ -433,7 +439,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         pos.z = GetSharedFloat();
 
-        photonView.RPC("CreateLoad_RPC", RpcTarget.AllBuffered, pos.x, pos.y, pos.z,isNeighCheckRoad,shatter);
+        photonView.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad,shatter);
     }
 
     void CreateLoadForward(Vector3 pos,bool isNeighCheckRoad ,bool shatter = false)
@@ -444,14 +450,14 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         pos += transform.up * 0.7f;
         pos.z = GetSharedFloat();
 
-        photonView.RPC("CreateLoad_RPC", RpcTarget.AllBuffered, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
+        photonView.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
     }
 
     [PunRPC]
     void CreateLoad_RPC(float x, float y, float z,bool isNeighCheckRoad,bool shatter)
     {
         Vector3 pos = new Vector3(x, y, z);
-        var road = GlobalRoadPool.Instance.GetRoad(pos);
+        var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one *0.6f);
         
         road._sr.color = myColor;
         _myRoadSet.Add(road);
@@ -476,10 +482,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     void FirstCreateLoad_RPC(float x, float y, float z, float radius)
     {
         Vector3 pos = new Vector3(x, y, z);
-        var road = GlobalRoadPool.Instance.GetRoad(pos);
-
-        road.transform.localScale = Vector3.one * radius * 0.7f;
-
+        var road = GlobalRoadPool.Instance.GetRoad(pos, Vector3.one * radius * 0.7f);
         road._sr.color = myColor;
 
         _myRoadSet.Add(road);
@@ -837,7 +840,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         sharedFloat = 0f; 
     }
 
-    public void OnDestroy()
+    public void OnALLDestroy()
     {
         myKillText.text = "0 Kill";
 
