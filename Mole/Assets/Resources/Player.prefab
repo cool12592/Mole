@@ -859,6 +859,7 @@ MonoBehaviour:
   inHouse: 1
   _dust: {fileID: 2899531883608483867}
   _dustRockSR: {fileID: 1678369328577501713}
+  _myRoadSet: []
   palette: {fileID: 11400000, guid: ed52dd3026c19864885d2f24f10366eb, type: 2}
   pieceSprite: {fileID: 21300000, guid: 784e9a231784af64a9ef9161df8e96a2, type: 3}
   _dustParticle: {fileID: 4838720777567209497, guid: 3ebe07f9809ae4977a84a50ead9cc9c7,
