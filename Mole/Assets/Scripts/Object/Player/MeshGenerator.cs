@@ -371,7 +371,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         count++;
 
-        HapticPatterns.PlayPreset(HapticPatterns.PresetType.SoftImpact);
+
+        if (PV.IsMine)
+        {
+            HapticPatterns.PlayPreset(HapticPatterns.PresetType.SoftImpact);
+        }
         
         // if(0.1f<timer)
         {

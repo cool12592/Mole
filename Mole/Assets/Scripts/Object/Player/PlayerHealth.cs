@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using Lofelt.NiceVibrations;
 
 public class PlayerHealth : MonoBehaviourPunCallbacks
 {
@@ -146,6 +147,11 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     [PunRPC]
     void Death_RPC(string attackerName,int type)
     {
+        if (PV.IsMine)
+        {
+            HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
+        }
+
         wallCollider.enabled = false;
         meshCollider.enabled = false;
 
