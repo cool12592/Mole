@@ -140,9 +140,15 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         PV.RPC("Death_RPC", RpcTarget.All, attackerName);
     }
 
+    [SerializeField] Collider2D wallCollider;
+    [SerializeField] Collider meshCollider;
+
     [PunRPC]
     void Death_RPC(string attackerName)
     {
+        wallCollider.enabled = false;
+        meshCollider.enabled = false;
+
         var attackerMesh = GameManager.Instance.UserMeshMap[attackerName];
         attackerMesh.TakeAwayLand(PV.Owner.NickName);
 

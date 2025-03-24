@@ -93,7 +93,7 @@ public class playerScript : MonoBehaviourPunCallbacks
         }
     }
 
-
+    [SerializeField] Collider2D wallCollider;
     public void Goast()
     {
         //transform.position = Vector3.zero;
@@ -115,11 +115,18 @@ public class playerScript : MonoBehaviourPunCallbacks
             Destroy(transform.GetChild(i).gameObject);
         }
 
-        transform.GetChild(0).gameObject.layer = LayerMask.NameToLayer("Goast");
+        if(wallCollider!=null)
+        {
+            wallCollider.enabled = true;
+            wallCollider.gameObject.layer = LayerMask.NameToLayer("Goast");
+        }
+
+        transform.position = Vector3.zero;
 
         GetComponent<SpriteRenderer>().enabled = false;
-        isGoast = true;
         GetComponent<PlayerMovement>().moveSpeed = 50;
+
+        isGoast = true;
     }
 
     public void CheatGoast()

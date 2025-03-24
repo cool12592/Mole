@@ -800,6 +800,7 @@ MonoBehaviour:
   aimJoystick: {fileID: 0}
   meshGenerator: {fileID: 5003663037539567242}
   palette: {fileID: 11400000, guid: ed52dd3026c19864885d2f24f10366eb, type: 2}
+  wallCollider: {fileID: 7554290197182403767}
   _moveParticle: {fileID: 7632980249345971223}
 --- !u!114 &2241514368879471466
 MonoBehaviour:
@@ -816,6 +817,8 @@ MonoBehaviour:
   PV: {fileID: 0}
   healthImage: {fileID: 0}
   _dieSprite: {fileID: 21300000, guid: 0b6e4e285787c474fb8b5ec580960574, type: 3}
+  wallCollider: {fileID: 7554290197182403767}
+  meshCollider: {fileID: 3525614782175177017}
 --- !u!114 &8945967696009623113
 MonoBehaviour:
   m_ObjectHideFlags: 0
