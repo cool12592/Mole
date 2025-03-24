@@ -410,6 +410,11 @@ public class GameManager : MonoBehaviour
             RankObjs[i].gameObject.SetActive(false);
         }
 
+        if(GameStateManager.Instance.NowGameState == GameStateManager.GameState.Lobby || GameStateManager.Instance.NowGameState == GameStateManager.GameState.Result)
+        {
+            return;
+        }
+
         foreach (string str in rankStr)
         {
             count++;
