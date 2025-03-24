@@ -11,7 +11,7 @@ public class AttackMesh : MonoBehaviour
 
     private IEnumerator Start()
     {
-        yield return null;
+        yield return new WaitForFixedUpdate();
         Destroy(this);
     }
 
