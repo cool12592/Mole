@@ -227,11 +227,41 @@ public class playerScript : MonoBehaviourPunCallbacks
             CheatGoast();
     }
 
+    void TeleportUsers()
+    {
+        if(PhotonNetwork.IsMasterClient == false)
+            return;
+
+        List<int> numbers = new List<int>();
+        for (int i = 0; i < 9; i++)
+        {
+            numbers.Add(i);
+        }
+
+        // 섞고 앞에서 6개 선택
+        Shuffle(numbers);
+
+        playerScript[] allPlayers = FindObjectsOfType<playerScript>();
+
+        int cnt = 0;
+        foreach(var player in allPlayers)
+        {
+            Vector3 pos = GameManager.Instance.startingPositions[numbers[cnt]].position;
+            cnt++;
+            PV.RPC("TeleportRandomPosition_RPC", RpcTarget.All,pos.x,pos.y,0f, player.PV.Owner.ActorNumber);
+        }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameStateExecute _stateExecute = FindObjectOfType<GameStateExecute>();
+            _stateExecute.OnLateReadyState();
+        }
+    }
 
     [PunRPC]
-    private void TeleportRandomPosition_RPC(float x, float y, float z, string nickName)
+    private void TeleportRandomPosition_RPC(float x, float y, float z, int actorNumber)
     {
-        if(PV.Owner.NickName == nickName)
+        if(PV.Owner.ActorNumber == actorNumber)
         {
             transform.rotation = Quaternion.identity;
             GetComponent<Rigidbody2D>().velocity = Vector2.zero;
@@ -242,49 +272,14 @@ public class playerScript : MonoBehaviourPunCallbacks
     }
 
 
-    void TeleportUsers()
+    void Shuffle(List<int> list)
     {
-        if(PhotonNetwork.IsMasterClient == false)
-            return;
-
-        playerScript[] allPlayers = FindObjectsOfType<playerScript>();
-        Vector2 center = Vector2.zero;
-        int userCount = allPlayers.Length;
-        float radius = 12f;
-        float minDistance = 4f;
-
-        List<Vector2> positions = new List<Vector2>();
-        for (int i = 0; i < userCount; i++)
+        for (int i = 0; i < list.Count; i++)
         {
-            positions.Add(Vector2.zero); 
-        }
-
-        for (int i = 0; i < userCount; i++)
-        {
-            Vector2 pos;
-            int attempts = 0;
-            do
-            {
-                pos = center + Random.insideUnitCircle * radius;
-                attempts++;
-                if (attempts > 1000)
-                {
-                    break;
-                }
-            } while (positions.Exists(p => Vector2.Distance(p, pos) < minDistance));
-
-            positions[i] = pos;
-        }
-
-        for(int i=0;i<positions.Count;i++)
-        {
-            PV.RPC("TeleportRandomPosition_RPC", RpcTarget.All,positions[i].x,positions[i].y,0f, allPlayers[i].PV.Owner.NickName);
-        }
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            GameStateExecute _stateExecute = FindObjectOfType<GameStateExecute>();
-            _stateExecute.OnLateReadyState();
+            int randIndex = Random.Range(i, list.Count);
+            int temp = list[i];
+            list[i] = list[randIndex];
+            list[randIndex] = temp;
         }
     }
 }

@@ -159,6 +159,12 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void TakeAwayLand(string targetNick)
     {
+        // if(PV.IsMine)
+        // {
+        //     HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
+        // }
+
+
         myKillText.text = ++myKillCount + " Kill";
 
         var target = GameManager.Instance.UserMeshMap[targetNick];
@@ -346,6 +352,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             GetComponent<SpriteRenderer>().color = Color.white;
             return;
         }
+
+        HapticPatterns.PlayPreset(HapticPatterns.PresetType.SoftImpact);
 
        // GetComponent<SpriteRenderer>().color = Color.red;
 
@@ -707,6 +715,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (PV.IsMine)
         {
+            HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
             _meshGenSound.Play();
             GetComponent<PlayerMovement>().ShakeCamera();
 
