@@ -32,7 +32,7 @@ public class playerScript : MonoBehaviourPunCallbacks
     {
         health = GetComponent<PlayerHealth>();
         movement = GetComponent<PlayerMovement>();
-        NickNameText.text = PV.IsMine ? PhotonNetwork.NickName.ToString() : PV.Owner.NickName.ToString();
+        NickNameText.text = PV.IsMine ? PhotonNetwork.NickName.ToString().Substring(2) : PV.Owner.NickName.ToString().Substring(2);
 
         if (PV.IsMine)
         {   
@@ -47,7 +47,7 @@ public class playerScript : MonoBehaviourPunCallbacks
     private IEnumerator CoColorSetting()
     {
         yield return new WaitUntil(() => GameManager.Instance.FindMyNameIndex(PV.Owner.NickName)!=-1);
-        SettingColor(palette.GetColorInfo(GameManager.Instance.FindMyNameIndex(NickNameText.text)));
+        SettingColor(palette.GetColorInfo(GameManager.Instance.FindMyNameIndex(PV.Owner.NickName)));
     }
 
     void SettingColor(GamePalette.ColorInfo colorInfo)

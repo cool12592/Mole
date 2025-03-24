@@ -41,7 +41,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator CoWaitRequest()
     {
-        yield return new WaitForSeconds(2f); // 안전빵
+        yield return new WaitForSeconds(1f); // 안전빵
+        PV.RPC("SetScreenTextRPC", RpcTarget.All, "", 50);
 
         ActiveMultiResultPanel();
     }
@@ -77,7 +78,7 @@ public class GameManager : MonoBehaviour
             if (RankingBoard[nick] == 0)
                 break;
             ResultObjs[count].SetActive(true);
-            ResultTexts[count].text = nick;
+            ResultTexts[count].text = nick.Substring(2);
             ResultTexts[count].text += " " + ((int)RankingBoard[nick]).ToString();
 
             if (nick == PhotonNetwork.LocalPlayer.NickName)
@@ -97,7 +98,7 @@ public class GameManager : MonoBehaviour
         {
             int sortedKeyIndex = i - count;
             ResultObjs[i].SetActive(true);
-            ResultTexts[i].text = sortedKeys2[sortedKeyIndex];
+            ResultTexts[i].text = sortedKeys2[sortedKeyIndex].Substring(2);
             ResultTexts[i].text += " (Die)";
 
             if (sortedKeys2[sortedKeyIndex] == PhotonNetwork.LocalPlayer.NickName)
@@ -422,7 +423,7 @@ public class GameManager : MonoBehaviour
             if (count <= 2)
             {
                 RankImages[count].sprite = otherRankBackGroundSprite;
-                RankInfoTexts[count].text = str;
+                RankInfoTexts[count].text = str.Substring(2);
                 RankObjs[count].SetActive(true);
             }
 
@@ -444,7 +445,7 @@ public class GameManager : MonoBehaviour
         {
             RankObjs[RankObjs.Length - 1].SetActive(true);
             RankImages[RankImages.Length - 1].sprite = myRankBackGroundSprite;
-            RankInfoTexts[RankInfoTexts.Length - 1].text = myStr;
+            RankInfoTexts[RankInfoTexts.Length - 1].text = myStr.Substring(2);
 
             RankNumberTexts[RankNumberTexts.Length - 1].text = myRank.ToString() + "st";
         }
@@ -510,7 +511,7 @@ public class GameManager : MonoBehaviour
     [PunRPC]
     private void killLogOnTheScreenRPC(string killer, string deadPerson)
     {
-        ScreenText.text = killer + " Killed " + deadPerson;
+        ScreenText.text = killer.Substring(2) + " Killed " + deadPerson.Substring(2);
     }
 
     [PunRPC]

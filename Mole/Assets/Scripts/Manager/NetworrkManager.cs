@@ -22,7 +22,20 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject MainRobbyUI;
     [SerializeField] GameObject MultiRobbyUI;
 
-    
+    public static readonly List<string> CommonSymbols = new List<string>
+    {
+        // 대문자 A~Z
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+        "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+        "U", "V", "W", "X", "Y", "Z",
+
+        // 소문자 a~z
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
+        "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
+        "u", "v", "w", "x", "y", "z"
+    };
+
+
     public void ActiveMultiUI()
     {
         MainRobbyUI.SetActive(false);
@@ -77,22 +90,14 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-
-        string nickName = NickNameInput.text;
-        if(nickName == "")
+        string nickName = CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)] + CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)];
+        if(NickNameInput.text=="")
         {
-            int rnd = UnityEngine.Random.Range(0, 10000);
-            nickName += rnd.ToString();
+            nickName += UnityEngine.Random.Range(1000, 10000).ToString();
         }
-
-        foreach (Player player in PhotonNetwork.PlayerList)
+        else
         {
-            if (player.NickName == nickName)
-            {
-                int rnd = UnityEngine.Random.Range(0, 10000);
-                nickName += rnd.ToString();
-                break;
-            }
+            nickName += NickNameInput.text;
         }
 
         PhotonNetwork.LocalPlayer.NickName = nickName;
