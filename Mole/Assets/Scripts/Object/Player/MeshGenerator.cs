@@ -42,7 +42,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     Text myKillText;
 
 
-    public HashSet<Road> _myRoadSet = new HashSet<Road>();
+    public List<Road> _myRoadSet = new List<Road>();
     public HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
 
     HashSet<GameObject> _curInMyMeshSet = new HashSet<GameObject>();
@@ -614,7 +614,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
 
 
-        photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z);
+        photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z, needBfs);
     }
 
     [PunRPC]
@@ -665,7 +665,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     /// </summary>
     /// <param name="verticesList">Mesh를 구성할 정점 리스트</param>
     [PunRPC]
-    private void SyncPosListAndGenerateMesh_RPC(Vector2[] receivedPosList, float z)
+    private void SyncPosListAndGenerateMesh_RPC(Vector2[] receivedPosList, float z,bool needBfs)
     {
         // 🔥 받은 posList로 동기화
         posList = new List<Vector2>(receivedPosList);
@@ -734,18 +734,30 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         // 삼각형 인덱스 자동 생성
         List<int> triangles = new List<int>();
-        for (int i = 1; i < vertices.Length - 1; i++)
+        if (needBfs)
         {
-            triangles.Add(0);
-            triangles.Add(i);
-            triangles.Add(i + 1);
-        }
+            for (int i = 1; i < vertices.Length - 1; i++)
+            {
+                triangles.Add(0);
+                triangles.Add(i);
+                triangles.Add(i + 1);
+            }
 
-        for (int i = 1; i < vertices.Length - 1; i++)
+            for (int i = 1; i < vertices.Length - 1; i++)
+            {
+                triangles.Add(originLastIndex);
+                triangles.Add(i);
+                triangles.Add(i + 1);
+            }
+        }
+        else
         {
-            triangles.Add(originLastIndex);
-            triangles.Add(i);
-            triangles.Add(i + 1);
+            for (int i = 1; i < vertices.Length - 1; i++)
+            {
+                triangles.Add(i-1);
+                triangles.Add(i);
+                triangles.Add(i + 1);
+            }
         }
 
         // ✅ Mesh 데이터 적용
