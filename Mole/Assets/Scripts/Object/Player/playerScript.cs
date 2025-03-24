@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using Unity.Collections; // NativeArray
 using Cinemachine;
 using System.Drawing;
+using Photon.Pun.Demo.PunBasics;
 
 public class playerScript : MonoBehaviourPunCallbacks
 {
@@ -196,11 +197,14 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     private void OnReadyState()
     {
+        if (isActive == false)
+            return;
+
         isActive = false; //행동 못 하게
         if (_moveParticle != null)
             _moveParticle.SetActive(false);
 
-        if (PhotonNetwork.IsMasterClient)
+        if (PV. Owner.IsMasterClient)
         {
             TeleportUsers();
         }
@@ -227,28 +231,37 @@ public class playerScript : MonoBehaviourPunCallbacks
             CheatGoast();
     }
 
-    void TeleportUsers()
+    [PunRPC]
+    public void TeleportRandomPosition_RPC(float x, float y, float z)
     {
-        if(PhotonNetwork.IsMasterClient == false)
+        transform.rotation = Quaternion.identity;
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        transform.position = new Vector3(x,y,z);
+
+        meshGenerator.enabled = true;
+    }
+
+    public void TeleportUsers()
+    {
+        if (PhotonNetwork.IsMasterClient == false)
             return;
 
         List<int> numbers = new List<int>();
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < GameManager.Instance.startingPositions.Length; i++)
         {
             numbers.Add(i);
         }
 
-        // 섞고 앞에서 6개 선택
         Shuffle(numbers);
 
         playerScript[] allPlayers = FindObjectsOfType<playerScript>();
 
         int cnt = 0;
-        foreach(var player in allPlayers)
+        foreach (var player in allPlayers)
         {
             Vector3 pos = GameManager.Instance.startingPositions[numbers[cnt]].position;
             cnt++;
-            PV.RPC("TeleportRandomPosition_RPC", RpcTarget.All,pos.x,pos.y,0f, player.PV.Owner.ActorNumber);
+            player.PV.RPC("TeleportRandomPosition_RPC", RpcTarget.All, pos.x, pos.y, 0f);
         }
 
         if (PhotonNetwork.IsMasterClient)
@@ -258,28 +271,15 @@ public class playerScript : MonoBehaviourPunCallbacks
         }
     }
 
-    [PunRPC]
-    private void TeleportRandomPosition_RPC(float x, float y, float z, int actorNumber)
-    {
-        if(PV.Owner.ActorNumber == actorNumber)
-        {
-            transform.rotation = Quaternion.identity;
-            GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-            transform.position = new Vector3(x,y,z);
-
-            meshGenerator.enabled = true;
-        }
-    }
-
-
     void Shuffle(List<int> list)
     {
         for (int i = 0; i < list.Count; i++)
         {
-            int randIndex = Random.Range(i, list.Count);
+            int randIndex = UnityEngine.Random.Range(i, list.Count);
             int temp = list[i];
             list[i] = list[randIndex];
             list[randIndex] = temp;
         }
     }
+
 }

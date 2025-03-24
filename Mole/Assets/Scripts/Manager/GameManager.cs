@@ -657,4 +657,7 @@ public class GameManager : MonoBehaviour
 
     public Transform[] startingPositions;
 
+
+
+    
 }
