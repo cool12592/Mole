@@ -131,7 +131,7 @@ public class GameStateExecute : MonoBehaviour
 
     IEnumerator ReadyCoroutine()
     {
-        GameManager.Instance.PV.RPC("SetScreenTextRPC", RpcTarget.All, "", 100);
+        GameManager.Instance.PV.RPC("SetScreenTextRPC", RpcTarget.All, "", 50);
 
         PV.RPC("SetCountDown_RPC", RpcTarget.All, 0);
         yield return waitForSecond;

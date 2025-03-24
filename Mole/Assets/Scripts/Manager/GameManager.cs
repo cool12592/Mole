@@ -499,7 +499,7 @@ public class GameManager : MonoBehaviour
     IEnumerator EraseScreenText(float delayTime)
     {
         yield return new WaitForSeconds(delayTime);
-        PV.RPC("SetScreenTextRPC", RpcTarget.All,"",100);
+        PV.RPC("SetScreenTextRPC", RpcTarget.All,"",50);
 
         if (killLogQueue.Count > 0) //대기하는 애 있으면 출력
         {
@@ -510,7 +510,7 @@ public class GameManager : MonoBehaviour
     [PunRPC]
     private void killLogOnTheScreenRPC(string killer, string deadPerson)
     {
-        ScreenText.text = killer + "님이 " + deadPerson + "님을 처치했습니다";
+        ScreenText.text = killer + " Killed " + deadPerson;
     }
 
     [PunRPC]
