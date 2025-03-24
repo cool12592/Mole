@@ -53,7 +53,7 @@ public class AttackMesh : MonoBehaviour
                 return;
 
 
-            playerHealth.Death(player, nickName);
+            playerHealth.Death(player, nickName,1);
         }
     }
 }

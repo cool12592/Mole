@@ -157,7 +157,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
     }
 
-    public void TakeAwayLand(string targetNick)
+    public void TakeAwayLand(string targetNick, int type)
     {
         if (PV.IsMine)
         {
@@ -183,7 +183,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             if (otherRoad == null)
                 continue;
 
-            if (otherRoad._isFinishRoad == false)
+            if (type != 1 && otherRoad._isFinishRoad == false)
             {
                 posList.Add(otherRoad.transform.position);
             }

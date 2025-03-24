@@ -119,7 +119,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         }
     }
 
-    public void Death(playerScript attacker, string attackerName)
+    public void Death(playerScript attacker, string attackerName, int type = 0)
     {
         if (PhotonNetwork.IsMasterClient == false)
             return;
@@ -137,20 +137,20 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
             return;
 
         player.isActive = false;
-        PV.RPC("Death_RPC", RpcTarget.All, attackerName);
+        PV.RPC("Death_RPC", RpcTarget.All, attackerName, type);
     }
 
     [SerializeField] Collider2D wallCollider;
     [SerializeField] Collider meshCollider;
 
     [PunRPC]
-    void Death_RPC(string attackerName)
+    void Death_RPC(string attackerName,int type)
     {
         wallCollider.enabled = false;
         meshCollider.enabled = false;
 
         var attackerMesh = GameManager.Instance.UserMeshMap[attackerName];
-        attackerMesh.TakeAwayLand(PV.Owner.NickName);
+        attackerMesh.TakeAwayLand(PV.Owner.NickName, type);
 
         player.isActive = false;
 
