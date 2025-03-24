@@ -4,10 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
-using System.IO;
-using System;
-using System.Security.Cryptography;
-using UnityEditor.XR;
+using UnityEngine.SceneManagement;
 
 public class NetworrkManager : MonoBehaviourPunCallbacks
 {
@@ -82,14 +79,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
                 Application.Quit();
             else
             {
-                if (PhotonNetwork.IsConnected)
-                {
-                    PhotonNetwork.Disconnect();
-                }
-                if (PhotonNetwork.InRoom)
-                {
-                    PhotonNetwork.LeaveRoom(); // 방에서 나감 (이후 콜백으로 처리 가능)
-                }
+                ExitGame();
             }
         }
     }
@@ -247,4 +237,32 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     }
 
     [SerializeField] GameStateExecute GameStateExecute;
+
+
+
+
+    public void ExitGame()
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom(); // 이 후 OnLeftRoom()에서 Disconnect
+        }
+        else if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.Disconnect();
+            SceneManager.LoadScene("SampleScene");
+
+        }
+    }
+
+
+    public override void OnLeftRoom()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.Disconnect();
+            SceneManager.LoadScene("SampleScene");
+
+        }
+    }
 }

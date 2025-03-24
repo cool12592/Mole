@@ -20,7 +20,6 @@ public class GlobalSpritePool : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
 
         InitPool();
     }

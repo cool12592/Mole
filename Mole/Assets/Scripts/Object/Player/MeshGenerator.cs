@@ -159,10 +159,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void TakeAwayLand(string targetNick)
     {
-        // if(PV.IsMine)
-        // {
-        //     HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
-        // }
+        if (PV.IsMine)
+        {
+            HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
+        }
 
 
         myKillText.text = ++myKillCount + " Kill";
@@ -353,8 +353,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
         }
 
-        HapticPatterns.PlayPreset(HapticPatterns.PresetType.SoftImpact);
-
        // GetComponent<SpriteRenderer>().color = Color.red;
 
         if (transform.position == lastPos)
@@ -368,11 +366,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
 
         ActiveDust();
-        
+
         lastPos = transform.position;
 
         count++;
-       // if(0.1f<timer)
+
+        //if(count%2==0)
+        {
+            HapticPatterns.PlayPreset(HapticPatterns.PresetType.SoftImpact);
+        }
+        // if(0.1f<timer)
         {
             bool shatter = false;
             if (count % 5 == 0)

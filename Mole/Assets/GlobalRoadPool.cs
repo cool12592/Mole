@@ -20,7 +20,6 @@ public class GlobalRoadPool : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
 
         InitPool();
     }
