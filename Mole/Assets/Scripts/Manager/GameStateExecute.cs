@@ -65,7 +65,10 @@ public class GameStateExecute : MonoBehaviour
         GameManager.Instance.StartGame(); 
 
         WaitInfoText.text = "";
-       
+    }
+
+    public void OnLateReadyState()
+    {
         if (PhotonNetwork.IsMasterClient)
             StartCoroutine(ReadyCoroutine());
     }
@@ -139,7 +142,7 @@ public class GameStateExecute : MonoBehaviour
         PV.RPC("SetCountDown_RPC", RpcTarget.All, 3);
 
 
-        PV.RPC("ChangeGameStateForAllUser", RpcTarget.All, GameStateManager.GameState.Fight);
+        GameStateManager.Instance.ChangeGameStateForAllUser(GameStateManager.GameState.Fight);
 
         yield return waitForSecond;
         PV.RPC("SetCountDown_RPC", RpcTarget.All, 4);

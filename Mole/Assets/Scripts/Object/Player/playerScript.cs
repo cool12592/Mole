@@ -190,13 +190,12 @@ public class playerScript : MonoBehaviourPunCallbacks
     private void OnReadyState()
     {
         isActive = false; //행동 못 하게
-        meshGenerator.enabled = true;
         if (_moveParticle != null)
             _moveParticle.SetActive(false);
-        if (PV.IsMine)
+
+        if (PhotonNetwork.IsMasterClient)
         {
-            SetRandomPosition();
-            movement.DashInit();
+            TeleportUsers();
         }
     }
 
@@ -221,37 +220,64 @@ public class playerScript : MonoBehaviourPunCallbacks
             CheatGoast();
     }
 
-    private void SetRandomPosition()
+
+    [PunRPC]
+    private void TeleportRandomPosition_RPC(float x, float y, float z, string nickName)
     {
-        movement.noSyncTime = true;
-
-        transform.rotation = Quaternion.identity;
-        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-
-        Vector3 spawnPosition;
-        int maxAttempts = 10000;
-        int attempt = 0;
-        float checkRadius = 3f;
-
-        do
+        if(PV.Owner.NickName == nickName)
         {
-            spawnPosition = new Vector3(UnityEngine.Random.Range(-12f, 12f), UnityEngine.Random.Range(-12f, 12f), 0f); // 3D 좌표
+            transform.rotation = Quaternion.identity;
+            GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            transform.position = new Vector3(x,y,z);
 
-            // 스폰 위치에 플레이어가 있는지 체크
-            bool hasPlayer = Physics.CheckSphere(spawnPosition, checkRadius, LayerMask.GetMask("Player"));
+            meshGenerator.enabled = true;
+        }
+    }
 
-            if (!hasPlayer) // 아무도 없으면 스폰
+
+    void TeleportUsers()
+    {
+        if(PhotonNetwork.IsMasterClient == false)
+            return;
+
+        playerScript[] allPlayers = FindObjectsOfType<playerScript>();
+        Vector2 center = Vector2.zero;
+        int userCount = allPlayers.Length;
+        float radius = 12f;
+        float minDistance = 4f;
+
+        List<Vector2> positions = new List<Vector2>();
+        for (int i = 0; i < userCount; i++)
+        {
+            positions.Add(Vector2.zero); 
+        }
+
+        for (int i = 0; i < userCount; i++)
+        {
+            Vector2 pos;
+            int attempts = 0;
+            do
             {
-                transform.position = spawnPosition;
-                movement.noSyncTime = false;
-                return;
-            }
+                pos = center + Random.insideUnitCircle * radius;
+                attempts++;
+                if (attempts > 1000)
+                {
+                    break;
+                }
+            } while (positions.Exists(p => Vector2.Distance(p, pos) < minDistance));
 
-            attempt++;
+            positions[i] = pos;
+        }
 
-        } while (attempt < maxAttempts);
+        for(int i=0;i<positions.Count;i++)
+        {
+            PV.RPC("TeleportRandomPosition_RPC", RpcTarget.All,positions[i].x,positions[i].y,0f, allPlayers[i].PV.Owner.NickName);
+        }
 
-        movement.noSyncTime = false;
-        Debug.LogWarning("스폰할 수 있는 위치를 찾을 수 없습니다.");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameStateExecute _stateExecute = FindObjectOfType<GameStateExecute>();
+            _stateExecute.OnLateReadyState();
+        }
     }
 }
