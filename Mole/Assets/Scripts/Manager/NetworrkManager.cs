@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System.IO;
 using System;
 using System.Security.Cryptography;
+using UnityEditor.XR;
 
 public class NetworrkManager : MonoBehaviourPunCallbacks
 {
@@ -76,10 +77,20 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
                 BGM.Stop(); 
             }
 
-            if (PhotonNetwork.IsConnected)
-                PhotonNetwork.Disconnect();
-            else
+
+            if (PhotonNetwork.IsConnected == false && PhotonNetwork.InRoom == false)
                 Application.Quit();
+            else
+            {
+                if (PhotonNetwork.IsConnected)
+                {
+                    PhotonNetwork.Disconnect();
+                }
+                if (PhotonNetwork.InRoom)
+                {
+                    PhotonNetwork.LeaveRoom(); // 방에서 나감 (이후 콜백으로 처리 가능)
+                }
+            }
         }
     }
 
@@ -105,6 +116,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         if(PrivateRoomInput.text != "")
         {
             RoomOptions roomoption = new RoomOptions { MaxPlayers = 6 };
+            roomoption.EmptyRoomTtl = 0; // 방에 아무도 없으면 즉시 삭제
             PhotonNetwork.JoinOrCreateRoom(PrivateRoomInput.text, roomoption, null);
         }
         else
@@ -122,6 +134,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     {
         string roomName = (UnityEngine.Random.Range(0, 10000)).ToString();
         RoomOptions roomOptions = new RoomOptions { MaxPlayers = 6 };
+        roomOptions.EmptyRoomTtl = 0; // 방에 아무도 없으면 즉시 삭제
         PhotonNetwork.CreateRoom(roomName, roomOptions, null);
     }
 
