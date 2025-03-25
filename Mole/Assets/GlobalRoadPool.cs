@@ -64,11 +64,12 @@ public class GlobalRoadPool : MonoBehaviour
 
     public void Release(Road obj)
     {
-        if (obj.IsInPool) //Áßº¹»ðÀÔ ¹æÁö
+        if (obj.IsInPool) //ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             return;
 
+        obj.Release();
         obj.gameObject.SetActive(false);
-       // obj.transform.SetParent(transform); // Ç®ÀÇ ÀÚ½ÄÀ¸·Î µÇµ¹¸²
+       // obj.transform.SetParent(transform); // Ç®ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Çµï¿½ï¿½ï¿½
         pool.Push(obj);
         obj.IsInPool = true;
     }

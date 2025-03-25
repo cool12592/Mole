@@ -313,7 +313,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
                 
 
-                if(cnt==2)
+                if(cnt==6)
                 {
                     GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null);
                     return;

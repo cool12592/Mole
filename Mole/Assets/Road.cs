@@ -28,30 +28,6 @@ public class Road : MonoBehaviour
 
     public bool IsInPool = false;
 
-    private void OnTriggerEnter2D(Collider2D other) 
-    {
-        if(IsNeighCheckRoad)
-        {
-            if(other.TryGetComponent<Road>(out Road road))
-            {
-                if(road.IsNeighCheckRoad == false)
-                    return;
-                
-                neighRoadSet.Add(road);
-            }
-        }    
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (IsNeighCheckRoad)
-        {
-            if (other.TryGetComponent<Road>(out Road road))
-            {
-                neighRoadSet.Remove(road);
-            }
-        }
-    }
 
     public HashSet<Road> GetNeigh()
     {
@@ -100,6 +76,44 @@ public class Road : MonoBehaviour
             return;
         }
         GlobalRoadPool.Instance.Release(this);
+    }
+
+
+    public void Release()
+    {
+        foreach(var road in neighRoadSet)
+        {
+            if(road!= null)
+                road.neighRoadSet.Remove(this);
+        }
+
+        neighRoadSet.Clear();
+    }
+
+
+
+    float scanRadius = 1f;
+    [SerializeField] LayerMask targetLayer;
+    [SerializeField] Collider2D[] results = new Collider2D[20]; // 최대 10개까지 감지
+
+    void Start()
+    {
+        int hitCount = Physics2D.OverlapCircleNonAlloc(
+            transform.position,
+            scanRadius,
+            results,
+            targetLayer
+        );
+
+        for (int i = 0; i < hitCount && i< results.Length; i++)
+        {
+            Collider2D col = results[i];
+            if(col.gameObject.TryGetComponent<Road>(out Road road))
+            {
+                neighRoadSet.Add(road);
+                road.neighRoadSet.Add(this);
+            }
+        }
     }
 
 }
