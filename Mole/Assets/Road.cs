@@ -62,19 +62,19 @@ public class Road : MonoBehaviour
         gameObject.layer = FinishRoadLayer;
         _isFinishRoad = true;
 
-        transform.localScale *= 1f;
+        transform.localScale *= 2f;
     }
 
     void CollideMesh(GameObject go)
     {
         if (_isFinishRoad == false)
             return;
-        if (_myMeshSet == null)
-            return;
-        if(_myMeshSet.Contains(go))
-        {
-            return;
-        }
+        //if (_myMeshSet == null)
+        //    return;
+        //if (_myMeshSet.Contains(go))
+        //{
+        //    return;
+        //}
         GlobalRoadPool.Instance.Release(this);
     }
 
@@ -95,7 +95,7 @@ public class Road : MonoBehaviour
 
 
 
-    float scanRadius = 2f;
+    float scanRadius = 0.5f;
     [SerializeField] LayerMask targetLayer;
     [SerializeField] Collider2D[] results;
 
@@ -118,5 +118,17 @@ public class Road : MonoBehaviour
             }
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+    
 
 }

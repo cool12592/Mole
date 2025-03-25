@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1797b173c53b68248a25e2599daa5cce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boxCol: {fileID: 2445635288625027830}
 --- !u!65 &2445635288625027830
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -117,7 +118,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1000}
+  m_Size: {x: 1.7, y: 1.7, z: 1000}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8213540584583598257
 GameObject:
@@ -197,7 +198,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ec4f817cb6b99f74299432bb2b3794bb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 22a8cc63860b46f40affbe28164e4b67, type: 3}
   m_Color: {r: 1, g: 0.27120164, b: 0, a: 0.29803923}
   m_FlipX: 0
   m_FlipY: 0
@@ -244,7 +245,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.66, y: 3.66}
+    oldSize: {x: 1.7066667, y: 1.7066667}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -277,6 +278,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1152
   results:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
