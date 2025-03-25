@@ -40,14 +40,14 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        RunTimer();
-        if (Input.GetKeyDown(KeyCode.T)) TakeDamage(PhotonNetwork.NickName);
+    // void Update()
+    // {
+    //     RunTimer();
+    //     if (Input.GetKeyDown(KeyCode.T)) TakeDamage(PhotonNetwork.NickName);
 
-        //if (Input.GetKeyDown(KeyCode.H)) Death();
+    //     //if (Input.GetKeyDown(KeyCode.H)) Death();
 
-    }
+    // }
 
     void RunTimer()
     {

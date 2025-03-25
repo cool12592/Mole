@@ -28,21 +28,26 @@ public class playerScript : MonoBehaviourPunCallbacks
     PlayerHealth health;
     [SerializeField] GamePalette palette;
 
+    public string IsSingleNickName = "Player";
+
     // Start is called before the first frame update
     private void Awake()
     {
         health = GetComponent<PlayerHealth>();
         movement = GetComponent<PlayerMovement>();
-        NickNameText.text = PV.IsMine ? PhotonNetwork.NickName.ToString().Substring(2) : PV.Owner.NickName.ToString().Substring(2);
 
-        if (PV.IsMine)
+        if(GameManager.Instance.IsSingleMode ==false)
+            NickNameText.text = PV.IsMine ? PhotonNetwork.NickName.ToString().Substring(2) : PV.Owner.NickName.ToString().Substring(2);
+
+        if (GameManager.Instance.IsSingleMode ||  PV.IsMine)
         {   
             GameManager.Instance.myplayer = gameObject;
            // GameObject.Find("ObjectPoolParent").transform.GetChild(0).gameObject.SetActive(true);
             InitCamera();            
         }
 
-        StartCoroutine(CoColorSetting());
+        if(GameManager.Instance.IsSingleMode==false)
+            StartCoroutine(CoColorSetting());
     }
 
     private IEnumerator CoColorSetting()

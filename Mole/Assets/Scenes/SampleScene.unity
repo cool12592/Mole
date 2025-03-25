@@ -225,7 +225,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Waiting User... Or Host Start
+  m_Text: 
 --- !u!222 &42502642
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -56001,6 +56001,7 @@ MonoBehaviour:
   - {fileID: 1601339246}
   - {fileID: 701831827}
   - {fileID: 1440548315}
+  IsSingleMode: 0
   otherRankBackGroundSprite: {fileID: 21300000, guid: ebf25475b93600e48a77c8dd15a7a1c4,
     type: 3}
   myRankBackGroundSprite: {fileID: 21300000, guid: 84b03a826e7c1154d83ceb026388c9c7,
@@ -66294,6 +66295,8 @@ MonoBehaviour:
   MainRobbyUI: {fileID: 1934221084}
   MultiRobbyUI: {fileID: 1309376884}
   GameStateExecute: {fileID: 1141210217}
+  SinglePlayer: {fileID: 8258143569205903579, guid: 2ff5eb6fd06bb4b02ab1c531efac2eb7,
+    type: 3}
 --- !u!4 &1317366505
 Transform:
   m_ObjectHideFlags: 0
@@ -66545,7 +66548,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1317366504}
         m_TargetAssemblyTypeName: NetworrkManager, Assembly-CSharp
-        m_MethodName: Connect
+        m_MethodName: SingleConnect
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

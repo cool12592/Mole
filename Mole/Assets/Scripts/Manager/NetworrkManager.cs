@@ -74,9 +74,12 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
                 BGM.Stop(); 
             }
 
-
             if (PhotonNetwork.IsConnected == false && PhotonNetwork.InRoom == false)
                 Application.Quit();
+            else if(GameManager.Instance.IsSingleMode)
+            {
+                SceneManager.LoadScene("SampleScene");
+            }
             else
             {
                 ExitGame();
@@ -265,4 +268,46 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
         }
     }
+
+    public void SingleConnect()
+    {
+        GameManager.Instance.StartShrinkScaleCoroutine(Vector3.zero, SingleSpawn);
+    }
+
+    public void SingleSpawn()
+    {
+        DisconnectPanel.SetActive(false);
+
+        GameManager.Instance.IsSingleMode = true;
+        Vector3 spawnPosition;
+        int maxAttempts = 100;
+        int attempt = 0;
+        float checkRadius = 2f;
+
+        do
+        {
+            spawnPosition = new Vector3(UnityEngine.Random.Range(-12f, 12f), UnityEngine.Random.Range(-12f, 12f),0f); // 3D 좌표
+
+            // 스폰 위치에 플레이어가 있는지 체크
+            bool hasPlayer = Physics.CheckSphere(spawnPosition, checkRadius, LayerMask.GetMask("Player"));
+
+            if (!hasPlayer) // 아무도 없으면 스폰
+            {
+                Instantiate(SinglePlayer, spawnPosition, Quaternion.identity);
+                GameManager.Instance.ResponePanel.SetActive(false);
+
+
+                GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null);
+
+                return;
+            }
+
+            attempt++;
+
+        } while (attempt < maxAttempts);
+
+        Debug.LogWarning("스폰할 수 있는 위치를 찾을 수 없습니다.");
+    }
+
+    [SerializeField] GameObject SinglePlayer;
 }

@@ -165,6 +165,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public bool IsSingleMode = false;
+
     private void Start()
     {
         ScreenText = GameObject.Find("Canvas").transform.Find("ScreenText").gameObject.GetComponent<Text>();
@@ -478,7 +480,10 @@ public class GameManager : MonoBehaviour
 
     public void ReportTheMakeLand(string nickName, float addArea)
     {
-        PV.RPC("LadnWrite_RPC", RpcTarget.MasterClient, nickName, addArea); //마스터가 rank업데이트해야함
+        if(IsSingleMode == false)
+            PV.RPC("LadnWrite_RPC", RpcTarget.MasterClient, nickName, addArea); //마스터가 rank업데이트해야함
+        else
+            LadnWrite_RPC(nickName,addArea);
     }
 
     [PunRPC]

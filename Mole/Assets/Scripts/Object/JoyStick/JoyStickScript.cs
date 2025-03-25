@@ -15,6 +15,8 @@ public class JoyStickScript : MonoBehaviour
     [SerializeField] Canvas _canvas = null;
     public static Vector2 InputAxis { private set; get; } = Vector2.zero;
 
+    bool firstClick = true;
+
     private Vector2 GetJoystickDir(Vector2 mousPos)
     {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_rectTransform, mousPos, null, out Vector2 pos);
@@ -42,6 +44,13 @@ public class JoyStickScript : MonoBehaviour
         transform.position = pos;
         gameObject.SetActive(true);
         IsInput = true;
+
+        if(firstClick)
+        {
+            firstClick = false;
+            GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Fight);
+        }
+
     }
 
     public void EndTouch()

@@ -64,6 +64,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     private static int FinishRoadLayer;
 
     playerScript player;
+    bool isFirstMeshCreated = false;
 
     public void SetMyColor(Color color)
     {
@@ -72,22 +73,32 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
+
         player = GetComponent<playerScript>();
         RoadLayer = LayerMask.NameToLayer("Road");
         FinishRoadLayer = LayerMask.NameToLayer("FinishRoad");
 
-        PV = GetComponent<PhotonView>();
+        if(GameManager.Instance.IsSingleMode==false)
+            PV = GetComponent<PhotonView>();
 
         myKillText = GameObject.Find("Canvas").transform.Find("Rope").transform.Find("Kill").transform.Find("MyKillCount").GetComponent<Text>();
 
         ResetSharedFloat();
 
-        GameManager.Instance.UserMeshMap[PV.Owner.NickName] = this;
+        if(GameManager.Instance.IsSingleMode==false)
+            GameManager.Instance.UserMeshMap[PV.Owner.NickName] = this;
+        else
+            GameManager.Instance.UserMeshMap[player.IsSingleNickName] = this;
+
+        if(GameManager.Instance.IsSingleMode)
+            SetMyColor(palette.GetColorInfo(0).color);
+
     }
 
     private IEnumerator Start()
     {
-        yield return new WaitUntil(() => myColor != default(Color));
+        if(GameManager.Instance.IsSingleMode==false)
+            yield return new WaitUntil(() => myColor != default(Color));
 
         // Vector3[] positions =
         // {
@@ -252,6 +263,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     private void LateUpdate()
     {
+        if(isFirstMeshCreated==false)
+            return;
+
         if(_curInMyMeshSet.Count == 0)
         {
             SetInHouse(false);
@@ -372,7 +386,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         count++;
 
 
-        if (PV.IsMine)
+        if (GameManager.Instance.IsSingleMode || PV.IsMine)
         {
             HapticPatterns.PlayPreset(HapticPatterns.PresetType.SoftImpact);
         }
@@ -389,10 +403,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
                 shatter = true;
             }
 
-            if(count%7==0 && PV.IsMine)
+            if(count%7==0)
             {
-                _moveSound.volume = 0.3f;
-                _moveSound.Play();
+                if(GameManager.Instance.IsSingleMode  || PV.IsMine)
+                {
+                    _moveSound.volume = 0.3f;
+                    _moveSound.Play();
+                }
             }
             //if (count%20==0)
             //{
@@ -410,23 +427,29 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     void CreateLoad(Vector3 pos,bool isNeighCheckRoad, bool shatter = false)
     {
-        if (PV.IsMine == false)
+        if (GameManager.Instance.IsSingleMode == false && PV.IsMine == false)
             return;
 
         pos.z = GetSharedFloat();
 
-        photonView.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad,shatter);
+        if(GameManager.Instance.IsSingleMode == false)
+            photonView.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad,shatter);
+        else
+            CreateLoad_RPC( pos.x, pos.y, pos.z,isNeighCheckRoad,shatter);
     }
 
     void CreateLoadForward(Vector3 pos,bool isNeighCheckRoad ,bool shatter = false)
     {
-        if (PV.IsMine == false)
+        if (GameManager.Instance.IsSingleMode == false && PV.IsMine == false)
             return;
 
         pos += transform.up * 0.7f;
         pos.z = GetSharedFloat();
 
-        photonView.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
+        if(GameManager.Instance.IsSingleMode == false)
+            photonView.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
+        else
+            CreateLoad_RPC(pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
     }
 
     [PunRPC]
@@ -451,21 +474,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up * 0.5f);
         }
 
-    }
-
-
-    [PunRPC]
-    void FirstCreateLoad_RPC(float x, float y, float z, float radius)
-    {
-        Vector3 pos = new Vector3(x, y, z);
-        var road = GlobalRoadPool.Instance.GetRoad(pos, Vector3.one * radius * 0.7f);
-        road._sr.color = myColor;
-
-        _myRoadSet.Add(road);
-        OnGenerateMesh += road.ChangeLayer;
-        road._myMeshSet = _myMeshSet;
-        road._myOwner = this;
-        road.IsNeighCheckRoad = true;
     }
 
     void SavePath(Dictionary<Road, Road> parentMap, Road target)
@@ -581,12 +589,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     void GenerateMeshObject(bool needBfs = true)
     {
-         if (PV.IsMine == false)
+         if (GameManager.Instance.IsSingleMode == false && PV.IsMine == false)
             return;
 
         if (posList.Count < 3)
         {
-            photonView.RPC("BabyLand", RpcTarget.All);
+            if(GameManager.Instance.IsSingleMode == false)
+                photonView.RPC("BabyLand", RpcTarget.All);
+            else
+                BabyLand();
+
             return;
         }
         StartCoroutine(CoGenerateMeshObject(needBfs));
@@ -594,7 +606,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     IEnumerator CoGenerateMeshObject(bool needBfs = true)
     {
-        if (PV.IsMine == false)
+
+        if (GameManager.Instance.IsSingleMode == false && PV.IsMine == false)
             yield break;
 
         if (posList.Count < 3)
@@ -617,8 +630,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         float z = GetSharedFloat();
 
 
-
-        photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z, needBfs);
+        if(GameManager.Instance.IsSingleMode == false)
+            photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z, needBfs);
+        else
+            SyncPosListAndGenerateMesh_RPC(posList.ToArray(),z, needBfs);
     }
 
     [PunRPC]
@@ -656,7 +671,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshRenderer.material.color = myColor;
         }
 
-        meshObj.AddComponent<AttackMesh>().Init(player, PV.Owner.NickName);
+        if(GameManager.Instance.IsSingleMode==false)
+            meshObj.AddComponent<AttackMesh>().Init(player, PV.Owner.NickName);
+        else
+            meshObj.AddComponent<AttackMesh>().Init(player, player.IsSingleNickName);
+
         meshObj.transform.position = Vector3.zero;
 
     }
@@ -718,13 +737,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         //float height = maxY - minY; // AABB 세로 길이
         //float boundingBoxArea = width * height; // 사각형 넓이
 
-        if (PV.IsMine)
+        if (GameManager.Instance.IsSingleMode || PV.IsMine)
         {
             HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
             _meshGenSound.Play();
             GetComponent<PlayerMovement>().ShakeCamera();
 
-            GameManager.Instance.ReportTheMakeLand(PV.Owner.NickName, totalArea);
+            if(GameManager.Instance.IsSingleMode == false)
+                GameManager.Instance.ReportTheMakeLand(PV.Owner.NickName, totalArea);
+            else
+                GameManager.Instance.ReportTheMakeLand(player.IsSingleNickName, totalArea);
         }
         var particle = Instantiate(_dustParticle, centerPos, Quaternion.identity);
 
@@ -792,6 +814,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     void FinishLand()
     {
+        isFirstMeshCreated = true;
+
         posList.Clear();
         lastExitRoad = null;
         lastEnterRoad = null;
@@ -806,7 +830,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public float GetSharedFloat()
     {
-        PV.RPC("DecreaseSharedFloat_RPC", RpcTarget.All); 
+        if(GameManager.Instance.IsSingleMode==false)
+            PV.RPC("DecreaseSharedFloat_RPC", RpcTarget.All); 
+        else
+            DecreaseSharedFloat_RPC();
         return sharedFloat; 
     }
 

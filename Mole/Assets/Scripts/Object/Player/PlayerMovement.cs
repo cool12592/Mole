@@ -38,38 +38,25 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     void Start()
     {
         impulseSource = GameObject.Find("CinemachineImpulseSource").GetComponent<CinemachineImpulseSource>();
-        PV = GetComponent<PhotonView>();
+        if(GameManager.Instance.IsSingleMode==false)
+            PV = GetComponent<PhotonView>();
         health = GetComponent<PlayerHealth>();
         player = GetComponent<playerScript>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         characterAnim = GetComponent<Animator>();
         rigidBody = gameObject.GetComponent<Rigidbody2D>();
-
-        if (PV.IsMine)
-        {
-            dashBtnObject = GameObject.Find("Canvas").transform.Find("DashButton").gameObject;
-          //  dashBtnObject.SetActive(true);
-            dashBtn = dashBtnObject.GetComponent<Button>();
-            dashBtn.onClick.AddListener(Dash);
-
-            dashCoolTimeImage = GameObject.Find("Canvas").transform.Find("DashCoolTime").gameObject.GetComponent<Image>();
-            dashBtnText = GameObject.Find("Canvas").transform.Find("DashButton").transform.Find("Text").GetComponent<Text>();
-        }
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        otherPositionSync();
-        if (PV.IsMine)
+        if(GameManager.Instance.IsSingleMode==false)
+            otherPositionSync();
+
+        if (GameManager.Instance.IsSingleMode || PV.IsMine)
         {
             Move(JoyStickScript.InputAxis);
-            RunDashCoolTime();
-            SpeedReturnsAfterDash();
-            AnimationBranch();
         }
-        if (Input.GetKeyDown(KeyCode.R)) Dash();
     }
 
     //변수 동기화
