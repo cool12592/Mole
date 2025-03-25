@@ -62,7 +62,7 @@ public class Road : MonoBehaviour
         gameObject.layer = FinishRoadLayer;
         _isFinishRoad = true;
 
-        transform.localScale *= sizeUp;
+        transform.localScale *= 1f;
     }
 
     void CollideMesh(GameObject go)
@@ -95,7 +95,7 @@ public class Road : MonoBehaviour
 
 
 
-    float scanRadius = 3f;
+    float scanRadius = 2f;
     [SerializeField] LayerMask targetLayer;
     [SerializeField] Collider2D[] results;
 

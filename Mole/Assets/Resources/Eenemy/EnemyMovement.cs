@@ -4,132 +4,168 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-    float moveSpeed = 5f;
-
+    [Header("Movement Settings")]
+    [SerializeField] float moveSpeed = 5f;
+    float turnSpeedOutside = 100f; // 곡선 회전 속도
     private float timer;
-    private bool isMoving = true;
 
-    playerScript player;
-    [SerializeField] LayerMask obstacleLayer; // 벽 레이어
+    [Header("Status")]
+    private bool wasInHouse = true;              // 이전 프레임에서의 상태
+    public bool isHouse => meshGenerator.InHouse; // 외부에서 설정
+    private bool isReturning = false;            // 영역 밖에서 다시 돌아오는 중인지
+
+    [Header("Components")]
+    private playerScript player;
+    private MeshGenerator meshGenerator;
+    private PlayerMovement playerMovement;
+
+    [Header("Detection Settings")]
+    [SerializeField] LayerMask obstacleLayer;
     [SerializeField] LayerMask roadLayer;
     [SerializeField] LayerMask playerLayer;
-    MeshGenerator meshGenerator;
-    PlayerMovement playerMovement;
+
+    float scanRadius = 3f;
+    float scanRadius2 = 3f;
+    [SerializeField] Collider2D[] results;
+    [SerializeField] Collider2D[] results2;
+
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
         meshGenerator = GetComponent<MeshGenerator>();
-        player =GetComponent<playerScript>();
+        player = GetComponent<playerScript>();
         ChooseNextState();
     }
 
     void Update()
     {
-        if(player.isActive==false || GameStateManager.Instance.NowGameState != GameStateManager.GameState.Fight)
+        if (!player.isActive || GameStateManager.Instance.NowGameState != GameStateManager.GameState.Fight)
             return;
+
         timer -= Time.deltaTime;
 
-    
-        if(DetectRoad())
+        // 상태 전환 체크
+        if (!isHouse && wasInHouse)
         {
-
+            isReturning = true;
+            ChooseCurvedExitDirection();
         }
-        else if(DetectPlayer())
+
+        // 행동 결정
+        if (DetectRoad()) { }
+        else if (DetectPlayer()) { }
+        else if (IsObstacleAvoid()) { }
+        else
         {
-
+            if (!isHouse && isReturning)
+            {
+                CurveOutwardAndReturn(); // 집 밖에서 곡선 궤적으로 복귀 중
+            }
+            // 집 안에서는 그냥 직진
         }
-        else if(IsObstacleAvoid())
-        {
 
-        }
+        // 이동 처리
         transform.position += transform.up * moveSpeed * Time.deltaTime;
         playerMovement.ChangeAnim();
 
-        if (timer <= 0f)
+        if (timer <= 0f && isHouse)
         {
             ChooseNextState();
         }
+
+        // 현재 위치 상태 업데이트
+        wasInHouse = isHouse;
     }
 
     void ChooseNextState()
     {
-        timer = Random.Range(1f,3f);
+        timer = Random.Range(1f, 3f);
 
-       
-        float angle = Random.Range(0f, 360f); // 회전 각도 랜덤
-        transform.rotation = Quaternion.Euler(0f, 0f, angle); // Z축만 회전
-        
+        if (isHouse)
+        {
+            float angle = Random.Range(0f, 360f);
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        }
+    }
+
+    void ChooseCurvedExitDirection()
+    {
+        // 약간 바깥 방향으로 튀어나가는 회전
+        float angle = Random.Range(-90f, 90f);
+        transform.Rotate(0f, 0f, angle);
+    }
+
+    void CurveOutwardAndReturn()
+    {
+        // 계속 회전하면서 곡선 이동
+        transform.Rotate(0f, 0f, turnSpeedOutside * Time.deltaTime);
+
+        if (isHouse)
+        {
+            isReturning = false;
+        }
     }
 
     bool IsObstacleAvoid()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, 4f, obstacleLayer);
-        if(hit)
+        if (hit)
         {
+            // 영역 밖에서 곡선 이동 중이라면 벽에 닿아도 반사하지 않음
+            if (!isHouse && isReturning)
+            {
+                // 방향만 살짝 틀어줌 (벽 타고 무한 도는 거 방지용)
+                transform.Rotate(0f, 0f, turnSpeedOutside * Time.deltaTime * 2f);
+                return true;
+            }
+
+            // 영역 안에서는 반사 처리
             transform.up = Vector2.Reflect(transform.up, hit.normal).normalized;
             return true;
         }
+
         return false;
     }
 
-    float scanRadius = 7f;
-    [SerializeField] Collider2D[] results;
-
     bool DetectRoad()
     {
-        int hitCount = Physics2D.OverlapCircleNonAlloc(
-            transform.position,
-            scanRadius,
-            results,
-            roadLayer
-        );
+        int hitCount = Physics2D.OverlapCircleNonAlloc(transform.position, scanRadius, results, roadLayer);
 
-        for (int i = 0; i < hitCount && i< results.Length; i++)
+        for (int i = 0; i < hitCount && i < results.Length; i++)
         {
             Collider2D col = results[i];
-            if(col.gameObject.TryGetComponent<Road>(out Road road))
+            if (col.gameObject.TryGetComponent<Road>(out Road road))
             {
-                if(road._myOwner != meshGenerator)
+                if (road._myOwner != meshGenerator)
                 {
-                    var dir = (col.gameObject.transform.position - transform.position).normalized;
+                    Vector3 dir = (col.transform.position - transform.position).normalized;
                     dir.z = 0f;
                     transform.up = dir;
                     return true;
                 }
             }
         }
-
         return false;
     }
 
-
-    float scanRadius2 = 7f;
-    [SerializeField] Collider2D[] results2;
-
     bool DetectPlayer()
     {
-        int hitCount = Physics2D.OverlapCircleNonAlloc(
-            transform.position,
-            scanRadius2,
-            results2,
-            playerLayer
-        );
+        int hitCount = Physics2D.OverlapCircleNonAlloc(transform.position, scanRadius2, results2, playerLayer);
 
-        for (int i = 0; i < hitCount && i< results2.Length; i++)
+        for (int i = 0; i < hitCount && i < results2.Length; i++)
         {
             Collider2D col = results2[i];
-            if(col.gameObject.TryGetComponent<playerScript>(out playerScript player_))
+            if (col.gameObject.TryGetComponent<playerScript>(out playerScript player_))
             {
-                if(player_ != player)
+                if (player_ != player)
                 {
-                    var dir = (player_.gameObject.transform.position - transform.position).normalized;
+                    Vector3 dir = (player_.transform.position - transform.position).normalized;
                     dir.z = 0f;
                     transform.up = -dir;
                     return true;
                 }
             }
         }
-
         return false;
     }
 }

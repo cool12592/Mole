@@ -5,6 +5,7 @@ using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +30,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     Action<float> OnGenerateMesh;
     [SerializeField] bool inHouse = true;
-
+    public bool InHouse => inHouse;
     [SerializeField] SpriteRenderer _dust;
     [SerializeField] SpriteRenderer _dustRockSR;
 
@@ -597,7 +598,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         {
             Road node = queue.Dequeue();
 
-            foreach (Road neighbor in node.GetNeigh())
+            foreach (Road neighbor in node.GetNeigh().ToList())
             {
                 if (neighbor == null || neighbor._isFinishRoad == false)
                     continue;
@@ -831,7 +832,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             if (index >= vertexCount)
             {
                 Debug.LogError($"잘못된 인덱스 발견: {index}, vertices.Length: {vertexCount}");
-                FinishLand();
+               // FinishLand();
                 return;
             }
         }
