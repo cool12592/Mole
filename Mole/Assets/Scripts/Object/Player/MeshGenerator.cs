@@ -66,6 +66,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     playerScript player;
     bool isFirstMeshCreated = false;
 
+    public enum GenerateMeshType {Normal, TakeRoad, TakeGround}
+
     public void SetMyColor(Color color)
     {
         myColor = color;
@@ -164,13 +166,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
                 return;
 
             if(GameManager.Instance.IsSingleMode==false)
-                otherHealth.Death(player, PV.Owner.NickName);
+                otherHealth.Death(player, PV.Owner.NickName,GenerateMeshType.TakeRoad);
             else
-                otherHealth.Death(player, player.IsSingleNickName);
+                otherHealth.Death(player, player.IsSingleNickName,GenerateMeshType.TakeRoad);
         }
     }
 
-    public void TakeAwayLand(string targetNick, int type)
+    public void TakeAwayLand(string targetNick, GenerateMeshType type)
     {
         if (GameManager.Instance.IsSingleMode || PV.IsMine)
         {
@@ -191,14 +193,23 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             _myMeshSet.Add(otherMeshObj);
         }
 
+        if (type == GenerateMeshType.TakeRoad)
+            originLastIndex = posList.Count;
+
         foreach (var otherRoad in target._myRoadSet)
         {
             if (otherRoad == null)
                 continue;
 
-            if (type != 1 && otherRoad._isFinishRoad == false)
+            if(type == GenerateMeshType.TakeGround)
             {
-                posList.Add(otherRoad.transform.position);
+                if(otherRoad._isFinishRoad == false)
+                    GlobalRoadPool.Instance.Release(otherRoad);
+            }
+            else if (type == GenerateMeshType.TakeRoad)
+            {
+                if(otherRoad._isFinishRoad == false)
+                    posList.Add(otherRoad.transform.position);
             }
 
             _myRoadSet.Add(otherRoad);
@@ -208,7 +219,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             otherRoad._sr.color = myColor;
         }
 
-        GenerateMeshObject(needBfs: false);
+        if(type == GenerateMeshType.TakeRoad)
+            GenerateMeshObject(needBfs: false);
     }
 
 
@@ -626,19 +638,20 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         //}
         SphereCastDetectEnterRoad();
-
-        originLastIndex = posList.Count - 1;
         
         if(needBfs)
+        {
+            originLastIndex = posList.Count - 1;
             yield return StartCoroutine(CoBFSSearch());
+        }
 
         float z = GetSharedFloat();
 
 
         if(GameManager.Instance.IsSingleMode == false)
-            photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z, needBfs);
+            photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z, needBfs,originLastIndex);
         else
-            SyncPosListAndGenerateMesh_RPC(posList.ToArray(),z, needBfs);
+            SyncPosListAndGenerateMesh_RPC(posList.ToArray(),z, needBfs,originLastIndex);
     }
 
     [PunRPC]
@@ -696,7 +709,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     /// </summary>
     /// <param name="verticesList">Mesh를 구성할 정점 리스트</param>
     [PunRPC]
-    private void SyncPosListAndGenerateMesh_RPC(Vector2[] receivedPosList, float z,bool needBfs)
+    private void SyncPosListAndGenerateMesh_RPC(Vector2[] receivedPosList, float z,bool needBfs,int originLastIndex_p)
     {
         // 🔥 받은 posList로 동기화
         posList = new List<Vector2>(receivedPosList);
@@ -764,14 +777,21 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
             for (int i = 1; i < vertices.Length - 1; i++)
             {
-                triangles.Add(originLastIndex);
+                triangles.Add(originLastIndex_p);
                 triangles.Add(i);
                 triangles.Add(i + 1);
             }
         }
         else
         {
-            for (int i = 1; i < vertices.Length - 1; i++)
+            for (int i = 1; i < originLastIndex_p -1; i++)
+            {
+                triangles.Add(i-1);
+                triangles.Add(i);
+                triangles.Add(i + 1);
+            }
+
+            for (int i = originLastIndex_p +2; i < vertices.Length - 1; i++)
             {
                 triangles.Add(i-1);
                 triangles.Add(i);

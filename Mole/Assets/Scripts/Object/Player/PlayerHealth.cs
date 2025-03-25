@@ -120,7 +120,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         }
     }
 
-    public void Death(playerScript attacker, string attackerName, int type = 0)
+    public void Death(playerScript attacker, string attackerName, MeshGenerator.GenerateMeshType type)
     {
         if (GameManager.Instance.IsSingleMode ==false && PhotonNetwork.IsMasterClient == false)
             return;
@@ -150,9 +150,9 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         player.isActive = false;
 
         if (GameManager.Instance.IsSingleMode==false)
-            PV.RPC("Death_RPC", RpcTarget.All, attackerName, type);
+            PV.RPC("Death_RPC", RpcTarget.All, attackerName, (int)type);
         else
-            Death_RPC(attackerName,type);
+            Death_RPC(attackerName,(int)type);
     }
 
     [SerializeField] Collider2D wallCollider;
@@ -172,9 +172,9 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         var attackerMesh = GameManager.Instance.UserMeshMap[attackerName];
 
         if (GameManager.Instance.IsSingleMode==false)
-            attackerMesh.TakeAwayLand(PV.Owner.NickName, type);
+            attackerMesh.TakeAwayLand(PV.Owner.NickName,(MeshGenerator.GenerateMeshType)type );
         else
-            attackerMesh.TakeAwayLand(player.IsSingleNickName, type);
+            attackerMesh.TakeAwayLand(player.IsSingleNickName, (MeshGenerator.GenerateMeshType)type);
 
         player.isActive = false;
 

@@ -44,7 +44,7 @@ public class AttackMesh : MonoBehaviour
                 return;
 
 
-            playerHealth.Death(player, nickName,1);
+            playerHealth.Death(player, nickName,MeshGenerator.GenerateMeshType.TakeGround);
         }
     }
 }
