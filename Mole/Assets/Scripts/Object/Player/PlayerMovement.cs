@@ -169,6 +169,24 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
         else characterAnim.SetBool("walk", false);
     }
 
+    public void ChangeAnim()
+    {
+        if(nextChangeAnimTime < Time.time)
+        {
+            nextChangeAnimTime = Time.time + animChangeTerm;
+            if(_isIdle)
+            {
+                _spriteRenderer.sprite = _runSprite;
+                _isIdle = false;
+            }
+            else
+            {
+                _spriteRenderer.sprite = _idleSprite;
+                _isIdle = true;
+            }
+        }
+    }
+
     public void Move(Vector2 inputDirection)
     {
         if (player.isActive == false && player.isGoast == false) 
@@ -190,20 +208,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 
            // ShakeCamera();
 
-            if(nextChangeAnimTime < Time.time)
-            {
-                nextChangeAnimTime = Time.time + animChangeTerm;
-                if(_isIdle)
-                {
-                    _spriteRenderer.sprite = _runSprite;
-                    _isIdle = false;
-                }
-                else
-                {
-                    _spriteRenderer.sprite = _idleSprite;
-                    _isIdle = true;
-                }
-            }
+            ChangeAnim();
         }
         else
         {

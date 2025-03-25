@@ -792,11 +792,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bd83ffcb7927426e986ca3a7fcf023e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveTime: 2
-  restTime: 1
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 16384
+  roadLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  results:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  results2:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &8258143570271245106
 GameObject:
   m_ObjectHideFlags: 0
