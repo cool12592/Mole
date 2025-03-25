@@ -15,7 +15,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
     private MeshCollider meshCollider;
-
+    private Rigidbody meshRigid;
     [SerializeField] LayerMask changeLayer;
 
     List<Vector2> posList = new List<Vector2>();
@@ -658,6 +658,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshCollider = meshObj.AddComponent<MeshCollider>();
             meshFilter = meshObj.AddComponent<MeshFilter>();
             meshRenderer = meshObj.AddComponent<MeshRenderer>();
+            meshRigid = meshObj.AddComponent<Rigidbody>();
+            meshRigid.isKinematic = true;
+            
             meshRenderer.material = meshMaterial;
             meshRenderer.material.color = myColor;
 
