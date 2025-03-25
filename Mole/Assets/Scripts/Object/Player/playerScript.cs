@@ -29,6 +29,8 @@ public class playerScript : MonoBehaviourPunCallbacks
     [SerializeField] GamePalette palette;
 
     public string IsSingleNickName = "Player";
+    
+    public bool IsEnemy = false;
 
     // Start is called before the first frame update
     private void Awake()
@@ -56,7 +58,7 @@ public class playerScript : MonoBehaviourPunCallbacks
         SettingColor(palette.GetColorInfo(GameManager.Instance.FindMyNameIndex(PV.Owner.NickName)));
     }
 
-    void SettingColor(GamePalette.ColorInfo colorInfo)
+    public void SettingColor(GamePalette.ColorInfo colorInfo)
     {
         if (colorInfo == null)
             return;
@@ -72,6 +74,7 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     void InitCamera()
     {
+        if(IsEnemy) return;
         // 2D 카메라
         if (CM == null)
         {

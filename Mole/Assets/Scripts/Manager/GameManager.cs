@@ -130,6 +130,11 @@ public class GameManager : MonoBehaviour
     }
     public void StartGame()
     {
+        if(IsSingleMode)
+        {
+            ActiveTimer();
+        }
+
         deadPersonDict.Clear();
         _isGameEnd = false;
         AllMemberCount = RankingBoard.Count;
@@ -461,7 +466,10 @@ public class GameManager : MonoBehaviour
 
     public void ReportTheKill(string killer, string deadPerson)
     {
-        PV.RPC("killWriteRPC", RpcTarget.All, killer, deadPerson);
+        if(IsSingleMode == false)
+            PV.RPC("killWriteRPC", RpcTarget.All, killer, deadPerson);
+        else
+            killWriteRPC(killer,deadPerson);
     }
 
     [PunRPC]
@@ -589,7 +597,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_onTimer && PhotonNetwork.IsMasterClient)
+        if (_onTimer && (IsSingleMode || PhotonNetwork.IsMasterClient))
         {
             timer -= Time.deltaTime;
 

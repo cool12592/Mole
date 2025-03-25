@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using ExitGames.Client.Photon.StructWrapping;
 
 public class NetworrkManager : MonoBehaviourPunCallbacks
 {
@@ -280,26 +281,43 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
         GameManager.Instance.IsSingleMode = true;
         Vector3 spawnPosition;
-        int maxAttempts = 100;
+        int maxAttempts = 1000;
         int attempt = 0;
-        float checkRadius = 2f;
+        float checkRadius = 7f;
 
+        int cnt = 0;
         do
         {
-            spawnPosition = new Vector3(UnityEngine.Random.Range(-12f, 12f), UnityEngine.Random.Range(-12f, 12f),0f); // 3D 좌표
+            spawnPosition = new Vector3(UnityEngine.Random.Range(-15f, 15f), UnityEngine.Random.Range(-12f, 12f),0f); // 3D 좌표
 
             // 스폰 위치에 플레이어가 있는지 체크
             bool hasPlayer = Physics.CheckSphere(spawnPosition, checkRadius, LayerMask.GetMask("Player"));
 
             if (!hasPlayer) // 아무도 없으면 스폰
             {
-                Instantiate(SinglePlayer, spawnPosition, Quaternion.identity);
-                GameManager.Instance.ResponePanel.SetActive(false);
+                if(cnt == 0)
+                {
+                    var player = Instantiate(SinglePlayer, spawnPosition, Quaternion.identity).GetComponent<playerScript>();
+                    player.SettingColor(gamePalette.GetColorInfo(cnt));
 
+                    GameManager.Instance.ResponePanel.SetActive(false);
+                    cnt++;
+                }
+                else
+                {
+                    var player = Instantiate(Enemys, spawnPosition, Quaternion.identity).GetComponent<playerScript>();
+                    player.IsSingleNickName = cnt.ToString();
+                    player.SettingColor(gamePalette.GetColorInfo(cnt));
+                    cnt++;
+                }
 
-                GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null);
+                
 
-                return;
+                if(cnt==6)
+                {
+                    GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null);
+                    return;
+                }
             }
 
             attempt++;
@@ -310,4 +328,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     }
 
     [SerializeField] GameObject SinglePlayer;
+
+    [SerializeField] GamePalette gamePalette;
+    [SerializeField] playerScript Enemys;
 }

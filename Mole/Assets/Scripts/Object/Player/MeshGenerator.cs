@@ -85,11 +85,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         ResetSharedFloat();
 
-        if(GameManager.Instance.IsSingleMode==false)
-            GameManager.Instance.UserMeshMap[PV.Owner.NickName] = this;
-        else
-            GameManager.Instance.UserMeshMap[player.IsSingleNickName] = this;
-
         if(GameManager.Instance.IsSingleMode)
             SetMyColor(palette.GetColorInfo(0).color);
 
@@ -97,8 +92,12 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     private IEnumerator Start()
     {
+        yield return new WaitUntil(() => myColor != default(Color));
+
         if(GameManager.Instance.IsSingleMode==false)
-            yield return new WaitUntil(() => myColor != default(Color));
+            GameManager.Instance.UserMeshMap[PV.Owner.NickName] = this;
+        else
+            GameManager.Instance.UserMeshMap[player.IsSingleNickName] = this;
 
         // Vector3[] positions =
         // {
@@ -148,7 +147,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (other.TryGetComponent<Road>(out Road otherRoad))
         {
-            if (PhotonNetwork.IsMasterClient == false)
+            if (GameManager.Instance.IsSingleMode==false && PhotonNetwork.IsMasterClient == false)
                 return;
 
             if (otherRoad._myOwner == null)
@@ -157,20 +156,23 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             if (otherRoad._myOwner == this)
                 return;
 
-            if (otherRoad._myOwner.PV == null || PV == null)
+            if (GameManager.Instance.IsSingleMode==false  && (otherRoad._myOwner.PV == null || PV == null))
                 return;
 
             var otherHealth = otherRoad._myOwner.gameObject.GetComponent<PlayerHealth>();
             if (otherHealth == null || otherHealth.PlayerActive == false)
                 return;
 
-            otherHealth.Death(player, PV.Owner.NickName);
+            if(GameManager.Instance.IsSingleMode==false)
+                otherHealth.Death(player, PV.Owner.NickName);
+            else
+                otherHealth.Death(player, player.IsSingleNickName);
         }
     }
 
     public void TakeAwayLand(string targetNick, int type)
     {
-        if (PV.IsMine)
+        if (GameManager.Instance.IsSingleMode || PV.IsMine)
         {
             HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
         }
@@ -388,7 +390,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (GameManager.Instance.IsSingleMode || PV.IsMine)
         {
-            HapticPatterns.PlayPreset(HapticPatterns.PresetType.SoftImpact);
+            if(player.IsEnemy==false)
+                HapticPatterns.PlayPreset(HapticPatterns.PresetType.SoftImpact);
         }
         
         // if(0.1f<timer)
@@ -407,8 +410,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             {
                 if(GameManager.Instance.IsSingleMode  || PV.IsMine)
                 {
-                    _moveSound.volume = 0.3f;
-                    _moveSound.Play();
+                    if(player.IsEnemy==false)
+                    {
+                        _moveSound.volume = 0.3f;
+                        _moveSound.Play();
+                    }
                 }
             }
             //if (count%20==0)
@@ -582,7 +588,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (hit.collider != null && hit.collider.gameObject.TryGetComponent<Road>(out Road road))
         {
-            Debug.DrawLine(transform.position, Vector3.zero, Color.red, 3f);
             lastEnterRoad = road;
         }
     }
@@ -693,11 +698,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         // 🔥 받은 posList로 동기화
         posList = new List<Vector2>(receivedPosList);
 
-        CreateMesh();
-
         Mesh mesh = new Mesh();
-        meshFilter.mesh = mesh;
-
         // 정점 리스트를 배열로 변환
         Vector3[] vertices = new Vector3[posList.Count];
         Vector2[] uvs = new Vector2[posList.Count]; // ✅ UV 배열 추가
@@ -737,18 +738,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         //float height = maxY - minY; // AABB 세로 길이
         //float boundingBoxArea = width * height; // 사각형 넓이
 
-        if (GameManager.Instance.IsSingleMode || PV.IsMine)
-        {
-            HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
-            _meshGenSound.Play();
-            GetComponent<PlayerMovement>().ShakeCamera();
-
-            if(GameManager.Instance.IsSingleMode == false)
-                GameManager.Instance.ReportTheMakeLand(PV.Owner.NickName, totalArea);
-            else
-                GameManager.Instance.ReportTheMakeLand(player.IsSingleNickName, totalArea);
-        }
-        var particle = Instantiate(_dustParticle, centerPos, Quaternion.identity);
+        
 
         //// ✅ UV 매핑 설정
         //for (int i = 0; i < posList.Count; i++)
@@ -786,11 +776,40 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             }
         }
 
+        int vertexCount = vertices.Length;
+        foreach (int index in triangles)
+        {
+            if (index >= vertexCount)
+            {
+                Debug.LogError($"잘못된 인덱스 발견: {index}, vertices.Length: {vertexCount}");
+                FinishLand();
+                return;
+            }
+        }
+
+        CreateMesh();
+
         // ✅ Mesh 데이터 적용
         mesh.vertices = vertices;
         mesh.triangles = triangles.ToArray();
+        meshFilter.mesh = mesh;
 
 
+        if (GameManager.Instance.IsSingleMode || PV.IsMine)
+        {
+            if(player.IsEnemy==false)
+            {
+                HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
+                _meshGenSound.Play();
+                GetComponent<PlayerMovement>().ShakeCamera();
+            }
+
+            if(GameManager.Instance.IsSingleMode == false)
+                GameManager.Instance.ReportTheMakeLand(PV.Owner.NickName, totalArea);
+            else
+                GameManager.Instance.ReportTheMakeLand(player.IsSingleNickName, totalArea);
+        }
+        var particle = Instantiate(_dustParticle, centerPos, Quaternion.identity);
 
        // mesh.uv = uvs;  // ✅ UV 추가
         //mesh.RecalculateNormals();

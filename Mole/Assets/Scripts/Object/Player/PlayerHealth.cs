@@ -122,7 +122,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
     public void Death(playerScript attacker, string attackerName, int type = 0)
     {
-        if (PhotonNetwork.IsMasterClient == false)
+        if (GameManager.Instance.IsSingleMode ==false && PhotonNetwork.IsMasterClient == false)
             return;
 
         if (attackerName == "")
@@ -134,11 +134,25 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         if (attacker.isActive == false) //죽은애가 다시 못죽이게
             return;
 
-        if (attackerName == PV.Owner.NickName)
-            return;
+
+        if (GameManager.Instance.IsSingleMode==false)
+        {
+            if (attackerName == PV.Owner.NickName)
+                return;
+            
+        }
+        else
+        {
+            if (attackerName == player.IsSingleNickName)
+                return;
+        }
 
         player.isActive = false;
-        PV.RPC("Death_RPC", RpcTarget.All, attackerName, type);
+
+        if (GameManager.Instance.IsSingleMode==false)
+            PV.RPC("Death_RPC", RpcTarget.All, attackerName, type);
+        else
+            Death_RPC(attackerName,type);
     }
 
     [SerializeField] Collider2D wallCollider;
@@ -147,7 +161,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     [PunRPC]
     void Death_RPC(string attackerName,int type)
     {
-        if (PV.IsMine)
+        if (GameManager.Instance.IsSingleMode || PV.IsMine)
         {
             HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
         }
@@ -156,7 +170,11 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         meshCollider.enabled = false;
 
         var attackerMesh = GameManager.Instance.UserMeshMap[attackerName];
-        attackerMesh.TakeAwayLand(PV.Owner.NickName, type);
+
+        if (GameManager.Instance.IsSingleMode==false)
+            attackerMesh.TakeAwayLand(PV.Owner.NickName, type);
+        else
+            attackerMesh.TakeAwayLand(player.IsSingleNickName, type);
 
         player.isActive = false;
 
@@ -192,11 +210,20 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(1.5f);  // 일정 시간 후 삭제
 
         rb.gravityScale = 0f;  
-        player.Goast();
+        if (GameManager.Instance.IsSingleMode==false)
+            player.Goast();        
 
-        if (PV.IsMine)
+        if (GameManager.Instance.IsSingleMode || PV.IsMine)
         {
-            GameManager.Instance.ReportTheKill(attackerName, PV.Owner.NickName);
+            if(GameManager.Instance.IsSingleMode)
+            {
+                GameManager.Instance.ReportTheKill(attackerName, player.IsSingleNickName);
+                Destroy(player.gameObject);
+            }
+            else
+            {
+                GameManager.Instance.ReportTheKill(attackerName, PV.Owner.NickName);
+            }
             //GameManager.Instance.ResponePanel.SetActive(true);
            // PV.RPC("DestroyRPC", RpcTarget.AllBuffered); // AllBuffered로 해야 제대로 사라져 복제버그가 안 생긴다
         }

@@ -173,6 +173,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (player.isActive == false && player.isGoast == false) 
             return;
+
+  
+        if(player.IsEnemy)
+        {
+            return;
+        }
+        
+
         rigidBody.velocity = inputDirection * moveSpeed;
 
         if (inputDirection != Vector2.zero)
@@ -210,4 +218,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     {
         impulseSource.GenerateImpulse();
     }
+
+
+
+
+
+    
 }
