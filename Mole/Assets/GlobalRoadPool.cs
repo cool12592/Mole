@@ -73,4 +73,15 @@ public class GlobalRoadPool : MonoBehaviour
         pool.Push(obj);
         obj.IsInPool = true;
     }
+
+    public void RestartPool()
+    {
+        foreach (var obj in pool)
+        {
+            Destroy(obj.gameObject);
+        }
+        pool.Clear();
+
+        InitPool();
+    }
 }

@@ -69,4 +69,15 @@ public class GlobalSpritePool : MonoBehaviour
        // obj.transform.SetParent(transform); // 풀의 자식으로 되돌림
         pool.Push(obj);
     }
+
+    public void RestartPool()
+    {
+        foreach (var obj in pool)
+        {
+            Destroy(obj.gameObject);
+        }
+        pool.Clear();
+
+        InitPool();
+    }
 }

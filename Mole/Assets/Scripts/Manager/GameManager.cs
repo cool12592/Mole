@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     WaitForSeconds waitForSecnds = new WaitForSeconds(1f);
 
     int AllMemberCount = 0;
+    public int SingleAllMemberCount = 0;
     Dictionary<string,int> deadPersonDict = new Dictionary<string,int>(); 
 
     public string[] UserNames;
@@ -130,11 +131,6 @@ public class GameManager : MonoBehaviour
     }
     public void StartGame()
     {
-        if(IsSingleMode)
-        {
-            ActiveTimer();
-        }
-
         deadPersonDict.Clear();
         _isGameEnd = false;
         AllMemberCount = RankingBoard.Count;
@@ -266,6 +262,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void SingleUserJoin(string nickName)
+    {
+        if (RankingBoard.ContainsKey(nickName) == false)
+            RankingBoard.Add(nickName, 0);
+        UpdateRankingBoard();
+    }
+
     public int FindMyNameIndex(string nick)
     {
         for (int i = 0; i < UserNames.Length; i++)
@@ -341,7 +344,7 @@ public class GameManager : MonoBehaviour
 
     void WriteDeadPeson(string deadNickName)
     {
-        if (PhotonNetwork.IsMasterClient == false)
+        if (IsSingleMode==false && PhotonNetwork.IsMasterClient == false)
             return;
 
         if(deadPersonDict.ContainsKey(deadNickName))
@@ -350,10 +353,22 @@ public class GameManager : MonoBehaviour
         }
         deadPersonDict[deadNickName] = deadPersonDict.Count;
 
+        if(IsSingleMode == false)
+            PV.RPC("SynchDeadPerson_RPC", RpcTarget.Others, deadPersonDict);
+        
+        
 
-        PV.RPC("SynchDeadPerson_RPC", RpcTarget.Others, deadPersonDict);
-
-        if (AllMemberCount == deadPersonDict.Count + 1)
+        if(IsSingleMode)
+        {
+            if (SingleAllMemberCount == deadPersonDict.Count + 1)
+            {
+                if (SinglePlayer.isActive)
+                {
+                    ActiveResultPanel(GameManager.ResultPanel.SingleVictory);
+                }
+            }
+        }
+        else if (AllMemberCount == deadPersonDict.Count + 1)
         {
             OnEndGame();
         }
@@ -374,7 +389,7 @@ public class GameManager : MonoBehaviour
 
     private void UpdateRankingBoard()
     {
-        if (!PhotonNetwork.IsMasterClient) return;
+        if (IsSingleMode==false && PhotonNetwork.IsMasterClient == false) return;
 
 
         if (RankingBoard == null || RankingBoard.Count == 0)
@@ -397,15 +412,19 @@ public class GameManager : MonoBehaviour
             rankStr[count++] = rank.Key +" "+ (int)rank.Value;
         }
 
-        
-        PV.RPC("updateRankingTextRPC", RpcTarget.All, rankStr,count);
+        if (IsSingleMode == false)
+            PV.RPC("updateRankingTextRPC", RpcTarget.All, rankStr, count);
+        else
+            updateRankingTextRPC(rankStr, count);
     }
 
-
+    public playerScript SinglePlayer;
     [PunRPC]
     private void updateRankingTextRPC(string[] rankStr,int length)
     {
         string myNickname = PhotonNetwork.NickName;
+        if (IsSingleMode)
+            myNickname = SinglePlayer.IsSingleNickName;
         int count = -1;
         int myRank = 999;
         string myStr = "";
@@ -431,6 +450,9 @@ public class GameManager : MonoBehaviour
             string nickName = parts[0];
             string point = parts[1];
 
+            if (point == "0")
+                return;
+
             if (count <= 2)
             {
                 RankImages[count].sprite = otherRankBackGroundSprite;
@@ -443,16 +465,17 @@ public class GameManager : MonoBehaviour
                 myRank = count;
                 myStr = str;
 
-                if (2 <= count)
+                if (3 <= count)
                     break;
+                else
+                {
+                    RankImages[myRank].sprite = myRankBackGroundSprite;
+                }
             }
         }
 
-        if (myRank <= 2)
-        {
-            RankImages[myRank].sprite = myRankBackGroundSprite;
-        }
-        else
+
+        if(2< myRank)
         {
             RankObjs[RankObjs.Length - 1].SetActive(true);
             RankImages[RankImages.Length - 1].sprite = myRankBackGroundSprite;
@@ -469,7 +492,7 @@ public class GameManager : MonoBehaviour
         if(IsSingleMode == false)
             PV.RPC("killWriteRPC", RpcTarget.All, killer, deadPerson);
         else
-            killWriteRPC(killer,deadPerson);
+            killWrite(killer,deadPerson);
     }
 
     [PunRPC]
@@ -479,6 +502,20 @@ public class GameManager : MonoBehaviour
         UpdateRankingBoard();
 
         if (PhotonNetwork.IsMasterClient)
+        {
+            WriteDeadPeson(deadPerson);
+            killLogQueue.Enqueue(new KeyValuePair<string, string>(killer, deadPerson));
+            killLogOnTheScreen();
+        }
+    }
+
+    private void killWrite(string killer, string deadPerson)
+    {
+        ReportTheMakeLand(killer, RankingBoard[deadPerson]);
+        RankingBoard[deadPerson] = 0f;
+        UpdateRankingBoard();
+
+        if (IsSingleMode || PhotonNetwork.IsMasterClient)
         {
             WriteDeadPeson(deadPerson);
             killLogQueue.Enqueue(new KeyValuePair<string, string>(killer, deadPerson));
@@ -497,7 +534,7 @@ public class GameManager : MonoBehaviour
     [PunRPC]
     private void LadnWrite_RPC(string nickName, float addArea)
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (IsSingleMode || PhotonNetwork.IsMasterClient)
         {
             RankingBoard[nickName] += addArea;
             UpdateRankingBoard();
@@ -510,14 +547,21 @@ public class GameManager : MonoBehaviour
         if (killLogQueue.Count() == 0 || ScreenText.text.Length != 0)
             return;
         KeyValuePair<string, string> killLogInfo = killLogQueue.Dequeue();
-        PV.RPC("killLogOnTheScreenRPC", RpcTarget.All, killLogInfo.Key, killLogInfo.Value);
+        if (IsSingleMode == false)
+            PV.RPC("killLogOnTheScreenRPC", RpcTarget.All, killLogInfo.Key, killLogInfo.Value);
+        else
+            killLogOnTheScreenRPC(killLogInfo.Key, killLogInfo.Value);
+
         StartCoroutine(EraseScreenText(2f));
     }
 
     IEnumerator EraseScreenText(float delayTime)
     {
         yield return new WaitForSeconds(delayTime);
-        PV.RPC("SetScreenTextRPC", RpcTarget.All,"",50);
+        if (IsSingleMode == false)
+            PV.RPC("SetScreenTextRPC", RpcTarget.All, "", 50);
+        else
+            SetScreenTextRPC("", 50);
 
         if (killLogQueue.Count > 0) //대기하는 애 있으면 출력
         {
@@ -671,6 +715,17 @@ public class GameManager : MonoBehaviour
     public Transform[] startingPositions;
 
 
+    public void SingleClear()
+    {
+        RankingBoard.Clear();
 
-    
+        deadPersonDict.Clear();
+        _isGameEnd = false;
+
+        firstClick = true;
+
+
+    }
+    public bool firstClick = true;
+
 }

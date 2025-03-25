@@ -219,6 +219,9 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
             {
                 GameManager.Instance.ReportTheKill(attackerName, player.IsSingleNickName);
                 Destroy(player.gameObject);
+
+                if(player == GameManager.Instance.SinglePlayer)
+                    GameManager.Instance.ActiveResultPanel(GameManager.ResultPanel.SingleDefeat);
             }
             else
             {

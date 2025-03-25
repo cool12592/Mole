@@ -212,6 +212,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             }
         }
 
+        
         foreach (var otherRoad in target._myRoadList)
         {
             if (otherRoad == null)
@@ -235,13 +236,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             otherRoad._sr.color = myColor;
         }
 
-        if (GameManager.Instance.IsSingleMode || PV.IsMine)
+  
+        if(type == GenerateMeshType.TakeRoad)
         {
-            if(type == GenerateMeshType.TakeRoad)
-            {
-                TransformRoad();
-            }
-        }
+            if (GameManager.Instance.IsSingleMode)
+                GameManager.Instance.ReportTheMakeLand(player.IsSingleNickName, transformRoadList.Count * 0.1f);
+            else
+                GameManager.Instance.ReportTheMakeLand(PV.Owner.NickName, transformRoadList.Count * 0.1f);
+
+            TransformRoad();
+        }   
     }
 
     void TransformRoad()

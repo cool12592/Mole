@@ -6,6 +6,7 @@ using Photon.Realtime;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using ExitGames.Client.Photon.StructWrapping;
+using System;
 
 public class NetworrkManager : MonoBehaviourPunCallbacks
 {
@@ -62,6 +63,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
     }
@@ -75,12 +77,12 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
                 BGM.Stop(); 
             }
 
-            if (PhotonNetwork.IsConnected == false && PhotonNetwork.InRoom == false)
-                Application.Quit();
-            else if(GameManager.Instance.IsSingleMode)
+            if (GameManager.Instance.IsSingleMode)
             {
                 SceneManager.LoadScene("SampleScene");
             }
+            else if (PhotonNetwork.IsConnected == false && PhotonNetwork.InRoom == false)
+                Application.Quit();
             else
             {
                 ExitGame();
@@ -277,8 +279,9 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     public void SingleSpawn()
     {
-        DisconnectPanel.SetActive(false);
+        GameManager.Instance.SingleClear();
 
+        DisconnectPanel.SetActive(false);
         GameManager.Instance.IsSingleMode = true;
         Vector3 spawnPosition;
         int maxAttempts = 1000;
@@ -300,21 +303,35 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
                     var player = Instantiate(SinglePlayer, spawnPosition, Quaternion.identity).GetComponent<playerScript>();
                     player.SettingColor(gamePalette.GetColorInfo(cnt));
 
+                    string nickName = CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)] + CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)];
+                    nickName += "Player";
+                    player.IsSingleNickName = nickName;
+                    GameManager.Instance.SinglePlayer = player;
                     GameManager.Instance.ResponePanel.SetActive(false);
+                    GameManager.Instance.SingleUserJoin(player.IsSingleNickName);
+
                     cnt++;
                 }
                 else
                 {
                     var player = Instantiate(Enemys, spawnPosition, Quaternion.identity).GetComponent<playerScript>();
-                    player.IsSingleNickName = cnt.ToString();
+
+                    string nickName = CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)] + CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)];
+
+                    player.IsSingleNickName = nickName + cnt.ToString();
                     player.SettingColor(gamePalette.GetColorInfo(cnt));
                     cnt++;
+
+                    GameManager.Instance.SingleUserJoin(player.IsSingleNickName);
+
                 }
 
-                
 
-                if(cnt==6)
+
+                if (cnt==6)
                 {
+                    GameManager.Instance.SingleAllMemberCount = cnt;
+                    
                     GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null);
                     return;
                 }
@@ -325,10 +342,40 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         } while (attempt < maxAttempts);
 
         Debug.LogWarning("스폰할 수 있는 위치를 찾을 수 없습니다.");
+
+    }
+
+    public void SingleRestart()
+    {
+        if (BGM.isPlaying)
+        {
+            BGM.Stop(); // 현재 재생 중이 아닐 때만 Play()
+        }
+
+        MeshGenerator[] allPlayers = FindObjectsOfType<MeshGenerator>();
+        foreach (var player in allPlayers)
+        {
+            player.OnALLDestroy();
+            Destroy(player.gameObject);
+        }
+
+        GlobalRoadPool.Instance.RestartPool();
+        GlobalSpritePool.Instance.RestartPool();
+
+        GameManager.Instance.DeactiveResultPanel(GameManager.ResultPanel.SingleVictory);
+        GameManager.Instance.DeactiveResultPanel(GameManager.ResultPanel.SingleDefeat);
+
+        GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.None);
+
+        SingleSpawn();
+
+
     }
 
     [SerializeField] GameObject SinglePlayer;
 
     [SerializeField] GamePalette gamePalette;
     [SerializeField] playerScript Enemys;
+
+
 }

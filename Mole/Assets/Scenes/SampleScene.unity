@@ -10470,8 +10470,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1317366504}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: NewGameSpawn
+        m_TargetAssemblyTypeName: NetworrkManager, Assembly-CSharp
+        m_MethodName: SingleRestart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -50832,6 +50832,7 @@ MonoBehaviour:
   _rectTransform: {fileID: 781602449}
   _leverRange: 50
   _canvas: {fileID: 1065700831}
+  BGM: {fileID: 497568374}
 --- !u!114 &781602451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52500,7 +52501,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 156.91, y: 0}
+  m_AnchoredPosition: {x: 119.6, y: 0}
   m_SizeDelta: {x: 50, y: 105.099976}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &976348508
@@ -53210,8 +53211,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1317366504}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: NewGameSpawn
+        m_TargetAssemblyTypeName: NetworrkManager, Assembly-CSharp
+        m_MethodName: SingleRestart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -55587,6 +55588,7 @@ MonoBehaviour:
   _rectTransform: {fileID: 0}
   _leverRange: 0
   _canvas: {fileID: 0}
+  BGM: {fileID: 0}
 --- !u!114 &1230261498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55739,7 +55741,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -27.90039, y: 0}
+  m_AnchoredPosition: {x: -10, y: 0}
   m_SizeDelta: {x: 374.5, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &1235452890
@@ -55989,6 +55991,7 @@ MonoBehaviour:
   PV: {fileID: 1271460585}
   myplayer: {fileID: 0}
   ResponePanel: {fileID: 0}
+  SingleAllMemberCount: 0
   UserNames:
   - 
   - 
@@ -56010,22 +56013,19 @@ MonoBehaviour:
   - {fileID: 1751154114}
   - {fileID: 1106431060}
   - {fileID: 1091664712}
-  - {fileID: 1423742239}
   RankImages:
   - {fileID: 1946330608}
   - {fileID: 1135061528}
   - {fileID: 1688103249}
-  - {fileID: 1440298270}
   RankObjs:
   - {fileID: 1946330606}
   - {fileID: 1135061526}
   - {fileID: 1688103247}
-  - {fileID: 1440298268}
   RankNumberTexts:
   - {fileID: 2092822520}
   - {fileID: 200496227}
   - {fileID: 1434694636}
-  - {fileID: 1430835753}
+  SinglePlayer: {fileID: 0}
   timerText: {fileID: 55744714}
   timerUpButton: {fileID: 1582305149}
   timerDownButton: {fileID: 832862571}
@@ -67944,7 +67944,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1440298269
 RectTransform:
   m_ObjectHideFlags: 0

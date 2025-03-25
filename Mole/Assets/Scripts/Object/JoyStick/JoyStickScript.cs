@@ -15,7 +15,6 @@ public class JoyStickScript : MonoBehaviour
     [SerializeField] Canvas _canvas = null;
     public static Vector2 InputAxis { private set; get; } = Vector2.zero;
 
-    bool firstClick = true;
 
     private Vector2 GetJoystickDir(Vector2 mousPos)
     {
@@ -45,13 +44,20 @@ public class JoyStickScript : MonoBehaviour
         gameObject.SetActive(true);
         IsInput = true;
 
-        if(firstClick)
+        if(GameManager.Instance.firstClick)
         {
-            firstClick = false;
+            GameManager.Instance.firstClick = false;
             GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Fight);
+
+            if (!BGM.isPlaying)
+            {
+                BGM.Play(); // 현재 재생 중이 아닐 때만 Play()
+            }
         }
 
     }
+
+    [SerializeField] AudioSource BGM;
 
     public void EndTouch()
     {
