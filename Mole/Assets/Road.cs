@@ -6,6 +6,7 @@ using UnityEngine;
 public class Road : MonoBehaviour
 {
 
+    public GameObject CuteMesh;
     public Collider2D collider_;
 
     [SerializeField] MeshDetector meshDetector;
@@ -66,6 +67,8 @@ public class Road : MonoBehaviour
 
     public void Init()
     {
+        CuteMesh.SetActive(false);
+        CuteMesh.transform.localScale = Vector3.one;
         _myOwner = null;
         _myMeshSet = null;
 
@@ -74,7 +77,7 @@ public class Road : MonoBehaviour
         _isFinishRoad = false;
     }
 
-    public void ChangeLayer()
+    public void ChangeLayer(float sizeUp)
     {
         if (this == null) return;
         if (_isFinishRoad) return;
@@ -82,7 +85,8 @@ public class Road : MonoBehaviour
         gameObject.layer = FinishRoadLayer;
         _isFinishRoad = true;
 
-        transform.localScale *= 2f;
+        transform.localScale *= sizeUp;
+        CuteMesh.transform.localScale *= 1/sizeUp;
     }
 
     void CollideMesh(GameObject go)

@@ -27,7 +27,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     Vector3 lastPos;
 
-    Action OnGenerateMesh;
+    Action<float> OnGenerateMesh;
     [SerializeField] bool inHouse = true;
 
     [SerializeField] SpriteRenderer _dust;
@@ -42,7 +42,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     Text myKillText;
 
 
-    public List<Road> _myRoadSet = new List<Road>();
+    public List<Road> _myRoadList = new List<Road>();
     public HashSet<GameObject> _myMeshSet = new HashSet<GameObject>();
 
     HashSet<GameObject> _curInMyMeshSet = new HashSet<GameObject>();
@@ -67,6 +67,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     bool isFirstMeshCreated = false;
 
     public enum GenerateMeshType {Normal, TakeRoad, TakeGround}
+
+    List<Road> transformRoadList = new List<Road>();
 
     public void SetMyColor(Color color)
     {
@@ -189,14 +191,27 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             if (otherMeshObj == null)
                 continue;
 
-            otherMeshObj.GetComponent<MeshRenderer>().material.color = myColor;
+            if(otherMeshObj.TryGetComponent<MeshRenderer>(out MeshRenderer meshRenderer))
+            {
+                meshRenderer.material.color = myColor;
+            }
             _myMeshSet.Add(otherMeshObj);
         }
 
         if (type == GenerateMeshType.TakeRoad)
-            originLastIndex = posList.Count;
+        {
+            transformRoadList.Clear();
 
-        foreach (var otherRoad in target._myRoadSet)
+            foreach(var myRoad in _myRoadList)
+            {
+                if(myRoad._isFinishRoad == false)
+                {
+                    transformRoadList.Add(myRoad);
+                }
+            }
+        }
+
+        foreach (var otherRoad in target._myRoadList)
         {
             if (otherRoad == null)
                 continue;
@@ -209,18 +224,50 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             else if (type == GenerateMeshType.TakeRoad)
             {
                 if(otherRoad._isFinishRoad == false)
-                    posList.Add(otherRoad.transform.position);
+                    transformRoadList.Add(otherRoad);
             }
 
-            _myRoadSet.Add(otherRoad);
+            _myRoadList.Add(otherRoad);
             OnGenerateMesh += otherRoad.ChangeLayer;
             otherRoad._myMeshSet = _myMeshSet;
             otherRoad._myOwner = this;
             otherRoad._sr.color = myColor;
         }
 
-        if(type == GenerateMeshType.TakeRoad)
-            GenerateMeshObject(needBfs: false);
+        if (GameManager.Instance.IsSingleMode || PV.IsMine)
+        {
+            if(type == GenerateMeshType.TakeRoad)
+            {
+                TransformRoad();
+            }
+        }
+    }
+
+    void TransformRoad()
+    {
+        foreach(var road in transformRoadList)
+        {
+            road.CuteMesh.SetActive(true);
+            _myMeshSet.Add(road.CuteMesh);
+        }
+        transformRoadList.Clear();
+        FinishLand(2f);
+
+
+        if (GameManager.Instance.IsSingleMode || PV.IsMine)
+        {
+            if(player.IsEnemy==false)
+            {
+                HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
+                _meshGenSound.Play();
+                GetComponent<PlayerMovement>().ShakeCamera();
+            }
+
+            // if(GameManager.Instance.IsSingleMode == false)
+            //     GameManager.Instance.ReportTheMakeLand(PV.Owner.NickName, totalArea);
+            // else
+            //     GameManager.Instance.ReportTheMakeLand(player.IsSingleNickName, totalArea);
+        }
     }
 
 
@@ -477,7 +524,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one *0.6f);
         
         road._sr.color = myColor;
-        _myRoadSet.Add(road);
+        _myRoadList.Add(road);
         OnGenerateMesh += road.ChangeLayer;
         road._myMeshSet = _myMeshSet;
         road._myOwner = this;
@@ -604,7 +651,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
     }
 
-    void GenerateMeshObject(bool needBfs = true)
+    void GenerateMeshObject()
     {
          if (GameManager.Instance.IsSingleMode == false && PV.IsMine == false)
             return;
@@ -618,10 +665,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
             return;
         }
-        StartCoroutine(CoGenerateMeshObject(needBfs));
+        StartCoroutine(CoGenerateMeshObject());
     }
 
-    IEnumerator CoGenerateMeshObject(bool needBfs = true)
+    IEnumerator CoGenerateMeshObject()
     {
 
         if (GameManager.Instance.IsSingleMode == false && PV.IsMine == false)
@@ -638,20 +685,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         //}
         SphereCastDetectEnterRoad();
-        
-        if(needBfs)
-        {
-            originLastIndex = posList.Count - 1;
-            yield return StartCoroutine(CoBFSSearch());
-        }
+        originLastIndex = posList.Count - 1;        
 
         float z = GetSharedFloat();
 
+        yield return StartCoroutine(CoBFSSearch());
 
         if(GameManager.Instance.IsSingleMode == false)
-            photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z, needBfs,originLastIndex);
+            photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z,originLastIndex);
         else
-            SyncPosListAndGenerateMesh_RPC(posList.ToArray(),z, needBfs,originLastIndex);
+            SyncPosListAndGenerateMesh_RPC(posList.ToArray(),z,originLastIndex);
     }
 
     [PunRPC]
@@ -709,8 +752,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     /// </summary>
     /// <param name="verticesList">Mesh를 구성할 정점 리스트</param>
     [PunRPC]
-    private void SyncPosListAndGenerateMesh_RPC(Vector2[] receivedPosList, float z,bool needBfs,int originLastIndex_p)
+    private void SyncPosListAndGenerateMesh_RPC(Vector2[] receivedPosList, float z,int originLastIndex_p)
     {
+        if(receivedPosList.Length<3)
+            return;
         // 🔥 받은 posList로 동기화
         posList = new List<Vector2>(receivedPosList);
 
@@ -766,37 +811,18 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         // 삼각형 인덱스 자동 생성
         List<int> triangles = new List<int>();
-        if (needBfs)
+        for (int i = 1; i < vertices.Length - 1; i++)
         {
-            for (int i = 1; i < vertices.Length - 1; i++)
-            {
-                triangles.Add(0);
-                triangles.Add(i);
-                triangles.Add(i + 1);
-            }
-
-            for (int i = 1; i < vertices.Length - 1; i++)
-            {
-                triangles.Add(originLastIndex_p);
-                triangles.Add(i);
-                triangles.Add(i + 1);
-            }
+            triangles.Add(0);
+            triangles.Add(i);
+            triangles.Add(i + 1);
         }
-        else
-        {
-            for (int i = 1; i < originLastIndex_p -1; i++)
-            {
-                triangles.Add(i-1);
-                triangles.Add(i);
-                triangles.Add(i + 1);
-            }
 
-            for (int i = originLastIndex_p +2; i < vertices.Length - 1; i++)
-            {
-                triangles.Add(i-1);
-                triangles.Add(i);
-                triangles.Add(i + 1);
-            }
+        for (int i = 1; i < vertices.Length - 1; i++)
+        {
+            triangles.Add(originLastIndex_p);
+            triangles.Add(i);
+            triangles.Add(i + 1);
         }
 
         int vertexCount = vertices.Length;
@@ -854,15 +880,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     }
 
-    void FinishLand()
+    void FinishLand(float sizeUpRoad = 1.2f)
     {
+        posList.Clear();
+        
         isFirstMeshCreated = true;
 
-        posList.Clear();
         lastExitRoad = null;
         lastEnterRoad = null;
 
-        OnGenerateMesh?.Invoke();
+        OnGenerateMesh?.Invoke(sizeUpRoad);
         OnGenerateMesh = null;
     }
 
@@ -907,7 +934,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
                 Destroy(mesh);
         }
 
-        foreach (var road in _myRoadSet)
+        foreach (var road in _myRoadList)
         {
             if (road != null)
                 GlobalRoadPool.Instance.Release(road);
