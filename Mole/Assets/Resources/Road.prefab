@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4730985703964355510
 Transform:
   m_ObjectHideFlags: 0
@@ -273,7 +273,6 @@ MonoBehaviour:
   IsNeighCheckRoad: 0
   _sr: {fileID: 1794218829877025456}
   IsInPool: 0
-  test: []
   targetLayer:
     serializedVersion: 2
     m_Bits: 1152

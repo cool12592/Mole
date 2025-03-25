@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
@@ -62,7 +63,6 @@ public class Road : MonoBehaviour
         _isFinishRoad = true;
 
         transform.localScale *= sizeUp;
-        CuteMesh.transform.localScale *= 1/sizeUp;
     }
 
     void CollideMesh(GameObject go)
@@ -81,9 +81,12 @@ public class Road : MonoBehaviour
 
     public void Release()
     {
-        foreach(var road in neighRoadSet)
+        // 복사본 생성
+        var roads = neighRoadSet.ToList();
+
+        foreach (var road in roads)
         {
-            if(road!= null)
+            if (road != null)
                 road.neighRoadSet.Remove(this);
         }
 
@@ -92,9 +95,9 @@ public class Road : MonoBehaviour
 
 
 
-    float scanRadius = 1f;
+    float scanRadius = 3f;
     [SerializeField] LayerMask targetLayer;
-    [SerializeField] Collider2D[] results = new Collider2D[20]; // 최대 10개까지 감지
+    [SerializeField] Collider2D[] results;
 
     void Start()
     {
