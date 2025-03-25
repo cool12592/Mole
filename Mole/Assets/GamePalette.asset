@@ -15,31 +15,31 @@ MonoBehaviour:
   colorInfos:
   - color: {r: 0.17254902, g: 0.74509805, b: 1, a: 1}
     spries:
-    - {fileID: 21300000, guid: e86feb35b54e942a0859db6cf2b1f626, type: 3}
-    - {fileID: 21300000, guid: 13390bad6982648cf87a6c2b3dbb844d, type: 3}
+    - {fileID: 21300000, guid: 42532c03cfa2044df971188cd9d5942d, type: 3}
+    - {fileID: 21300000, guid: 3ace8199634744ed7aaf13e0d75aed8d, type: 3}
     - {fileID: 21300000, guid: f7fd465abf24a4b66833e8c7f916cc34, type: 3}
   - color: {r: 0.9098039, g: 0.18039216, b: 0.18039216, a: 1}
     spries:
-    - {fileID: 21300000, guid: e06d17a40a8a84f8bbd411d1dbe4d055, type: 3}
-    - {fileID: 21300000, guid: 04ba7939a8e7241838da58f5143efd83, type: 3}
+    - {fileID: 21300000, guid: a3dd76f05aa73424f993837670a73db2, type: 3}
+    - {fileID: 21300000, guid: 2ba159904f41f4bd893a749e1e81e32c, type: 3}
     - {fileID: 21300000, guid: eb653f3895e3c4a0d8a19ad6f21440cc, type: 3}
   - color: {r: 0.18039216, g: 0.85882354, b: 0.25882354, a: 1}
     spries:
-    - {fileID: 21300000, guid: e0ff9e440f7f741f580e3033939ab416, type: 3}
+    - {fileID: 21300000, guid: 80ce9691aacfd47a99c0143e36ca0cbf, type: 3}
+    - {fileID: 21300000, guid: fd50e2766b9434106a27c65a956083dc, type: 3}
     - {fileID: 21300000, guid: 7bcd1be0c9cd640a8bd7ab51731effdc, type: 3}
-    - {fileID: 21300000, guid: f655510fc1f444ad793744ea82fc53bb, type: 3}
   - color: {r: 1, g: 0.38431373, b: 0.7176471, a: 1}
     spries:
-    - {fileID: 21300000, guid: 0463cfc551576438893e994a34874ca6, type: 3}
+    - {fileID: 21300000, guid: e4385adde2db44b2da3d46de300fb2a0, type: 3}
+    - {fileID: 21300000, guid: 0279d151ec4464ac8a25e4d7da85785c, type: 3}
     - {fileID: 21300000, guid: a039bdba1bc5f4ba695a71b9923005ac, type: 3}
-    - {fileID: 21300000, guid: b209a5318814e4c609dac7904e6264e6, type: 3}
   - color: {r: 0.72156864, g: 0.27058825, b: 1, a: 1}
     spries:
-    - {fileID: 21300000, guid: ad35cf59dcbdd4d98a0e4f30614f1f0f, type: 3}
-    - {fileID: 21300000, guid: fa840ea4bd9c94859a97bdd827664bf9, type: 3}
+    - {fileID: 21300000, guid: 72dc23891888d4b0696dd7b960c00b28, type: 3}
+    - {fileID: 21300000, guid: 6a7a18518711d431fb7bcb22db75d3cf, type: 3}
     - {fileID: 21300000, guid: 12cdcfda059e1452083b8a8bdb55f439, type: 3}
   - color: {r: 1, g: 0.42313161, b: 0, a: 1}
     spries:
-    - {fileID: 21300000, guid: db3857b0ea8274f34a07b22d97893f50, type: 3}
-    - {fileID: 21300000, guid: 61ed20599665a4ea29126303c0dec640, type: 3}
+    - {fileID: 21300000, guid: 7f2bbbb50be934652880ad136de04844, type: 3}
+    - {fileID: 21300000, guid: 77f9806e3580a4a1eb133f262cff7acd, type: 3}
     - {fileID: 21300000, guid: cc83c4c4f127e45d7913f84c9ccac691, type: 3}
