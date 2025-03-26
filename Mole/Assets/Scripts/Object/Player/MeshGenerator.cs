@@ -592,11 +592,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         Color color =  new Color(r, g, b, 1f); // 알파값 1 (불투명)
 
         HashSet<Road> visitedNodes = new HashSet<Road>(); // 🔥 방문 체크용
-
+        List<Vector2> okRoad = new List<Vector2>();
         while (target != null)
         {
             if(visitedNodes.Contains(target)) 
-                break;
+                return;
 
             visitedNodes.Add(target);
 
@@ -604,9 +604,14 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
            // target._sr.color = color;
            // target._sr.enabled = true;
             //target.transform.position = new Vector3(target.transform.position.x,target.transform.position.y,-900f);
-            posList.Add(pos);
+            okRoad.Add(pos);
             //roadsToDestroy.Add(target); // 삭제할 리스트에 추가
             target = parentMap.ContainsKey(target) ? parentMap[target] : null;
+        }
+
+        foreach(var pos in okRoad)
+        {
+            posList.Add(pos);
         }
 
         // // 루프가 끝난 후 삭제

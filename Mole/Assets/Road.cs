@@ -52,6 +52,8 @@ public class Road : MonoBehaviour
         neighRoadSet.Clear();
         gameObject.layer = RoadLayer;
         _isFinishRoad = false;
+
+        FindNeighRoad();
     }
 
     public void ChangeLayer(float sizeUp)
@@ -105,9 +107,9 @@ public class Road : MonoBehaviour
 
     float scanRadius = 2f;
     [SerializeField] LayerMask targetLayer;
-    [SerializeField] Collider2D[] results;
+    Collider2D[] results = new Collider2D[20];
 
-    void Start()
+    void FindNeighRoad()
     {
         int hitCount = Physics2D.OverlapCircleNonAlloc(
             transform.position,
