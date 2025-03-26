@@ -21,7 +21,9 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     [SerializeField] GameObject MainRobbyUI;
     [SerializeField] GameObject MultiRobbyUI;
-    string[] commonNames = { "James", "Emma", "Michael", "Olivia", "William", "Sophia" };
+    string[] commonNames = {"Lemon", "Remy", "Logan", "Rosie", "Ron", "Lulu", "Lumi", "Mike", "Melon", "Mocha",
+        "Bamby", "Blue", "Bina", "Aron", "Alfie", "Elmer", "Amber", "Willy", "Ian",
+        "Kyle", "Tory", "Tot", "Fev", "Paige", "Pepper", "Poppy" ,"Ani", "Asuka", "Karo"};
 
     public static readonly List<string> CommonSymbols = new List<string>
     {
@@ -280,6 +282,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     public void SingleSpawn()
     {
+        ShuffleArray(commonNames);
         GameManager.Instance.SingleClear();
 
         DisconnectPanel.SetActive(false);
@@ -372,6 +375,18 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         SingleSpawn();
 
 
+    }
+
+    void ShuffleArray(string[] array)
+    {
+        for (int i = array.Length - 1; i > 0; i--)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, i + 1);
+            // Swap
+            string temp = array[i];
+            array[i] = array[randomIndex];
+            array[randomIndex] = temp;
+        }
     }
 
     [SerializeField] GameObject SinglePlayer;

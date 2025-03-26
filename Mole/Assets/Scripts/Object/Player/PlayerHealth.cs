@@ -197,6 +197,16 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         rb.velocity = new Vector2(0, 7f);  // 위로 솟구치기
         rb.gravityScale = 0;  // 중력 제거
 
+
+        if(GameManager.Instance.IsSingleMode)
+        {
+            GameManager.Instance.ReportTheKill(attackerName, player.IsSingleNickName);
+        }
+        else if(PV.IsMine)
+        {
+            GameManager.Instance.ReportTheKill(attackerName, PV.Owner.NickName);
+        }
+        
         StartCoroutine(CoLateDeath(attackerName));
     }
 

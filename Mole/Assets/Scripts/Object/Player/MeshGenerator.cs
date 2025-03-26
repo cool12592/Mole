@@ -300,7 +300,19 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void OnTriggerEnter3D(Collider other)
     {
+        if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
+            return;
 
+
+        if (_myMeshSet.Contains(other.gameObject))
+        {
+            _curInMyMeshSet.Add(other.gameObject);
+        }
+        else
+        {
+            _curInOtherMeshSet.Add(other.gameObject);
+            return;
+        }
     }
     public void OnTriggerStay3D(Collider other)
     {
