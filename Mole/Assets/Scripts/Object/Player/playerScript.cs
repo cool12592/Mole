@@ -262,8 +262,7 @@ public class playerScript : MonoBehaviourPunCallbacks
         playerScript[] allPlayers = FindObjectsOfType<playerScript>();
         Vector2 center = Vector2.zero;
         int userCount = allPlayers.Length;
-        float radius = 12f;
-        float minDistance = 4f;
+        float minDistance = 7f;
 
 
         List<Vector2> positions = new List<Vector2>();
