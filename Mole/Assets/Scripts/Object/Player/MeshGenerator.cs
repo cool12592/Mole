@@ -701,7 +701,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
          if (GameManager.Instance.IsSingleMode == false && PV.IsMine == false)
             return;
 
-        if(player.isActive == false)
+        if(isFirstMeshCreated == true &&  player.isActive == false)
             return;
 
         if (posList.Count < 3)
@@ -739,7 +739,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         yield return StartCoroutine(CoBFSSearch());
 
-        if(player.isActive == false)
+        if(isFirstMeshCreated == true &&  player.isActive == false)
             yield break;
 
         if(GameManager.Instance.IsSingleMode == false)

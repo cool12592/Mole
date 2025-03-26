@@ -44,7 +44,7 @@ public class JoyStickScript : MonoBehaviour
         gameObject.SetActive(true);
         IsInput = true;
 
-        if(GameManager.Instance.firstClick)
+        if(GameManager.Instance.IsSingleMode && GameManager.Instance.firstClick)
         {
             GameManager.Instance.firstClick = false;
             GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Fight);
