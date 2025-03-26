@@ -71,6 +71,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     List<Road> transformRoadList = new List<Road>();
 
+    float moveHapTickTimer = 0f;
+
     public void SetMyColor(Color color)
     {
         myColor = color;
@@ -177,7 +179,12 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void TakeAwayLand(string targetNick, GenerateMeshType type)
     {
-        if (GameManager.Instance.IsSingleMode || PV.IsMine)
+        if(GameManager.Instance.IsSingleMode)
+        {
+            if(player.IsEnemy==false && type==GenerateMeshType.TakeGround)
+                HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
+        }
+        else if (PV.IsMine)
         {
             HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
         }
@@ -454,8 +461,12 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (GameManager.Instance.IsSingleMode || PV.IsMine)
         {
-            if(player.IsEnemy==false)
+            moveHapTickTimer+=Time.deltaTime;
+            if(player.IsEnemy==false && 0.01666f < moveHapTickTimer)
+            {
+                moveHapTickTimer = 0f;
                 HapticPatterns.PlayPreset(HapticPatterns.PresetType.SoftImpact);
+            }
         }
         
         // if(0.1f<timer)
