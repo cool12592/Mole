@@ -456,11 +456,12 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     private void Update()
     {
+        if (player.isActive == false)
+            return;
 
         if (inHouse)
         {
             DeactiveDust();
-            GetComponent<SpriteRenderer>().color = Color.white;
             return;
         }
 
