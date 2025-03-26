@@ -194,21 +194,18 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     public void spawn()
     {
-        Vector3 spawnPosition;
-
-        spawnPosition = new Vector3(UnityEngine.Random.Range(-12f, 15f), UnityEngine.Random.Range(-20f, 9f),0f); // 3D 좌표
-        PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
+        PhotonNetwork.Instantiate("Player", new Vector3(UnityEngine.Random.Range(-5, 5), UnityEngine.Random.Range(-5f, 5f), 0), Quaternion.identity);
         GameManager.Instance.ResponePanel.SetActive(false);
         GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null); 
     }
 
-    // public void NewGameSpawn()
-    // {
-    //     PhotonNetwork.Instantiate("Player", new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-5f, 5f), 0), Quaternion.identity);
-    //     GameManager.Instance.DeactiveResultPanel(GameManager.ResultPanel.MultiResult);
 
-    //     GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Lobby);
-    // }
+    public void NewGameSpawn()
+    {
+        PhotonNetwork.Instantiate("Player", new Vector3(UnityEngine.Random.Range(-5, 5), UnityEngine.Random.Range(-5f, 5f), 0), Quaternion.identity);
+        GameManager.Instance.DeactiveResultPanel(GameManager.ResultPanel.MultiResult);
+        GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Lobby);
+    }
 
 
     public override void OnMasterClientSwitched(Player newMasterClient)
