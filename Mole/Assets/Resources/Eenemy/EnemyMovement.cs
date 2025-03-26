@@ -57,11 +57,30 @@ public class EnemyMovement : MonoBehaviour
         else if (IsObstacleAvoid()) { }
         else
         {
-            if (!isHouse && isReturning)
+            if (!isHouse && wasInHouse)
             {
-                CurveOutwardAndReturn(); // 집 밖에서 곡선 궤적으로 복귀 중
+                isReturning = true;
+                ChooseCurvedExitDirection();
             }
-            // 집 안에서는 그냥 직진
+
+            if (isReturning)
+            {
+                if (isHouse)
+                {
+                    inHouseTimer += Time.deltaTime;
+                    if (inHouseTimer >= returnCompleteTime)
+                    {
+                        isReturning = false;
+                        inHouseTimer = 0f;
+                    }
+                }
+                else
+                {
+                    inHouseTimer = 0f;
+                    CurveOutwardAndReturn(); // 집 밖에서 곡선 궤적으로 복귀 중
+                }
+            }
+
         }
 
         // 이동 처리
@@ -168,4 +187,10 @@ public class EnemyMovement : MonoBehaviour
         }
         return false;
     }
+
+
+
+    private float inHouseTimer = 0f;
+[SerializeField] private float returnCompleteTime = 0.5f;
+
 }

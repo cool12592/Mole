@@ -179,20 +179,22 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void TakeAwayLand(string targetNick, GenerateMeshType type)
     {
+        var target = GameManager.Instance.UserMeshMap[targetNick];
+
         if(GameManager.Instance.IsSingleMode)
         {
             if(player.IsEnemy==false && type==GenerateMeshType.TakeGround)
                 HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
+
+            if(target.player == GameManager.Instance.SinglePlayer)
+                myKillText.text = ++myKillCount + " Kill";
         }
         else if (PV.IsMine)
         {
             HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
+            myKillText.text = ++myKillCount + " Kill";
         }
 
-
-        myKillText.text = ++myKillCount + " Kill";
-
-        var target = GameManager.Instance.UserMeshMap[targetNick];
 
         foreach (var otherMeshObj in target._myMeshSet)
         {
@@ -263,7 +265,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             _myMeshSet.Add(road.CuteMesh);
         }
         transformRoadList.Clear();
-        FinishLand(2f);
+        FinishLand(1.5f);
 
 
         if (GameManager.Instance.IsSingleMode || PV.IsMine)
@@ -334,6 +336,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
     }
 
+    [SerializeField] LayerMask landLayer;
     private void LateUpdate()
     {
         if(isFirstMeshCreated==false)
@@ -346,6 +349,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
 
         float minZ = 1f;
+
+        Vector3 halfExtents = new Vector3(0.5f,0.5f, 10000f); // x,y 범위 1 (즉, 반값은 0.5), z는 무시할 만큼 크게
+        bool hasHit = Physics.CheckBox(transform.position, halfExtents, transform.rotation, landLayer);
+        if(hasHit == false)
+        {
+            _curInMyMeshSet.Clear();
+            _curInOtherMeshSet.Clear();
+            SetInHouse(false);
+            return;
+        }
 
         foreach (GameObject go in _curInMyMeshSet)
         {
