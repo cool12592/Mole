@@ -179,15 +179,15 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void TakeAwayLand(string targetNick, GenerateMeshType type)
     {
-        var target = GameManager.Instance.UserMeshMap[targetNick];
+        var deadPersonMesh = GameManager.Instance.UserMeshMap[targetNick];
 
         if(GameManager.Instance.IsSingleMode)
         {
-            if(player.IsEnemy==false && type==GenerateMeshType.TakeGround)
+            if (player.IsEnemy == false)
+            {
                 HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
-
-            if(target.player == GameManager.Instance.SinglePlayer)
                 myKillText.text = ++myKillCount + " Kill";
+            }
         }
         else if (PV.IsMine)
         {
@@ -196,7 +196,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
 
 
-        foreach (var otherMeshObj in target._myMeshSet)
+        foreach (var otherMeshObj in deadPersonMesh._myMeshSet)
         {
             if (otherMeshObj == null)
                 continue;
@@ -222,7 +222,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
 
         
-        foreach (var otherRoad in target._myRoadList)
+        foreach (var otherRoad in deadPersonMesh._myRoadList)
         {
             if (otherRoad == null)
                 continue;
@@ -272,7 +272,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         {
             if(player.IsEnemy==false)
             {
-                HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
                 _meshGenSound.Play();
                 GetComponent<PlayerMovement>().ShakeCamera();
             }
