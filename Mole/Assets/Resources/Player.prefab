@@ -777,6 +777,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PV: {fileID: 0}
   healthImage: {fileID: 0}
+  player: {fileID: 0}
   _dieSprite: {fileID: 21300000, guid: 0b6e4e285787c474fb8b5ec580960574, type: 3}
   wallCollider: {fileID: 7554290197182403767}
   meshCollider: {fileID: 1321908147026303338}

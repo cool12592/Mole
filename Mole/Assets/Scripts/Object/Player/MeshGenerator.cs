@@ -221,22 +221,26 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             }
         }
 
-        
-        foreach (var otherRoad in deadPersonMesh._myRoadList)
+
+        foreach (var otherRoad in deadPersonMesh._myRoadList.ToList())
         {
             if (otherRoad == null)
                 continue;
 
             if(type == GenerateMeshType.TakeGround)
             {
-                if(otherRoad._isFinishRoad == false)
+                if (otherRoad._isFinishRoad == false)
+                {
                     GlobalRoadPool.Instance.Release(otherRoad);
+                    continue;
+                }
             }
             else if (type == GenerateMeshType.TakeRoad)
             {
                 if(otherRoad._isFinishRoad == false)
                     transformRoadList.Add(otherRoad);
             }
+
 
             _myRoadList.Add(otherRoad);
             OnGenerateMesh += otherRoad.ChangeLayer;

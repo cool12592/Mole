@@ -23,7 +23,7 @@ public class AttackMesh : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (PhotonNetwork.IsMasterClient == false)
+        if (GameManager.Instance.SinglePlayer == false && PhotonNetwork.IsMasterClient == false)
             return;
 
         if (player == null)
@@ -38,11 +38,18 @@ public class AttackMesh : MonoBehaviour
 
         if(other.transform.parent.TryGetComponent<PlayerHealth>(out PlayerHealth playerHealth))
         {
-            if (playerHealth.PV == null)
-                return;
-            if (nickName == playerHealth.PV.Owner.NickName)
-                return;
-
+            if (GameManager.Instance.SinglePlayer == false)
+            {
+                if (playerHealth.PV == null)
+                    return;
+                if (nickName == playerHealth.PV.Owner.NickName)
+                    return;
+            }
+            else
+            {
+                if (nickName == playerHealth.player.IsSingleNickName)
+                    return;
+            }
 
             playerHealth.Death(player, nickName,MeshGenerator.GenerateMeshType.TakeGround);
         }
