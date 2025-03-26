@@ -724,6 +724,7 @@ public class GameManager : MonoBehaviour
 
         firstClick = true;
 
+        SetScreenTextRPC("",50);
 
     }
     public bool firstClick = true;

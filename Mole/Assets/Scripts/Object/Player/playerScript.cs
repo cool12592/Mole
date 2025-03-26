@@ -32,6 +32,11 @@ public class playerScript : MonoBehaviourPunCallbacks
     
     public bool IsEnemy = false;
 
+    public void SetNickText(string str)
+    {
+        NickNameText.text = str;
+    }
+
     // Start is called before the first frame update
     private void Awake()
     {

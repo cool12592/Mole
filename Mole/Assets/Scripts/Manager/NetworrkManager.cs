@@ -21,6 +21,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     [SerializeField] GameObject MainRobbyUI;
     [SerializeField] GameObject MultiRobbyUI;
+    string[] commonNames = { "James", "Emma", "Michael", "Olivia", "William", "Sophia" };
 
     public static readonly List<string> CommonSymbols = new List<string>
     {
@@ -318,7 +319,8 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
                     string nickName = CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)] + CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)];
 
-                    player.IsSingleNickName = nickName + cnt.ToString();
+                    player.IsSingleNickName = nickName + commonNames[cnt];
+                    player.SetNickText(player.IsSingleNickName.Substring(2));
                     player.SettingColor(gamePalette.GetColorInfo(cnt));
                     cnt++;
 

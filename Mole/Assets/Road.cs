@@ -103,7 +103,7 @@ public class Road : MonoBehaviour
 
 
 
-    float scanRadius = 0.5f;
+    float scanRadius = 2f;
     [SerializeField] LayerMask targetLayer;
     [SerializeField] Collider2D[] results;
 

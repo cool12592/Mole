@@ -773,6 +773,9 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 1024
+  landLayer:
+    serializedVersion: 2
+    m_Bits: 2112
   groundPieceMat: {fileID: 2100000, guid: 79664077e8e1ab741abcedee51cf929c, type: 2}
   _groundPieces:
   - {fileID: 21300000, guid: 1c9281bc148944e5c8af9172557d090c, type: 3}
@@ -792,6 +795,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bd83ffcb7927426e986ca3a7fcf023e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 5
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 16384

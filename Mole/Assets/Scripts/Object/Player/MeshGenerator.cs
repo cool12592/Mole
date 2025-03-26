@@ -672,6 +672,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
          if (GameManager.Instance.IsSingleMode == false && PV.IsMine == false)
             return;
 
+        if(player.isActive == false)
+            return;
+
         if (posList.Count < 3)
         {
             if(GameManager.Instance.IsSingleMode == false)
@@ -706,6 +709,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         float z = GetSharedFloat();
 
         yield return StartCoroutine(CoBFSSearch());
+
+        if(player.isActive == false)
+            yield break;
 
         if(GameManager.Instance.IsSingleMode == false)
             photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z,originLastIndex);
