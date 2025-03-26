@@ -339,25 +339,18 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
 
         float minZ = 1f;
-        foreach (GameObject go in _curInMyMeshSet)
-        {
-            if (go.transform.position.z < minZ)
-            {
-                minZ = go.transform.position.z;
-            }
-        }
 
-        foreach (GameObject go in _curInOtherMeshSet)
+        foreach (GameObject go in _curInMyMeshSet)
         {
             if(go == null)
             {
                 removeReserveList.Add(go);
                 continue;
             }
+
             if (go.transform.position.z < minZ)
             {
-                SetInHouse(false);
-                return;
+                minZ = go.transform.position.z;
             }
         }
 
@@ -367,7 +360,14 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
         removeReserveList.Clear();
 
-
+        foreach (GameObject go in _curInOtherMeshSet)
+        {
+            if (go.transform.position.z < minZ)
+            {
+                SetInHouse(false);
+                return;
+            }
+        }
 
         SetInHouse(true);
     }
@@ -933,13 +933,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         myKillText.text = "0 Kill";
 
-        foreach (var mesh in _myMeshSet)
+        foreach (var mesh in _myMeshSet.ToList())
         {
             if (mesh != null)
                 Destroy(mesh);
         }
 
-        foreach (var road in _myRoadList)
+        foreach (var road in _myRoadList.ToList())
         {
             if (road != null)
                 GlobalRoadPool.Instance.Release(road);

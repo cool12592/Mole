@@ -81,6 +81,14 @@ public class Road : MonoBehaviour
 
     public void Release()
     {
+        if(_myOwner != null)
+        {
+            _myOwner._myRoadList.Remove(this);
+            if(CuteMesh.activeSelf)
+            {
+                _myOwner._myMeshSet.Remove(CuteMesh);
+            }
+        }
         // 복사본 생성
         var roads = neighRoadSet.ToList();
 
