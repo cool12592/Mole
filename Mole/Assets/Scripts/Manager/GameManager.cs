@@ -712,8 +712,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public Transform[] startingPositions;
-
 
     public void SingleClear()
     {
