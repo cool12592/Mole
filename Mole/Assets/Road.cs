@@ -77,7 +77,7 @@ public class Road : MonoBehaviour
         //{
         //    return;
         //}
-        GlobalRoadPool.Instance.Release(this);
+       // GlobalRoadPool.Instance.Release(this);
     }
 
 
@@ -105,7 +105,7 @@ public class Road : MonoBehaviour
 
 
 
-    float scanRadius = 2f;
+    float scanRadius = 1f;
     [SerializeField] LayerMask targetLayer;
     Collider2D[] results = new Collider2D[20];
 
