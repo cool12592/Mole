@@ -198,7 +198,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
         do
         {
-            spawnPosition = new Vector3(UnityEngine.Random.Range(-12f, 12f), UnityEngine.Random.Range(-12f, 12f),0f); // 3D 좌표
+            spawnPosition = new Vector3(UnityEngine.Random.Range(-12f, 15f), UnityEngine.Random.Range(-20f, 9f),0f); // 3D 좌표
 
             // 스폰 위치에 플레이어가 있는지 체크
             bool hasPlayer = Physics.CheckSphere(spawnPosition, checkRadius, LayerMask.GetMask("Player"));
@@ -221,13 +221,13 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         Debug.LogWarning("스폰할 수 있는 위치를 찾을 수 없습니다.");
     }
 
-    public void NewGameSpawn()
-    {
-        PhotonNetwork.Instantiate("Player", new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-5f, 5f), 0), Quaternion.identity);
-        GameManager.Instance.DeactiveResultPanel(GameManager.ResultPanel.MultiResult);
+    // public void NewGameSpawn()
+    // {
+    //     PhotonNetwork.Instantiate("Player", new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-5f, 5f), 0), Quaternion.identity);
+    //     GameManager.Instance.DeactiveResultPanel(GameManager.ResultPanel.MultiResult);
 
-        GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Lobby);
-    }
+    //     GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Lobby);
+    // }
 
 
     public override void OnMasterClientSwitched(Player newMasterClient)
@@ -291,7 +291,7 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         int cnt = 0;
         do
         {
-            spawnPosition = new Vector3(UnityEngine.Random.Range(-15f, 15f), UnityEngine.Random.Range(-12f, 12f),0f); // 3D 좌표
+            spawnPosition = new Vector3(UnityEngine.Random.Range(-12f, 15f), UnityEngine.Random.Range(-20f, 9f),0f); // 3D 좌표
 
             // 스폰 위치에 플레이어가 있는지 체크
             bool hasPlayer = Physics.CheckSphere(spawnPosition, checkRadius, LayerMask.GetMask("Player"));
