@@ -157,6 +157,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
     [SerializeField] Collider2D wallCollider;
     [SerializeField] Collider meshCollider;
+    [SerializeField] Collider hitMeshCollider;
 
     [PunRPC]
     void Death_RPC(string attackerName,int type)
@@ -168,6 +169,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
         wallCollider.enabled = false;
         meshCollider.enabled = false;
+        hitMeshCollider.enabled = false;
 
         var attackerMesh = GameManager.Instance.UserMeshMap[attackerName];
 
