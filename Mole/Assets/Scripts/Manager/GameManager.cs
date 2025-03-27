@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour
             ResultObjs[count].SetActive(true);
             ResultTexts[count].text = nick.Substring(2);
             ResultTexts[count].text += " " + ((int)RankingBoard[nick]).ToString();
+            skeletonImages[count].gameObject.SetActive(false);
 
             if (nick == PhotonNetwork.LocalPlayer.NickName)
             {
@@ -96,7 +97,7 @@ public class GameManager : MonoBehaviour
             int sortedKeyIndex = i - count;
             ResultObjs[i].SetActive(true);
             ResultTexts[i].text = sortedKeys2[sortedKeyIndex].Substring(2);
-            ResultTexts[i].text += " (Die)";
+            skeletonImages[i].gameObject.SetActive(true);
 
             if (sortedKeys2[sortedKeyIndex] == PhotonNetwork.LocalPlayer.NickName)
             {
@@ -113,7 +114,7 @@ public class GameManager : MonoBehaviour
     {
         GlobalRoadPool.Instance.RestartPool();
         GlobalSpritePool.Instance.RestartPool();
-        
+
         ActiveTimer();
 
         if (PhotonNetwork.IsMasterClient)
@@ -642,7 +643,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text[] ResultTexts;
     [SerializeField] GameObject[] ResultObjs;
     [SerializeField] Image[] ResultImages;
-
+    [SerializeField] Image[] skeletonImages;
 
 
     [SerializeField] Transform FadeOutMaskObj;
