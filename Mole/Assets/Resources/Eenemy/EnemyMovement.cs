@@ -105,8 +105,8 @@ public class EnemyMovement : MonoBehaviour
 
 
     private Vector2 lastWasInHousePostion;
-    private float returnThresholdSqr1 = 16f; // 얼마나 가까워야 돌아왔다고 볼지 (0.1^2 = 약 0.01 거리)
-    private float returnThresholdSqr2 = 13f; // 얼마나 가까워야 돌아왔다고 볼지 (0.1^2 = 약 0.01 거리)
+    private float returnThresholdSqr1 = 9f; // 얼마나 가까워야 돌아왔다고 볼지 (0.1^2 = 약 0.01 거리)
+    private float returnThresholdSqr2 = 4f; // 얼마나 가까워야 돌아왔다고 볼지 (0.1^2 = 약 0.01 거리)
 
     bool reapeatChecking = false;
     void CurveOutwardAndReturn()
@@ -129,9 +129,6 @@ public class EnemyMovement : MonoBehaviour
             if(distanceSqr <= returnThresholdSqr2)
             {
                 isReturning = false;
-                Vector3 dir = (lastWasInHousePostion - currentPosition).normalized;
-                dir.z = 0f;
-                transform.up = dir;
             }
         }
 
