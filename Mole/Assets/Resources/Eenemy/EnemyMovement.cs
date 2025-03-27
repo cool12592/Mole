@@ -28,14 +28,18 @@ public class EnemyMovement : MonoBehaviour
     float scanRadius2 = 3f;
     [SerializeField] Collider2D[] results;
     [SerializeField] Collider2D[] results2;
-
+    Vector3 startingPoint;
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
         meshGenerator = GetComponent<MeshGenerator>();
         player = GetComponent<playerScript>();
         ChooseNextState();
+
+        startingPoint = transform.position;
     }
+
+    float rightRotation = 1f;
 
     void Update()
     {
@@ -54,7 +58,18 @@ public class EnemyMovement : MonoBehaviour
         {
             reapeatChecking = false;
             isReturning = true;
-            turnSpeedOutside = Random.Range(90f, 130f);
+
+            float rightRotation = Random.Range(0,1);
+            if(0.5< rightRotation)
+            {
+                rightRotation = 1f;
+            }
+            else
+            {
+                rightRotation = -1f;
+            }
+            
+            turnSpeedOutside = Random.Range(90f*rightRotation, 130f*rightRotation);
             ChooseCurvedExitDirection();
         }
 
@@ -129,6 +144,10 @@ public class EnemyMovement : MonoBehaviour
             if(distanceSqr <= returnThresholdSqr2)
             {
                 isReturning = false;
+
+                Vector3 dir = (startingPoint - transform.position).normalized;
+                dir.z = 0f;
+                transform.up = dir;
             }
         }
 
