@@ -803,6 +803,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshObj = new GameObject("GeneratedMesh");
             _myMeshSet.Add(meshObj);
 
+           // meshObj.AddComponent<Land>().Init(this);
             meshObj.AddComponent<MeshShatter>();
             meshCollider = meshObj.AddComponent<MeshCollider>();
             meshFilter = meshObj.AddComponent<MeshFilter>();
@@ -826,6 +827,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshRenderer = meshObj.GetComponent<MeshRenderer>();
             meshRenderer.material = meshMaterial;
             meshRenderer.material.color = myColor;
+           // meshObj.GetComponent<Land>().Init(this);
+
         }
 
         if(GameManager.Instance.IsSingleMode==false)

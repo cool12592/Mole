@@ -74,12 +74,13 @@ public class Road : MonoBehaviour
         //     return;
         // if (_myMeshSet == null)
         //    return;
-        // if (_myMeshSet.Contains(go) )
+        // if (_myMeshSet.Contains(go))
         // {
         //     return;
         // }
-        // go.GetComponent<AttackMesh>().player.GetComponent<MeshGenerator>().StealRoad(this);
-       //GlobalRoadPool.Instance.Release(this);
+
+        // go.GetComponent<Land>()._owner.StealRoad(this);
+        // //GlobalRoadPool.Instance.Release(this);
     }
 
 
