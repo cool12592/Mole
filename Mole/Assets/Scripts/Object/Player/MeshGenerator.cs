@@ -371,8 +371,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         {
             _curInMyMeshSet.Clear();
             _curInOtherMeshSet.Clear();
-            SetInHouse(false);
-            return;
         }
 
         foreach (GameObject go in _curInMyMeshSet)
