@@ -389,18 +389,30 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         foreach(var go in removeReserveList)
         {
-            _curInOtherMeshSet.Remove(go);
+            _curInMyMeshSet.Remove(go);
         }
         removeReserveList.Clear();
 
         foreach (GameObject go in _curInOtherMeshSet)
         {
+            if(go == null || _myMeshSet.Contains(go))
+            {
+                removeReserveList.Add(go);
+                continue;
+            }
+
             if (go.transform.position.z < minZ)
             {
                 SetInHouse(false);
                 return;
             }
         }
+
+        foreach(var go in removeReserveList)
+        {
+            _curInOtherMeshSet.Remove(go);
+        }
+        removeReserveList.Clear();
 
         SetInHouse(true);
     }
