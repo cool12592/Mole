@@ -7,9 +7,9 @@ public class SpriteShatter : MonoBehaviour
 
 
 
-     int rows = 3; // 가로 방향 조각 개수
-     int cols = 3; // 세로 방향 조각 개수
-     float explosionForce = 5f; // 조각들이 튀는 힘
+     int rows = 2; // 가로 방향 조각 개수
+     int cols = 2; // 세로 방향 조각 개수
+     float explosionForce = 4f; // 조각들이 튀는 힘
      float spread = 1f; // 조각들이 퍼지는 정도
 
     [SerializeField] SpriteRenderer sr;
@@ -46,7 +46,9 @@ public class SpriteShatter : MonoBehaviour
 
     void CreatePiece(SpriteRenderer original, Texture2D texture, Rect spriteRect, int x, int y, float width, float height)
     {
-        SpritePiece piece = GlobalSpritePool.Instance.GetPiece(transform.position + playerUpVector);
+        var pos = transform.position + playerUpVector;
+        pos.z = -1f;
+        SpritePiece piece = GlobalSpritePool.Instance.GetPiece(pos);
         piece.transform.localScale = new Vector3(0.17f,0.17f,0.17f);
 
         piece.spriteRenderer.sortingOrder = 2;
