@@ -48,7 +48,12 @@ public class GameStateExecute : MonoBehaviour
 
         ActiveReadyButton();
 
-        WaitInfoText.text = "Room Number : " + PhotonNetwork.CurrentRoom.Name + "\n Waiting for user...";
+        //WaitInfoText.text = "Room Number : " + PhotonNetwork.CurrentRoom.Name + "\n Waiting for user...";
+
+        string roomName = PhotonNetwork.CurrentRoom.Name;
+        string region = PhotonNetwork.CloudRegion;
+
+        WaitInfoText.text = $"Room: {roomName}\nRegion: {region}";
     }
 
     public void ActiveReadyButton()

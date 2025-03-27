@@ -34,6 +34,11 @@ public class GameManager : MonoBehaviour
         resultPanels[(int)resultPanel].SetActive(false);
     }
 
+    public void DeactiveMultiDefeat()
+    {
+        resultPanels[(int)ResultPanel.MultiDefeat].SetActive(false);
+    }
+
 
     IEnumerator CoWaitRequest()
     {
@@ -440,14 +445,14 @@ public class GameManager : MonoBehaviour
             if (count <= 2)
             {
                 RankImages[count].sprite = otherRankBackGroundSprite;
-                RankInfoTexts[count].text = str.Substring(2);
+                RankInfoTexts[count].text = nickName.Substring(2);
                 RankObjs[count].SetActive(true);
             }
 
             if (nickName == myNickname)
             {
                 myRank = count;
-                myStr = str;
+                myStr = nickName;
 
                 if (3 <= count)
                     break;
