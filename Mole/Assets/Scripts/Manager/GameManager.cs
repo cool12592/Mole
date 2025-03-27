@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator CoWaitRequest()
     {
-        SetScreenTextRPC("Game Finish!", 100);
+        SetScreenTextRPC("Game\nFinish!", 100);
         yield return new WaitForSeconds(1.5f); // 안전빵
         SetScreenTextRPC("", 50);
 
