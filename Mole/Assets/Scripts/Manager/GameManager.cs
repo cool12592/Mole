@@ -445,14 +445,14 @@ public class GameManager : MonoBehaviour
             if (count <= 2)
             {
                 RankImages[count].sprite = otherRankBackGroundSprite;
-                RankInfoTexts[count].text = nickName.Substring(2);
+                RankInfoTexts[count].text = str.Substring(2);
                 RankObjs[count].SetActive(true);
             }
 
             if (nickName == myNickname)
             {
                 myRank = count;
-                myStr = nickName;
+                myStr = str;
 
                 if (3 <= count)
                     break;
