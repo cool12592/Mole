@@ -69,15 +69,15 @@ public class Road : MonoBehaviour
 
     void CollideMesh(GameObject go)
     {
-        if (_isFinishRoad == false)
-            return;
+       // if (_isFinishRoad == false)
+        //    return;
         // if (_myMeshSet == null)
         //    return;
         // if (_myMeshSet.Contains(go))
         // {
         //    return;
         // }
-       GlobalRoadPool.Instance.Release(this);
+       //GlobalRoadPool.Instance.Release(this);
     }
 
 

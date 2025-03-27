@@ -651,7 +651,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             {
                 if (neighbor == null || neighbor._isFinishRoad == false)
                     continue;
-
+        
                 if (neighbor == lastEnterRoad) // 목적지 도달
                 {
 
