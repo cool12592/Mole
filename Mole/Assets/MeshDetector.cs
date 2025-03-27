@@ -11,40 +11,40 @@ public class MeshDetector : MonoBehaviour
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
             return;
-        if(IsCompletelyCovered2D(other))
-            OnMeshCollide?.Invoke(other.gameObject);
+        
+        OnMeshCollide?.Invoke(other.gameObject);
     }
 
 
 
-    public bool IsCompletelyCovered2D(Collider other)
-    {
-        Vector3 size = boxCol.size;
-        Vector3 center = boxCol.center;
-        Transform t = boxCol.transform;
+    // public bool IsCompletelyCovered2D(Collider other)
+    // {
+    //     Vector3 size = boxCol.size;
+    //     Vector3 center = boxCol.center;
+    //     Transform t = boxCol.transform;
 
-        // ²ÀÁþÁ¡ 4°³ °è»ê (z´Â ¹«½Ã)
-        Vector2[] corners = new Vector2[4];
-        corners[0] = To2D(t.TransformPoint(center + new Vector3(-size.x, -size.y, 0) * 0.5f)); // ÁÂÇÏ
-        corners[1] = To2D(t.TransformPoint(center + new Vector3(-size.x, size.y, 0) * 0.5f));  // ÁÂ»ó
-        corners[2] = To2D(t.TransformPoint(center + new Vector3(size.x, size.y, 0) * 0.5f));   // ¿ì»ó
-        corners[3] = To2D(t.TransformPoint(center + new Vector3(size.x, -size.y, 0) * 0.5f));  // ¿ìÇÏ
+    //     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 4ï¿½ï¿½ ï¿½ï¿½ï¿½ (zï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+    //     Vector2[] corners = new Vector2[4];
+    //     corners[0] = To2D(t.TransformPoint(center + new Vector3(-size.x, -size.y, 0) * 0.5f)); // ï¿½ï¿½ï¿½ï¿½
+    //     corners[1] = To2D(t.TransformPoint(center + new Vector3(-size.x, size.y, 0) * 0.5f));  // ï¿½Â»ï¿½
+    //     corners[2] = To2D(t.TransformPoint(center + new Vector3(size.x, size.y, 0) * 0.5f));   // ï¿½ï¿½ï¿½
+    //     corners[3] = To2D(t.TransformPoint(center + new Vector3(size.x, -size.y, 0) * 0.5f));  // ï¿½ï¿½ï¿½ï¿½
 
-        foreach (Vector2 corner in corners)
-        {
-            // zÃàÀº 0À¸·Î °íÁ¤ÇØ¼­ 2DÃ³·³ OverlapPoint Ã¼Å©
-            Vector3 point3D = new Vector3(corner.x, corner.y, other.transform.position.z);
-            if (!other.bounds.Contains(point3D))
-            {
-                return false; // ÇÏ³ª¶óµµ ¾È °ãÄ¡¸é false
-            }
-        }
+    //     foreach (Vector2 corner in corners)
+    //     {
+    //         // zï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ 2DÃ³ï¿½ï¿½ OverlapPoint Ã¼Å©
+    //         Vector3 point3D = new Vector3(corner.x, corner.y, other.transform.position.z);
+    //         if (!other.bounds.Contains(point3D))
+    //         {
+    //             return false; // ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ false
+    //         }
+    //     }
 
-        return true; // ÀüºÎ °ãÄ¡¸é true
-    }
+    //     return true; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ true
+    // }
 
-    private Vector2 To2D(Vector3 pos)
-    {
-        return new Vector2(pos.x, pos.y);
-    }
+    // private Vector2 To2D(Vector3 pos)
+    // {
+    //     return new Vector2(pos.x, pos.y);
+    // }
 }

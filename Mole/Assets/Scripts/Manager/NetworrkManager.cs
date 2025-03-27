@@ -38,7 +38,6 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
         "u", "v", "w", "x", "y", "z"
     };
 
-
     public void ActiveMultiUI()
     {
         MainRobbyUI.SetActive(false);

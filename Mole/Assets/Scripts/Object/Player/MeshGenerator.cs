@@ -586,6 +586,21 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     }
 
+    public void StealRoad(Road road)
+    {
+        Debug.Log("뺏음!!");
+        road._myOwner._myRoadList.Remove(road);
+        road._myOwner._myMeshSet.Remove(road.CuteMesh);
+
+        road.CuteMesh.SetActive(true);
+        _myMeshSet.Add(road.CuteMesh);
+
+        _myRoadList.Add(road);
+        road._myMeshSet = _myMeshSet;
+        road._myOwner = this;
+        road._sr.color = myColor;
+    }
+
     void SavePath(Dictionary<Road, Road> parentMap, Road target)
     {
         List<Road> roadsToDestroy = new List<Road>();
@@ -597,13 +612,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         HashSet<Road> visitedNodes = new HashSet<Road>(); // 🔥 방문 체크용
         List<Vector2> okRoad = new List<Vector2>();
+
         while (target != null)
         {
             if(visitedNodes.Contains(target)) 
                 return;
 
             visitedNodes.Add(target);
-
             var pos = new Vector2(target.transform.position.x, target.transform.position.y);
            // target._sr.color = color;
            // target._sr.enabled = true;
@@ -616,6 +631,14 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         foreach(var pos in okRoad)
         {
             posList.Add(pos);
+        }
+
+        foreach(var road in visitedNodes)
+        {
+            if(road._myOwner != null && road._myOwner != this)
+            {
+                StealRoad(road);
+            }
         }
 
         // // 루프가 끝난 후 삭제

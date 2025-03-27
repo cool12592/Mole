@@ -7,7 +7,7 @@ using UnityEngine;
 public class AttackMesh : MonoBehaviour
 {
     string nickName = "";
-    playerScript player;
+    public playerScript player;
 
     private IEnumerator Start()
     {
@@ -29,12 +29,11 @@ public class AttackMesh : MonoBehaviour
         if (player == null)
             return;
 
-        if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
-            return;
-
         if (nickName == "")
             return;
 
+        if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
+            return;
 
         if(other.transform.parent.TryGetComponent<PlayerHealth>(out PlayerHealth playerHealth))
         {

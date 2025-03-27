@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using ExitGames.Client.Photon.StructWrapping;
 using UnityEngine;
 
 public class Road : MonoBehaviour
@@ -69,14 +70,15 @@ public class Road : MonoBehaviour
 
     void CollideMesh(GameObject go)
     {
-       // if (_isFinishRoad == false)
-        //    return;
+        // if (_isFinishRoad == false)
+        //     return;
         // if (_myMeshSet == null)
         //    return;
-        // if (_myMeshSet.Contains(go))
+        // if (_myMeshSet.Contains(go) )
         // {
-        //    return;
+        //     return;
         // }
+        // go.GetComponent<AttackMesh>().player.GetComponent<MeshGenerator>().StealRoad(this);
        //GlobalRoadPool.Instance.Release(this);
     }
 
