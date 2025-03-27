@@ -677,9 +677,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
                 }
 
                 nodeCount++;
-                if (nodeCount % NodesPerFrame == 0)
+                //if (nodeCount % NodesPerFrame == 0)
                 {
-                    yield return null; // 10,000개 노드 탐색마다 한 프레임 쉬기
+                 //   yield return null; // 10,000개 노드 탐색마다 한 프레임 쉬기
                 }
             }
         }

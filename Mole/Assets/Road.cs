@@ -107,7 +107,7 @@ public class Road : MonoBehaviour
 
     float scanRadius = 1f;
     [SerializeField] LayerMask targetLayer;
-    Collider2D[] results = new Collider2D[20];
+    Collider2D[] results = new Collider2D[100];
 
     void FindNeighRoad()
     {
