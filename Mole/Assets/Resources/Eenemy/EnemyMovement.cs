@@ -45,9 +45,12 @@ public class EnemyMovement : MonoBehaviour
         timer -= Time.deltaTime;
 
         // 상태 전환 체크
-        if (!isHouse && wasInHouse)
+        if (isHouse == false && wasInHouse)
         {
+            reapeatChecking = false;
+            startCirclePosition = transform.position;
             isReturning = true;
+            turnSpeedOutside = Random.Range(90f, 130f);
             ChooseCurvedExitDirection();
         }
 
@@ -57,30 +60,11 @@ public class EnemyMovement : MonoBehaviour
         else if (IsObstacleAvoid()) { }
         else
         {
-            if (!isHouse && wasInHouse)
+            if (!isHouse && isReturning)
             {
-                isReturning = true;
-                ChooseCurvedExitDirection();
+                CurveOutwardAndReturn(); // 집 밖에서 곡선 궤적으로 복귀 중
             }
-
-            if (isReturning)
-            {
-                if (isHouse)
-                {
-                    inHouseTimer += Time.deltaTime;
-                    if (inHouseTimer >= returnCompleteTime)
-                    {
-                        isReturning = false;
-                        inHouseTimer = 0f;
-                    }
-                }
-                else
-                {
-                    inHouseTimer = 0f;
-                    CurveOutwardAndReturn(); // 집 밖에서 곡선 궤적으로 복귀 중
-                }
-            }
-
+            // 집 안에서는 그냥 직진
         }
 
         // 이동 처리
@@ -114,10 +98,33 @@ public class EnemyMovement : MonoBehaviour
         transform.Rotate(0f, 0f, angle);
     }
 
+
+
+    private Vector2 startCirclePosition;
+    private float returnThresholdSqr = 4f; // 얼마나 가까워야 돌아왔다고 볼지 (0.1^2 = 약 0.01 거리)
+    bool reapeatChecking = false;
     void CurveOutwardAndReturn()
     {
         // 계속 회전하면서 곡선 이동
         transform.Rotate(0f, 0f, turnSpeedOutside * Time.deltaTime);
+
+        Vector2 currentPosition = transform.position;
+        float distanceSqr = Vector3.SqrMagnitude(currentPosition - startCirclePosition);
+
+        if (distanceSqr <= returnThresholdSqr)
+        {
+            if(reapeatChecking == false)
+            {
+                reapeatChecking = true;
+            }
+            else
+            {
+                isReturning = false;
+                Vector3 dir = (startCirclePosition - currentPosition).normalized;
+                dir.z = 0f;
+                transform.up = dir;
+            }
+        }
 
         if (isHouse)
         {
@@ -187,10 +194,4 @@ public class EnemyMovement : MonoBehaviour
         }
         return false;
     }
-
-
-
-    private float inHouseTimer = 0f;
-[SerializeField] private float returnCompleteTime = 0.5f;
-
 }
