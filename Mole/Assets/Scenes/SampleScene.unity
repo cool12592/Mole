@@ -53705,8 +53705,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 31.2, y: 6.8}
-  m_SizeDelta: {x: 200, y: 60}
+  m_AnchoredPosition: {x: -11.5, y: 6.799999}
+  m_SizeDelta: {x: 155.1, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1091664712
 MonoBehaviour:
@@ -53741,7 +53741,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 20% Alfie
+  m_Text: Star worker
 --- !u!222 &1091664713
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -53960,8 +53960,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 31.2, y: 6.8}
-  m_SizeDelta: {x: 200, y: 60}
+  m_AnchoredPosition: {x: -11.5, y: 6.799999}
+  m_SizeDelta: {x: 155.1, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1106431060
 MonoBehaviour:
@@ -53996,7 +53996,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 20% Alfie
+  m_Text: Star worker
 --- !u!222 &1106431061
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -54274,7 +54274,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 46.4, y: -120}
+  m_AnchoredPosition: {x: 93.8, y: -120}
   m_SizeDelta: {x: 380.2, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1135061528
@@ -69238,7 +69238,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 46.4, y: -190}
+  m_AnchoredPosition: {x: 93.8, y: -190}
   m_SizeDelta: {x: 380.2, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1688103249
@@ -69527,8 +69527,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 35, y: 6.8}
-  m_SizeDelta: {x: 200, y: 60}
+  m_AnchoredPosition: {x: -11.5, y: 6.799999}
+  m_SizeDelta: {x: 155.1, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1751154114
 MonoBehaviour:
@@ -69563,7 +69563,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 20% Alfie
+  m_Text: Star worker
 --- !u!222 &1751154115
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -70560,7 +70560,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 39.1, y: -50}
+  m_AnchoredPosition: {x: 93.8, y: -50}
   m_SizeDelta: {x: 399.3, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1946330608

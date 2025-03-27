@@ -66,7 +66,6 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
     }
@@ -327,6 +326,8 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     public void SingleRestart()
     {
+        //DontDestroyOnLoad(gameObject);
+
         if (BGM.isPlaying)
         {
             BGM.Stop(); // 현재 재생 중이 아닐 때만 Play()

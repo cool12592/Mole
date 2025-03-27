@@ -103,6 +103,7 @@ MonoBehaviour:
   - TeleportRandomPosition
   - TeleportRandomPosition_RPC
   - SyncPosListAndGenerateMesh_RPC2
+  - MasterPermission
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

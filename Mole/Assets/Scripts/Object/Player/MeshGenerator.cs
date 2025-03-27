@@ -760,7 +760,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if(PhotonNetwork.IsMasterClient == false)
             return;
         
-        if(player.isActive == false)
+        if(isFirstMeshCreated == true &&  player.isActive == false)
             return;  
 
         PV.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, receivedPosList ,z , originLastIndex_p);
