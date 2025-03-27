@@ -39,11 +39,11 @@ public class MeshShatter : MonoBehaviour
             centerY = bounds.min.y + (y + 0.5f) * height;
         }
 
-        Vector3 center = new Vector3(centerX, centerY, 0);
+        Vector3 center = new Vector3(centerX, centerY, -2f);
 
         SpritePiece piece = GlobalSpritePool.Instance.GetPiece(center);
         piece.spriteRenderer.color = Color.white;
-
+        piece.spriteRenderer.sortingOrder = 0;
         // ✅ 원하는 스프라이트 랜덤하게 할당 (또는 순서대로)
         if (spriteFragments != null && spriteFragments.Length > 0)
         {
@@ -65,7 +65,7 @@ public class MeshShatter : MonoBehaviour
         piece.rigid.gravityScale = 1f;
         piece.rigid.AddForce(new Vector2(Random.Range(-spread, spread), Random.Range(0, spread)) * explosionForce, ForceMode2D.Impulse);
 
-        GlobalSpritePool.Instance.Release(piece, 2f); // 2초 후 자동 삭제z
+        GlobalSpritePool.Instance.Release(piece, 1.5f); // 2초 후 자동 삭제z
     }
 
 

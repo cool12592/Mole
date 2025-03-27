@@ -179,15 +179,15 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     public void TakeAwayLand(string targetNick, GenerateMeshType type)
     {
-        var target = GameManager.Instance.UserMeshMap[targetNick];
+        var deadPersonMesh = GameManager.Instance.UserMeshMap[targetNick];
 
         if(GameManager.Instance.IsSingleMode)
         {
-            if(player.IsEnemy==false && type==GenerateMeshType.TakeGround)
+            if (player.IsEnemy == false)
+            {
                 HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
-
-            if(target.player == GameManager.Instance.SinglePlayer)
                 myKillText.text = ++myKillCount + " Kill";
+            }
         }
         else if (PV.IsMine)
         {
@@ -196,7 +196,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
 
 
-        foreach (var otherMeshObj in target._myMeshSet)
+        foreach (var otherMeshObj in deadPersonMesh._myMeshSet)
         {
             if (otherMeshObj == null)
                 continue;
@@ -221,22 +221,26 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             }
         }
 
-        
-        foreach (var otherRoad in target._myRoadList)
+
+        foreach (var otherRoad in deadPersonMesh._myRoadList.ToList())
         {
             if (otherRoad == null)
                 continue;
 
             if(type == GenerateMeshType.TakeGround)
             {
-                if(otherRoad._isFinishRoad == false)
+                if (otherRoad._isFinishRoad == false)
+                {
                     GlobalRoadPool.Instance.Release(otherRoad);
+                    continue;
+                }
             }
             else if (type == GenerateMeshType.TakeRoad)
             {
                 if(otherRoad._isFinishRoad == false)
                     transformRoadList.Add(otherRoad);
             }
+
 
             _myRoadList.Add(otherRoad);
             OnGenerateMesh += otherRoad.ChangeLayer;
@@ -272,7 +276,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         {
             if(player.IsEnemy==false)
             {
-                HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
                 _meshGenSound.Play();
                 GetComponent<PlayerMovement>().ShakeCamera();
             }
@@ -457,11 +460,12 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     private void Update()
     {
+        if (player.isActive == false)
+            return;
 
         if (inHouse)
         {
             DeactiveDust();
-            GetComponent<SpriteRenderer>().color = Color.white;
             return;
         }
 
@@ -702,7 +706,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
          if (GameManager.Instance.IsSingleMode == false && PV.IsMine == false)
             return;
 
-        if(player.isActive == false)
+        if(isFirstMeshCreated == true &&  player.isActive == false)
             return;
 
         if (posList.Count < 3)
@@ -740,7 +744,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         yield return StartCoroutine(CoBFSSearch());
 
-        if(player.isActive == false)
+        if(isFirstMeshCreated == true &&  player.isActive == false)
             yield break;
 
         if(GameManager.Instance.IsSingleMode == false)

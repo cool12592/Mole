@@ -194,43 +194,18 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
     public void spawn()
     {
-        Vector3 spawnPosition;
-        int maxAttempts = 100;
-        int attempt = 0;
-        float checkRadius = 2f;
-
-        do
-        {
-            spawnPosition = new Vector3(UnityEngine.Random.Range(-12f, 15f), UnityEngine.Random.Range(-20f, 9f),0f); // 3D 좌표
-
-            // 스폰 위치에 플레이어가 있는지 체크
-            bool hasPlayer = Physics.CheckSphere(spawnPosition, checkRadius, LayerMask.GetMask("Player"));
-
-            if (!hasPlayer) // 아무도 없으면 스폰
-            {
-                PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
-                GameManager.Instance.ResponePanel.SetActive(false);
-
-
-                GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null);
-
-                return;
-            }
-
-            attempt++;
-
-        } while (attempt < maxAttempts);
-
-        Debug.LogWarning("스폰할 수 있는 위치를 찾을 수 없습니다.");
+        PhotonNetwork.Instantiate("Player", new Vector3(UnityEngine.Random.Range(-5, 5), UnityEngine.Random.Range(-5f, 5f), 0), Quaternion.identity);
+        GameManager.Instance.ResponePanel.SetActive(false);
+        GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null); 
     }
 
-    // public void NewGameSpawn()
-    // {
-    //     PhotonNetwork.Instantiate("Player", new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-5f, 5f), 0), Quaternion.identity);
-    //     GameManager.Instance.DeactiveResultPanel(GameManager.ResultPanel.MultiResult);
 
-    //     GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Lobby);
-    // }
+    public void NewGameSpawn()
+    {
+        PhotonNetwork.Instantiate("Player", new Vector3(UnityEngine.Random.Range(-5, 5), UnityEngine.Random.Range(-5f, 5f), 0), Quaternion.identity);
+        GameManager.Instance.DeactiveResultPanel(GameManager.ResultPanel.MultiResult);
+        GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Lobby);
+    }
 
 
     public override void OnMasterClientSwitched(Player newMasterClient)

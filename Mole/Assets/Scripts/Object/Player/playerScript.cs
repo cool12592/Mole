@@ -259,39 +259,47 @@ public class playerScript : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient == false)
             return;
 
-        List<int> numbers = new List<int>();
-        for (int i = 0; i < GameManager.Instance.startingPositions.Length; i++)
+        playerScript[] allPlayers = FindObjectsOfType<playerScript>();
+        Vector2 center = Vector2.zero;
+        int userCount = allPlayers.Length;
+        float minDistance = 7f;
+
+
+        List<Vector2> positions = new List<Vector2>();
+        for (int i = 0; i < userCount; i++)
         {
-            numbers.Add(i);
+            positions.Add(Vector2.zero);
         }
 
-        Shuffle(numbers);
+        for (int i = 0; i < userCount; i++)
+        {
+            Vector2 pos;
+            int attempts = 0;
+            do
+            {
+                pos = new Vector3(Random.Range(-12f, 15f), Random.Range(-20f, 9f), 0f);
+                attempts++;
+                if (attempts > 10000)
+                {
+                    break;
+                }
+            } while (positions.Exists(p => Vector2.Distance(p, pos) < minDistance));
 
-        playerScript[] allPlayers = FindObjectsOfType<playerScript>();
+            positions[i] = pos;
+        }
 
         int cnt = 0;
         foreach (var player in allPlayers)
         {
-            Vector3 pos = GameManager.Instance.startingPositions[numbers[cnt]].position;
-            cnt++;
+            Vector3 pos = positions[cnt++];
             player.PV.RPC("TeleportRandomPosition_RPC", RpcTarget.All, pos.x, pos.y, 0f);
         }
+
 
         if (PhotonNetwork.IsMasterClient)
         {
             GameStateExecute _stateExecute = FindObjectOfType<GameStateExecute>();
             _stateExecute.OnLateReadyState();
-        }
-    }
-
-    void Shuffle(List<int> list)
-    {
-        for (int i = 0; i < list.Count; i++)
-        {
-            int randIndex = UnityEngine.Random.Range(i, list.Count);
-            int temp = list[i];
-            list[i] = list[randIndex];
-            list[randIndex] = temp;
         }
     }
 
