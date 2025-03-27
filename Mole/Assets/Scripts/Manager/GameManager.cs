@@ -42,8 +42,9 @@ public class GameManager : MonoBehaviour
 
     IEnumerator CoWaitRequest()
     {
+        SetScreenTextRPC("Game Finish!", 100);
         yield return new WaitForSeconds(1f); // 안전빵
-        PV.RPC("SetScreenTextRPC", RpcTarget.All, "", 50);
+        SetScreenTextRPC("", 50);
 
         ActiveMultiResultPanel();
     }
@@ -551,7 +552,7 @@ public class GameManager : MonoBehaviour
         ScreenText.fontSize = fontSize;
         ScreenText.text = str;
 
-        if(str == "")
+        if(_isGameEnd == false && str == "" && GameStateManager.Instance.NowGameState == GameStateManager.GameState.Fight)
         {
             if(IsSingleMode)
             {
