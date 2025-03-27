@@ -71,13 +71,13 @@ public class Road : MonoBehaviour
     {
         if (_isFinishRoad == false)
             return;
-        //if (_myMeshSet == null)
+        // if (_myMeshSet == null)
         //    return;
-        //if (_myMeshSet.Contains(go))
-        //{
+        // if (_myMeshSet.Contains(go))
+        // {
         //    return;
-        //}
-       // GlobalRoadPool.Instance.Release(this);
+        // }
+       GlobalRoadPool.Instance.Release(this);
     }
 
 
