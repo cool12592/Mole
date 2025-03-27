@@ -89,6 +89,7 @@ public class Road : MonoBehaviour
             if(CuteMesh.activeSelf)
             {
                 _myOwner._myMeshSet.Remove(CuteMesh);
+                CuteMesh.SetActive(false);
             }
         }
         // 복사본 생성

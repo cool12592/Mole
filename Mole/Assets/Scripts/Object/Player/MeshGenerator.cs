@@ -543,7 +543,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         pos.z = GetSharedFloat();
 
         if(GameManager.Instance.IsSingleMode == false)
-            photonView.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad,shatter);
+            PV.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad,shatter);
         else
             CreateLoad_RPC( pos.x, pos.y, pos.z,isNeighCheckRoad,shatter);
     }
@@ -557,7 +557,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         pos.z = GetSharedFloat();
 
         if(GameManager.Instance.IsSingleMode == false)
-            photonView.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
+            PV.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
         else
             CreateLoad_RPC(pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
     }
@@ -703,7 +703,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     void GenerateMeshObject()
     {
-         if (GameManager.Instance.IsSingleMode == false && PV.IsMine == false)
+        if (GameManager.Instance.IsSingleMode == false && PV.IsMine == false)
             return;
 
         if(isFirstMeshCreated == true &&  player.isActive == false)
@@ -712,7 +712,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (posList.Count < 3)
         {
             if(GameManager.Instance.IsSingleMode == false)
-                photonView.RPC("BabyLand", RpcTarget.All);
+                PV.RPC("BabyLand", RpcTarget.All);
             else
                 BabyLand();
 
@@ -748,10 +748,24 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             yield break;
 
         if(GameManager.Instance.IsSingleMode == false)
-            photonView.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, posList.ToArray(),z,originLastIndex);
+            PV.RPC("MasterPermission", RpcTarget.MasterClient, posList.ToArray(),z,originLastIndex);
         else
             SyncPosListAndGenerateMesh_RPC(posList.ToArray(),z,originLastIndex);
     }
+
+    [PunRPC]
+    void MasterPermission(Vector2[] receivedPosList, float z,int originLastIndex_p)
+    {
+        //왜 이렇게 허락맡고 하냐면 죽었을때 active 를 즉각 수정하는건 마스터라서 마스터 기준에서 active를 확인해야 타이밍이 더 정확할거같음
+        if(PhotonNetwork.IsMasterClient == false)
+            return;
+        
+        if(player.isActive == false)
+            return;  
+
+        PV.RPC("SyncPosListAndGenerateMesh_RPC", RpcTarget.All, receivedPosList ,z , originLastIndex_p);
+    }
+    
 
     [PunRPC]
     void BabyLand()
