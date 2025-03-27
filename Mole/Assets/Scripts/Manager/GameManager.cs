@@ -29,11 +29,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject[] resultPanels;
     public enum ResultPanel {SingleVictory,SingleDefeat,MultiResult,MultiDefeat}
 
-
-    public void DeactiveMultiDefeatPanel()
-    {
-        resultPanels[(int)ResultPanel.MultiDefeat].SetActive(false);
-    }
     public void DeactiveResultPanel(ResultPanel resultPanel)
     {
         resultPanels[(int)resultPanel].SetActive(false);
@@ -43,7 +38,7 @@ public class GameManager : MonoBehaviour
     IEnumerator CoWaitRequest()
     {
         SetScreenTextRPC("Game Finish!", 100);
-        yield return new WaitForSeconds(1f); // 안전빵
+        yield return new WaitForSeconds(1.5f); // 안전빵
         SetScreenTextRPC("", 50);
 
         ActiveMultiResultPanel();
@@ -109,12 +104,16 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        DeactiveResultPanel(ResultPanel.MultiDefeat);
         resultPanels[(int)ResultPanel.MultiResult].SetActive(true);
     }
 
 
     public void StartLobby()
     {
+        GlobalRoadPool.Instance.RestartPool();
+        GlobalSpritePool.Instance.RestartPool();
+        
         ActiveTimer();
 
         if (PhotonNetwork.IsMasterClient)
