@@ -222,25 +222,17 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(1.5f);  // 일정 시간 후 삭제
 
         rb.gravityScale = 0f;  
-        if (GameManager.Instance.IsSingleMode==false)
-            player.Goast();        
-
-        if (GameManager.Instance.IsSingleMode || PV.IsMine)
+        
+        if(GameManager.Instance.IsSingleMode)
         {
-            if(GameManager.Instance.IsSingleMode)
-            {
-                GameManager.Instance.ReportTheKill(attackerName, player.IsSingleNickName);
-                Destroy(player.gameObject);
+            Destroy(player.gameObject);
 
-                if(player == GameManager.Instance.SinglePlayer)
-                    GameManager.Instance.ActiveResultPanel(GameManager.ResultPanel.SingleDefeat);
-            }
-            else
-            {
-                GameManager.Instance.ReportTheKill(attackerName, PV.Owner.NickName);
-            }
-            //GameManager.Instance.ResponePanel.SetActive(true);
-           // PV.RPC("DestroyRPC", RpcTarget.AllBuffered); // AllBuffered로 해야 제대로 사라져 복제버그가 안 생긴다
+            if(player == GameManager.Instance.SinglePlayer)
+                GameManager.Instance.ActiveResultPanel(GameManager.ResultPanel.SingleDefeat);
+        }
+        else
+        {
+            player.Goast();
         }
     }
 
