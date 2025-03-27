@@ -532,8 +532,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
             if(count%5 == 0)
                 CreateLoadForward(transform.position,isNeighCheck, shatter);
-            else
-                CreateLoad(transform.position,isNeighCheck, shatter);
+            
+            CreateLoad(transform.position,isNeighCheck, shatter);
         }
     }
 
