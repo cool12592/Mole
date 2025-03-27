@@ -416,7 +416,8 @@ public class GameManager : MonoBehaviour
             myNickname = SinglePlayer.IsSingleNickName;
         int count = -1;
         int myRank = 999;
-        string myStr = "";
+        string myName = "";
+        string myPoint = "";
         int lastRnak = rankStr.Length;
 
         for (int i = 0; i < RankObjs.Length; i++)
@@ -445,14 +446,15 @@ public class GameManager : MonoBehaviour
             if (count <= 2)
             {
                 RankImages[count].sprite = otherRankBackGroundSprite;
-                RankInfoTexts[count].text = str.Substring(2);
+                RankInfoTexts[count].text = nickName.Substring(2) +"\n" + point;
                 RankObjs[count].SetActive(true);
             }
 
             if (nickName == myNickname)
             {
                 myRank = count;
-                myStr = str;
+                myName = nickName;
+                myPoint = point;
 
                 if (3 <= count)
                     break;
@@ -468,7 +470,7 @@ public class GameManager : MonoBehaviour
         {
             RankObjs[RankObjs.Length - 1].SetActive(true);
             RankImages[RankImages.Length - 1].sprite = myRankBackGroundSprite;
-            RankInfoTexts[RankInfoTexts.Length - 1].text = myStr.Substring(2);
+            RankInfoTexts[RankInfoTexts.Length - 1].text = myName.Substring(2) +"\n" + myPoint;
 
             RankNumberTexts[RankNumberTexts.Length - 1].text = myRank.ToString() + "st";
         }
