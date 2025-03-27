@@ -355,23 +355,6 @@ public class GameManager : MonoBehaviour
 
         if(IsSingleMode == false)
             PV.RPC("SynchDeadPerson_RPC", RpcTarget.Others, deadPersonDict);
-        
-        
-
-        if(IsSingleMode)
-        {
-            if (SingleAllMemberCount == deadPersonDict.Count + 1)
-            {
-                if (SinglePlayer.isActive)
-                {
-                    ActiveResultPanel(GameManager.ResultPanel.SingleVictory);
-                }
-            }
-        }
-        else if (AllMemberCount == deadPersonDict.Count + 1)
-        {
-            OnEndGame();
-        }
     }
 
     [PunRPC]
@@ -492,24 +475,11 @@ public class GameManager : MonoBehaviour
         if(IsSingleMode == false)
             PV.RPC("killWriteRPC", RpcTarget.All, killer, deadPerson);
         else
-            killWrite(killer,deadPerson);
+            killWriteRPC(killer,deadPerson);
     }
 
     [PunRPC]
     private void killWriteRPC(string killer, string deadPerson)
-    {
-        RankingBoard[deadPerson] = 0f;
-        UpdateRankingBoard();
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            WriteDeadPeson(deadPerson);
-            killLogQueue.Enqueue(new KeyValuePair<string, string>(killer, deadPerson));
-            killLogOnTheScreen();
-        }
-    }
-
-    private void killWrite(string killer, string deadPerson)
     {
         ReportTheMakeLand(killer, RankingBoard[deadPerson]);
         RankingBoard[deadPerson] = 0f;
@@ -580,6 +550,24 @@ public class GameManager : MonoBehaviour
     {
         ScreenText.fontSize = fontSize;
         ScreenText.text = str;
+
+        if(str == "")
+        {
+            if(IsSingleMode)
+            {
+                if (SingleAllMemberCount == deadPersonDict.Count + 1)
+                {
+                    if (SinglePlayer.isActive)
+                    {
+                        ActiveResultPanel(GameManager.ResultPanel.SingleVictory);
+                    }
+                }
+            }
+            else if (AllMemberCount == deadPersonDict.Count + 1)
+            {
+                OnEndGame();
+            }
+        }
     }
 
     bool _isGameEnd = false;

@@ -15,7 +15,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     private Image healthImage;
     private Rigidbody2D rigidBody;
     private Animator characterAnim;
-    private playerScript player;
+    public playerScript player;
     private SpriteRenderer spriteRender;
 
     private bool invincibility = false;
