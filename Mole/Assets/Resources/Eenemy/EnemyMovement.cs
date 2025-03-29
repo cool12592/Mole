@@ -41,10 +41,20 @@ public class EnemyMovement : MonoBehaviour
 
     float rightRotation = 1f;
 
+    [Header("연기")]
+    private bool hasStarted = false;
+    [SerializeField] bool isActor = false;
+    private bool isPlayingActor = false;
+    [SerializeField] float actorTime = 3f;
     void Update()
     {
         if (!player.isActive || GameStateManager.Instance.NowGameState != GameStateManager.GameState.Fight)
             return;
+
+        if (isActor && !hasStarted)
+        {
+            StartCoroutine(ExecuteAfterSeconds(actorTime));
+        }
 
         timer -= Time.deltaTime;
 
@@ -53,44 +63,52 @@ public class EnemyMovement : MonoBehaviour
             lastWasInHousePostion = transform.position;
         }
 
-        // 상태 전환 체크
-        if (isHouse == false && wasInHouse)
+        
+        if (isPlayingActor)
         {
-            reapeatChecking = false;
-            isReturning = true;
-
-            float rightRotation = Random.Range(0,1);
-            if(0.5< rightRotation)
-            {
-                rightRotation = 1f;
-            }
-            else
-            {
-                rightRotation = -1f;
-            }
-            
-            turnSpeedOutside = Random.Range(90f*rightRotation, 130f*rightRotation);
-            ChooseCurvedExitDirection();
+            ForcedDetectPlayer();
         }
-
-        // 행동 결정
-        if (DetectRoad()) { }
-        else if (DetectPlayer()) { }
-        else if (IsObstacleAvoid()) { }
         else
         {
-            if (!isHouse && isReturning)
+            // 상태 전환 체크
+            if (isHouse == false && wasInHouse)
             {
-                CurveOutwardAndReturn(); // 집 밖에서 곡선 궤적으로 복귀 중
+                reapeatChecking = false;
+                isReturning = true;
+
+                float rightRotation = Random.Range(0, 1);
+                if (0.5 < rightRotation)
+                {
+                    rightRotation = 1f;
+                }
+                else
+                {
+                    rightRotation = -1f;
+                }
+
+                turnSpeedOutside = Random.Range(90f * rightRotation, 130f * rightRotation);
+                ChooseCurvedExitDirection();
             }
-            // 집 안에서는 그냥 직진
+
+            // 행동 결정
+            if (DetectRoad()) { }
+            else if (DetectPlayer()) { }
+            else if (IsObstacleAvoid()) { }
+            else
+            {
+                if (!isHouse && isReturning)
+                {
+                    CurveOutwardAndReturn(); // 집 밖에서 곡선 궤적으로 복귀 중
+                }
+                // 집 안에서는 그냥 직진
+            }
         }
 
         // 이동 처리
         transform.position += transform.up * moveSpeed * Time.deltaTime;
         playerMovement.ChangeAnim();
 
-        if (timer <= 0f && isHouse)
+        if (isPlayingActor == false && timer <= 0f && isHouse)
         {
             ChooseNextState();
         }
@@ -218,5 +236,24 @@ public class EnemyMovement : MonoBehaviour
             }
         }
         return false;
+    }
+
+    IEnumerator ExecuteAfterSeconds(float seconds)
+    {
+        hasStarted = true;
+        yield return new WaitForSeconds(seconds);
+        StartActor();
+    }
+
+    void StartActor()
+    {
+        isPlayingActor = true;
+    }
+
+    void ForcedDetectPlayer()
+    {
+        Vector3 dir = (GameManager.Instance.SinglePlayer.transform.position - transform.position).normalized;
+        dir.z = 0f;
+        transform.up = dir;
     }
 }

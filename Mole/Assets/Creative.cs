@@ -35,6 +35,8 @@ public class Creative : MonoBehaviour
     public float zoomDuration = 0.5f;
     public float StartcameraZoom = 10f;
 
+    public bool isFixedPositionMode = false;
+
 
     public void StartIntroZoom(CinemachineVirtualCamera cm)
     {

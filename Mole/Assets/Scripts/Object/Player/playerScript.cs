@@ -8,6 +8,7 @@ using Unity.Collections; // NativeArray
 using Cinemachine;
 using System.Drawing;
 using Photon.Pun.Demo.PunBasics;
+using static UnityEngine.UI.CanvasScaler;
 
 public class playerScript : MonoBehaviourPunCallbacks
 {
@@ -32,6 +33,8 @@ public class playerScript : MonoBehaviourPunCallbacks
     
     public bool IsEnemy = false;
 
+    bool isInit = false;
+
     public void SetNickText(string str)
     {
         NickNameText.text = str;
@@ -40,13 +43,23 @@ public class playerScript : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     private void Awake()
     {
+        Init();
+    }
+
+    private void Init()
+    {
+        if (isInit)
+            return;
+
+        isInit = true;
+
         health = GetComponent<PlayerHealth>();
         movement = GetComponent<PlayerMovement>();
 
-        if(GameManager.Instance.IsSingleMode ==false)
+        if (GameManager.Instance.IsSingleMode == false)
             NickNameText.text = PV.IsMine ? PhotonNetwork.NickName.ToString().Substring(2) : PV.Owner.NickName.ToString().Substring(2);
 
-        if (GameManager.Instance.IsSingleMode ||  PV.IsMine)
+        if (GameManager.Instance.IsSingleMode || PV.IsMine)
         {
             if (IsEnemy == false)
             {
@@ -55,8 +68,9 @@ public class playerScript : MonoBehaviourPunCallbacks
             }
         }
 
-        if(GameManager.Instance.IsSingleMode==false)
+        if (GameManager.Instance.IsSingleMode == false)
             StartCoroutine(CoColorSetting());
+
     }
 
     private IEnumerator CoColorSetting()
@@ -69,6 +83,8 @@ public class playerScript : MonoBehaviourPunCallbacks
     {
         if (colorInfo == null)
             return;
+
+        Init();
 
         NickNameText.color = colorInfo.color;
         movement._idleSprite = colorInfo.spries[0];

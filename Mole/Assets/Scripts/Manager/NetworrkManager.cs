@@ -277,7 +277,18 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
             {
                 if(cnt == 0)
                 {
-                    var player = Instantiate(SinglePlayer, spawnPosition, Quaternion.identity).GetComponent<playerScript>();
+                    playerScript player;
+                    if (Creative.Instance.isFixedPositionMode)
+                    {
+                        player = players[cnt];
+                        player.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        Destroy(players[cnt].gameObject);
+                        player = Instantiate(SinglePlayer, spawnPosition, Quaternion.identity).GetComponent<playerScript>();
+                    }
+
                     player.SettingColor(gamePalette.GetColorInfo(cnt));
 
                     string nickName = CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)] + CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)];
@@ -291,8 +302,18 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    var player = Instantiate(Enemys, spawnPosition, Quaternion.identity).GetComponent<playerScript>();
-
+                    playerScript player;
+                    if (Creative.Instance.isFixedPositionMode)
+                    {
+                        player = players[cnt];
+                        player.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        Destroy(players[cnt].gameObject);
+                        player = Instantiate(Enemys, spawnPosition, Quaternion.identity).GetComponent<playerScript>();
+                    }
+                    
                     string nickName = CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)] + CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)];
 
                     player.IsSingleNickName = nickName + commonNames[cnt];
@@ -370,4 +391,6 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     [SerializeField] playerScript Enemys;
 
 
+
+    [SerializeField] playerScript[] players;
 }
