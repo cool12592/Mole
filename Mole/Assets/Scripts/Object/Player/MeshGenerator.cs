@@ -544,8 +544,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
            // if(count%3 == 0)
                 isNeighCheck = true;
 
-            //if(count%5 == 0)
-            //    CreateLoadForward(transform.position,isNeighCheck, shatter);
+            if(count%5 == 0)
+                CreateLoadForward(transform.position,isNeighCheck, shatter);
             
             CreateLoad(transform.position,isNeighCheck, shatter);
         }
@@ -573,33 +573,40 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         pos.z = GetSharedFloat();
 
         if(GameManager.Instance.IsSingleMode == false)
-            PV.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
+            PV.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter,true);
         else
-            CreateLoad_RPC(pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
+            CreateLoad_RPC(pos.x, pos.y, pos.z,isNeighCheckRoad, shatter,true);
     }
 
     [PunRPC]
-    void CreateLoad_RPC(float x, float y, float z,bool isNeighCheckRoad,bool shatter)
+    void CreateLoad_RPC(float x, float y, float z,bool isNeighCheckRoad,bool shatter, bool isForward = false)
     {
+        
         Vector3 pos = new Vector3(x, y, z);
         var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one *0.6f);
-        
         road._sr.color = myColor;
-        _myRoadList.Add(road);
-        OnGenerateMesh += road.ChangeLayer;
-        road._myMeshSet = _myMeshSet;
         road._myOwner = this;
 
-        if(isNeighCheckRoad)
+        if (isForward)
         {
-            road.IsNeighCheckRoad = true;
+            GlobalRoadPool.Instance.Release(road, 0.1f);
         }
-
-        if (shatter)
+        else
         {
-            road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up * 0.5f);
-        }
+            _myRoadList.Add(road);
+            OnGenerateMesh += road.ChangeLayer;
+            road._myMeshSet = _myMeshSet;
 
+            if (isNeighCheckRoad)
+            {
+                road.IsNeighCheckRoad = true;
+            }
+
+            if (shatter)
+            {
+                road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up * 0.5f);
+            }
+        }
     }
 
     public void StealRoad(Road road)

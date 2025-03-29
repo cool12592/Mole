@@ -47,10 +47,12 @@ public class playerScript : MonoBehaviourPunCallbacks
             NickNameText.text = PV.IsMine ? PhotonNetwork.NickName.ToString().Substring(2) : PV.Owner.NickName.ToString().Substring(2);
 
         if (GameManager.Instance.IsSingleMode ||  PV.IsMine)
-        {   
-            GameManager.Instance.myplayer = gameObject;
-           // GameObject.Find("ObjectPoolParent").transform.GetChild(0).gameObject.SetActive(true);
-            InitCamera();            
+        {
+            if (IsEnemy == false)
+            {
+                GameManager.Instance.myplayer = gameObject;
+                InitCamera();
+            }
         }
 
         if(GameManager.Instance.IsSingleMode==false)
@@ -79,7 +81,6 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     void InitCamera()
     {
-        if(IsEnemy) return;
         // 2D 카메라
         if (CM == null)
         {
@@ -88,7 +89,7 @@ public class playerScript : MonoBehaviourPunCallbacks
 
         CM.Follow = transform;
         CM.LookAt = transform;
-        CM.m_Lens.OrthographicSize = Creative.Instance.cameraZoom;
+        CM.m_Lens.OrthographicSize = Creative.Instance.StartcameraZoom;
 
     }
 
@@ -225,6 +226,9 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     private void OnFightState()
     {
+        if(GameManager.Instance.IsSingleMode && IsEnemy == false)
+            Creative.Instance.StartIntroZoom(CM);
+
         isActive = true;
         _moveParticle.SetActive(true);
     }

@@ -55252,7 +55252,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ea27d7f875ebc48b8cc0ffa807a312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraZoom: 10
+  zoomInSize: 8
+  zoomDuration: 0.5
+  StartcameraZoom: 12
 --- !u!4 &1192254320
 Transform:
   m_ObjectHideFlags: 0
@@ -71984,6 +71986,7 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1192254320}
   - {fileID: 782628377}
   - {fileID: 1594574755}
   - {fileID: 1349515071}
@@ -72003,4 +72006,3 @@ SceneRoots:
   - {fileID: 1271155287}
   - {fileID: 1093664108}
   - {fileID: 894958032}
-  - {fileID: 1192254320}

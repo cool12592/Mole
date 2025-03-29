@@ -74,6 +74,32 @@ public class GlobalRoadPool : MonoBehaviour
         obj.IsInPool = true;
     }
 
+    public void Release(Road obj, float time = 0f)
+    {
+        if (obj.IsInPool) //�ߺ����� ����
+            return;
+        obj.IsInPool = true;
+        if (time == 0f)
+        {
+            RealRelease(obj);
+        }
+        else
+            StartCoroutine(CoRelease(obj, time));
+    }
+
+    public IEnumerator CoRelease(Road obj, float time)
+    {
+        yield return new WaitForSeconds(time);
+        RealRelease(obj);
+    }
+
+    void RealRelease(Road obj)
+    {
+        obj.Release();
+        obj.gameObject.SetActive(false);
+        pool.Push(obj);
+    }
+
     public void RestartPool()
     {
         foreach (var obj in pool)
