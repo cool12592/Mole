@@ -556,6 +556,11 @@ public class GameManager : MonoBehaviour
     [PunRPC]
     private void SetScreenTextRPC(string str, int fontSize)
     {
+        if(Creative.Instance.isNoKillText)
+        {
+            str = "";
+        }
+
         ScreenText.fontSize = fontSize;
         ScreenText.text = str;
 

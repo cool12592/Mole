@@ -17,6 +17,7 @@ public class Creative : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
     }
 
     public static Creative Instance
@@ -37,6 +38,7 @@ public class Creative : MonoBehaviour
 
     public bool isFixedPositionMode = false;
 
+    public bool isNoKillText = false;
 
     public void StartIntroZoom(CinemachineVirtualCamera cm)
     {

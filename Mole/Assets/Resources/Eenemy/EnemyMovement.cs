@@ -252,6 +252,9 @@ public class EnemyMovement : MonoBehaviour
 
     void ForcedDetectPlayer()
     {
+        if (GameManager.Instance.SinglePlayer == null)
+            return;
+
         Vector3 dir = (GameManager.Instance.SinglePlayer.transform.position - transform.position).normalized;
         dir.z = 0f;
         transform.up = dir;
