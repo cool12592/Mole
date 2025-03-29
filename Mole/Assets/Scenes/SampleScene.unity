@@ -10863,7 +10863,7 @@ PrefabInstance:
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: actorTime
-      value: 2
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5003663037539567242, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
@@ -10873,12 +10873,12 @@ PrefabInstance:
     - target: {fileID: 8258143569205903575, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.4209137
+      value: -23.6
       objectReference: {fileID: 0}
     - target: {fileID: 8258143569205903575, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -17.271734
+      value: -16.58
       objectReference: {fileID: 0}
     - target: {fileID: 8258143569205903575, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
@@ -11609,7 +11609,7 @@ PrefabInstance:
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: actorTime
-      value: 6
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5003663037539567242, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
@@ -11619,7 +11619,7 @@ PrefabInstance:
     - target: {fileID: 8258143569205903575, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.7490864
+      value: 7.32
       objectReference: {fileID: 0}
     - target: {fileID: 8258143569205903575, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
@@ -49157,7 +49157,7 @@ PrefabInstance:
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: isActor
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5003663037539567242, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
@@ -49167,12 +49167,12 @@ PrefabInstance:
     - target: {fileID: 8258143569205903575, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16.450912
+      value: -7.17
       objectReference: {fileID: 0}
     - target: {fileID: 8258143569205903575, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -13.031734
+      value: -18.96
       objectReference: {fileID: 0}
     - target: {fileID: 8258143569205903575, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
@@ -49330,6 +49330,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 927518376}
     m_Modifications:
+    - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
+        type: 3}
+      propertyPath: isActor
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5003663037539567242, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: landLayer.m_Bits
@@ -51193,12 +51198,12 @@ PrefabInstance:
     - target: {fileID: 8258143569205903575, guid: 2ff5eb6fd06bb4b02ab1c531efac2eb7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.8809137
+      value: -5.41
       objectReference: {fileID: 0}
     - target: {fileID: 8258143569205903575, guid: 2ff5eb6fd06bb4b02ab1c531efac2eb7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.2282653
+      value: -1.58
       objectReference: {fileID: 0}
     - target: {fileID: 8258143569205903575, guid: 2ff5eb6fd06bb4b02ab1c531efac2eb7,
         type: 3}
@@ -54199,6 +54204,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spritePrefab: {fileID: 5345023392460039168, guid: 4c9bcbad14fe6b0489a8cc0458714033,
     type: 3}
+  pieceColor: {r: 0, g: 0, b: 0, a: 0}
+  pieceSize: 0
 --- !u!4 &1093664108
 Transform:
   m_ObjectHideFlags: 0
@@ -55794,10 +55801,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ea27d7f875ebc48b8cc0ffa807a312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isNoJoyPad: 1
   zoomInSize: 8
   zoomDuration: 0.5
   StartcameraZoom: 12
   isFixedPositionMode: 1
+  isNoKillText: 1
+  isNoSountEffect: 0
+  isNoBGM: 0
+  isNoRockSound: 0
+  isNoCameraShake: 0
+  _image1: {fileID: 781602451}
+  _image2: {fileID: 502137215}
 --- !u!4 &1192254320
 Transform:
   m_ObjectHideFlags: 0

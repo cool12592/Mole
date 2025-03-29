@@ -254,9 +254,68 @@ public class EnemyMovement : MonoBehaviour
     {
         if (GameManager.Instance.SinglePlayer == null)
             return;
-
-        Vector3 dir = (GameManager.Instance.SinglePlayer.transform.position - transform.position).normalized;
+        if (Vector3.Distance(GameManager.Instance.SinglePlayer.transform.position, transform.position) < 2f)
+            return;
+        Vector3 dir = (GameManager.Instance.SinglePlayer.transform.position+ Vector3.right*4f +  - transform.position).normalized;
         dir.z = 0f;
         transform.up = dir;
     }
+
+    //void aaa()
+    //{
+    //    if (!player.isActive || GameStateManager.Instance.NowGameState != GameStateManager.GameState.Fight)
+    //        return;
+
+    //    timer -= Time.deltaTime;
+
+    //    if (isHouse)
+    //    {
+    //        lastWasInHousePostion = transform.position;
+    //    }
+
+    //    // 상태 전환 체크
+    //    if (isHouse == false && wasInHouse)
+    //    {
+    //        reapeatChecking = false;
+    //        isReturning = true;
+
+    //        float rightRotation = Random.Range(0, 1);
+    //        if (0.5 < rightRotation)
+    //        {
+    //            rightRotation = 1f;
+    //        }
+    //        else
+    //        {
+    //            rightRotation = -1f;
+    //        }
+
+    //        turnSpeedOutside = Random.Range(90f * rightRotation, 130f * rightRotation);
+    //        ChooseCurvedExitDirection();
+    //    }
+
+    //    // 행동 결정
+    //    if (DetectRoad()) { }
+    //    else if (DetectPlayer()) { }
+    //    else if (IsObstacleAvoid()) { }
+    //    else
+    //    {
+    //        if (!isHouse && isReturning)
+    //        {
+    //            CurveOutwardAndReturn(); // 집 밖에서 곡선 궤적으로 복귀 중
+    //        }
+    //        // 집 안에서는 그냥 직진
+    //    }
+
+    //    // 이동 처리
+    //    transform.position += transform.up * moveSpeed * Time.deltaTime;
+    //    playerMovement.ChangeAnim();
+
+    //    if (timer <= 0f && isHouse)
+    //    {
+    //        ChooseNextState();
+    //    }
+
+    //    // 현재 위치 상태 업데이트
+    //    wasInHouse = isHouse;
+    //}
 }

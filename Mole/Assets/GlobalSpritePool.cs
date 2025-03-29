@@ -80,4 +80,7 @@ public class GlobalSpritePool : MonoBehaviour
 
         InitPool();
     }
+
+    public Color pieceColor;
+    public float pieceSize;
 }

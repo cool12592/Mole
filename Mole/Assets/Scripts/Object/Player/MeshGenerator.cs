@@ -526,7 +526,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             {
                 if(GameManager.Instance.IsSingleMode  || PV.IsMine)
                 {
-                    if(player.IsEnemy==false)
+                    if(player.IsEnemy==false && Creative.Instance.isNoSountEffect == false)
                     {
                         _moveSound.volume = 0.3f;
                         _moveSound.Play();
@@ -972,8 +972,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             if(player.IsEnemy==false)
             {
                 HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
-                _meshGenSound.Play();
-                GetComponent<PlayerMovement>().ShakeCamera();
+                if(Creative.Instance.isNoRockSound==false)
+                    _meshGenSound.Play();
+                if (Creative.Instance.isNoCameraShake == false)
+                    GetComponent<PlayerMovement>().ShakeCamera();
             }
 
             if(GameManager.Instance.IsSingleMode == false)

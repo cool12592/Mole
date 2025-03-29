@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 public class JoyStickScript : MonoBehaviour
 {
     [SerializeField] RectTransform _lever = null;
@@ -16,6 +17,7 @@ public class JoyStickScript : MonoBehaviour
     public static Vector2 InputAxis { private set; get; } = Vector2.zero;
 
 
+    
     private Vector2 GetJoystickDir(Vector2 mousPos)
     {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_rectTransform, mousPos, null, out Vector2 pos);
@@ -49,7 +51,7 @@ public class JoyStickScript : MonoBehaviour
             GameManager.Instance.firstClick = false;
             GameStateManager.Instance.ChangeGameState(GameStateManager.GameState.Fight);
 
-            if (!BGM.isPlaying)
+            if (!BGM.isPlaying && Creative.Instance.isNoBGM == false)
             {
                 BGM.Play(); // 현재 재생 중이 아닐 때만 Play()
             }

@@ -32,6 +32,9 @@ public class Creative : MonoBehaviour
         }
     }
 
+    public bool isNoJoyPad = false;
+
+
     public float zoomInSize = 3f;
     public float zoomDuration = 0.5f;
     public float StartcameraZoom = 10f;
@@ -39,6 +42,10 @@ public class Creative : MonoBehaviour
     public bool isFixedPositionMode = false;
 
     public bool isNoKillText = false;
+    public bool isNoSountEffect = false;
+    public bool isNoBGM = false;
+    public bool isNoRockSound = false;
+    public bool isNoCameraShake = false;
 
     public void StartIntroZoom(CinemachineVirtualCamera cm)
     {
@@ -58,6 +65,17 @@ public class Creative : MonoBehaviour
         }
 
         cm.m_Lens.OrthographicSize = targetZoom;
+    }
+
+    [SerializeField] UnityEngine.UI.Image _image1, _image2;
+    private void Start()
+    {
+        if (Creative.Instance.isNoJoyPad)
+        {
+            _image1.color = new Color(_image1.color.r, _image1.color.g, _image1.color.b, 0f);
+            _image2.color = new Color(_image2.color.r, _image2.color.g, _image2.color.b, 0f);
+
+        }
     }
 
 }
