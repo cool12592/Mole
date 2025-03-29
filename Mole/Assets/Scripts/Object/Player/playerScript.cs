@@ -88,7 +88,7 @@ public class playerScript : MonoBehaviourPunCallbacks
 
         CM.Follow = transform;
         CM.LookAt = transform;
-        CM.m_Lens.OrthographicSize = 10;
+        CM.m_Lens.OrthographicSize = Creative.Instance.cameraZoom;
 
     }
 
