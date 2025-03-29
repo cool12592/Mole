@@ -79,6 +79,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _RoadOutLineTex:
+        m_Texture: {fileID: 8400000, guid: 343d65bf82db10941ad20dd677f8d102, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _RoadTex:
         m_Texture: {fileID: 8400000, guid: a71701305b3f1364a8cdd6099e4b6558, type: 2}
         m_Scale: {x: 1, y: 1}

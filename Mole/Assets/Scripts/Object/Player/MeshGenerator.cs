@@ -36,6 +36,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     Road lastExitRoad;
     Road lastEnterRoad;
+    Vector3 lastEnterDir;
+    Vector3 lastEnterPos;
 
     int checkNum = 0;
 
@@ -118,7 +120,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         //     CreateLoad(transform.position + offset,true);
         // }
 
-        WriteFirstMeshPoint(20, 1.2f);
+        WriteFirstMeshPoint(100, 1.2f);
 
         yield return null;
         GenerateMeshObject();
@@ -542,8 +544,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
            // if(count%3 == 0)
                 isNeighCheck = true;
 
-            if(count%5 == 0)
-                CreateLoadForward(transform.position,isNeighCheck, shatter);
+            //if(count%5 == 0)
+            //    CreateLoadForward(transform.position,isNeighCheck, shatter);
             
             CreateLoad(transform.position,isNeighCheck, shatter);
         }
@@ -647,21 +649,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             posList.Add(pos);
         }
 
-        foreach(var road in visitedNodes)
-        {
-            if(road._myOwner != null && road._myOwner != this)
-            {
-                StealRoad(road);
-            }
-        }
-
-        // // 루프가 끝난 후 삭제
-        // foreach (var road in roadsToDestroy)
-        // {
-        //     if(road!= null)
-        //     //Destroy(road.gameObject);
-        //     road.DeleteNeigh();
-        // }
+        //foreach(var road in visitedNodes)
+        //{
+        //    if(road._myOwner != null && road._myOwner != this)
+        //    {
+        //        StealRoad(road);
+        //    }
+        //}
     }
 
     const int NodesPerFrame = 10000;
@@ -675,9 +669,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         HashSet<Road> visited = new HashSet<Road>();
         Dictionary<Road, Road> parentMap = new Dictionary<Road, Road>(); // 부모 저장용
 
-        queue.Enqueue(lastExitRoad);
-        visited.Add(lastExitRoad);
-        parentMap[lastExitRoad] = null; // 시작점의 부모는 없음
+        queue.Enqueue(lastEnterRoad);
+        visited.Add(lastEnterRoad);
+        parentMap[lastEnterRoad] = null; // 시작점의 부모는 없음
 
         int nodeCount = 0;
         while (queue.Count > 0)
@@ -688,12 +682,15 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             {
                 if (neighbor == null || neighbor._isFinishRoad == false)
                     continue;
-        
-                if (neighbor == lastEnterRoad) // 목적지 도달
+
+               /// if (neighbor._myOwner!=this && Vector3.Dot(lastEnterDir, neighbor.transform.position - lastEnterPos) < -0.2f)
+               //     continue;
+
+                if (neighbor == lastExitRoad) // 목적지 도달
                 {
 
                     parentMap[neighbor] = node; // 부모 저장
-                    SavePath(parentMap, lastEnterRoad);
+                    SavePath(parentMap, lastExitRoad);
 
                    // lastExitRoad.transform.position = new Vector3(lastExitRoad.transform.position.x, lastExitRoad.transform.position.y, -999f);
                    // lastEnterRoad.transform.position = new Vector3(lastEnterRoad.transform.position.x, lastEnterRoad.transform.position.y, -999f);
@@ -725,7 +722,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             }
         }
 
-        UnityEngine.Debug.LogError("BFS 탐색 실패!!!!");
+
+        if(GameManager.Instance.SinglePlayer == player)
+            UnityEngine.Debug.LogError("BFS 탐색 실패!!!!");
     }
 
     void SphereCastDetectEnterRoad()
@@ -775,6 +774,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         //}
         SphereCastDetectEnterRoad();
+
+        if (lastEnterRoad != null)
+        {
+            lastEnterDir = lastEnterRoad.transform.position - transform.position;
+            lastEnterPos = transform.position;
+        }
+
         originLastIndex = posList.Count - 1;        
 
         float z = GetSharedFloat();
