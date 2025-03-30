@@ -24,7 +24,6 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] LayerMask roadLayer;
     [SerializeField] LayerMask playerLayer;
 
-    [SerializeField] float creativeScan = 0f;
     float scanRadius = 3f;
     float scanRadius2 = 3f;
     [SerializeField] Collider2D[] results;
@@ -46,15 +45,17 @@ public class EnemyMovement : MonoBehaviour
     private bool hasStarted = false;
     [SerializeField] bool isActor = false;
     private bool isPlayingActor = false;
-    [SerializeField] float actorTime = 3f;
+    [SerializeField] float suicideTime = 3f;
+    [SerializeField] float creativeScan = 0f;
+
     void Update()
     {
         if (!player.isActive || GameStateManager.Instance.NowGameState != GameStateManager.GameState.Fight)
             return;
 
-        if (isActor && !hasStarted)
+        if (isActor && !hasStarted && suicideTime != 0f)
         {
-            StartCoroutine(ExecuteAfterSeconds(actorTime));
+            StartCoroutine(ExecuteAfterSeconds(suicideTime));
         }
 
         timer -= Time.deltaTime;
@@ -200,10 +201,10 @@ public class EnemyMovement : MonoBehaviour
     Road targetRoad = null;
     bool DetectRoad()
     {
-        if(creativeScan!=0f)
+        if(isActor && creativeScan!=0f)
         {
             scanRadius = creativeScan;
-            if (targetRoad != null)
+            if (targetRoad != null && targetRoad._isFinishRoad==false)
                 return true;
         }
         int hitCount = Physics2D.OverlapCircleNonAlloc(transform.position, scanRadius, results, roadLayer);
@@ -213,7 +214,7 @@ public class EnemyMovement : MonoBehaviour
             Collider2D col = results[i];
             if (col.gameObject.TryGetComponent<Road>(out Road road))
             {
-                if(creativeScan!=0f)
+                if(isActor && creativeScan != 0f)
                 {
                     if (road._myOwner != GameManager.Instance.SinglePlayer.meshGenerator)
                         continue;
@@ -255,7 +256,7 @@ public class EnemyMovement : MonoBehaviour
     }
 
     IEnumerator ExecuteAfterSeconds(float seconds)
-    {
+    {           
         hasStarted = true;
         yield return new WaitForSeconds(seconds);
         StartActor();

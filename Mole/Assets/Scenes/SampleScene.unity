@@ -10858,7 +10858,7 @@ PrefabInstance:
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: isActor
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
@@ -11604,12 +11604,12 @@ PrefabInstance:
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: isActor
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: actorTime
-      value: 12
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5003663037539567242, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
@@ -49159,6 +49159,11 @@ PrefabInstance:
       propertyPath: isActor
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
+        type: 3}
+      propertyPath: actorTime
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5003663037539567242, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: landLayer.m_Bits
@@ -49167,12 +49172,12 @@ PrefabInstance:
     - target: {fileID: 8258143569205903575, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.17
+      value: 11.69
       objectReference: {fileID: 0}
     - target: {fileID: 8258143569205903575, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -18.96
+      value: -2.37
       objectReference: {fileID: 0}
     - target: {fileID: 8258143569205903575, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
@@ -49333,7 +49338,12 @@ PrefabInstance:
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: isActor
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
+        type: 3}
+      propertyPath: actorTime
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5003663037539567242, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
@@ -55811,6 +55821,7 @@ MonoBehaviour:
   isNoBGM: 0
   isNoRockSound: 0
   isNoCameraShake: 0
+  playerSpped: 0
   _image1: {fileID: 781602451}
   _image2: {fileID: 502137215}
 --- !u!4 &1192254320
@@ -56630,8 +56641,13 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
+      propertyPath: isActor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
+        type: 3}
       propertyPath: actorTime
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}

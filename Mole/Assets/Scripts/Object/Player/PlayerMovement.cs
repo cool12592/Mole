@@ -197,9 +197,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
         {
             return;
         }
-        
 
-        rigidBody.velocity = inputDirection * moveSpeed;
+        if (Creative.Instance.playerSpped!=0f)
+            rigidBody.velocity = inputDirection * Creative.Instance.playerSpped;
+        else
+            rigidBody.velocity = inputDirection * moveSpeed;
 
         if (inputDirection != Vector2.zero)
         {

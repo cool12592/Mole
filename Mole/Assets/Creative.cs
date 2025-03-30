@@ -47,6 +47,8 @@ public class Creative : MonoBehaviour
     public bool isNoRockSound = false;
     public bool isNoCameraShake = false;
 
+    public float playerSpped = 0f;
+
     public void StartIntroZoom(CinemachineVirtualCamera cm)
     {
         StartCoroutine(ZoomTo(cm,zoomInSize, zoomDuration));

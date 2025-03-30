@@ -278,8 +278,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         {
             if(player.IsEnemy==false)
             {
-                _meshGenSound.Play();
-                GetComponent<PlayerMovement>().ShakeCamera();
+                if (Creative.Instance.isNoRockSound == false)
+                    _meshGenSound.Play();
+                if (Creative.Instance.isNoCameraShake == false)
+                    GetComponent<PlayerMovement>().ShakeCamera();
             }
 
             // if(GameManager.Instance.IsSingleMode == false)
