@@ -54204,8 +54204,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spritePrefab: {fileID: 5345023392460039168, guid: 4c9bcbad14fe6b0489a8cc0458714033,
     type: 3}
-  pieceColor: {r: 0, g: 0, b: 0, a: 0}
-  pieceSize: 0
+  pieceColor: {r: 0.44313726, g: 0.28235295, b: 0.21568628, a: 1}
+  pieceSize: 0.17
 --- !u!4 &1093664108
 Transform:
   m_ObjectHideFlags: 0
@@ -56632,6 +56632,16 @@ PrefabInstance:
         type: 3}
       propertyPath: actorTime
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
+        type: 3}
+      propertyPath: scanRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
+        type: 3}
+      propertyPath: creativeScan
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5003663037539567242, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}

@@ -49,11 +49,11 @@ public class SpriteShatter : MonoBehaviour
         var pos = transform.position + playerUpVector;
         pos.z = -1f;
         SpritePiece piece = GlobalSpritePool.Instance.GetPiece(pos);
-        piece.transform.localScale = new Vector3(0.17f,0.17f,0.17f);
+        piece.transform.localScale = GlobalSpritePool.Instance.pieceSize * Vector3.one;
 
         piece.spriteRenderer.sortingOrder = 2;
         piece.spriteRenderer.sprite = sprite;
-        piece.spriteRenderer.color = new Color(0.4431373f,0.282353f, 0.2156863f);
+        piece.spriteRenderer.color = GlobalSpritePool.Instance.pieceColor;
 
         // 조각에 Rigidbody2D 추가해서 떨어지게 만들기
         piece.rigid.gravityScale = 1f;

@@ -604,7 +604,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
             if (shatter)
             {
-                road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up * 0.5f);
+                road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up * 1f);
             }
         }
     }

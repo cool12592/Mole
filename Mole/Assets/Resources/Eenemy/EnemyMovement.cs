@@ -24,6 +24,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] LayerMask roadLayer;
     [SerializeField] LayerMask playerLayer;
 
+    [SerializeField] float creativeScan = 0f;
     float scanRadius = 3f;
     float scanRadius2 = 3f;
     [SerializeField] Collider2D[] results;
@@ -196,8 +197,15 @@ public class EnemyMovement : MonoBehaviour
         return false;
     }
 
+    Road targetRoad = null;
     bool DetectRoad()
     {
+        if(creativeScan!=0f)
+        {
+            scanRadius = creativeScan;
+            if (targetRoad != null)
+                return true;
+        }
         int hitCount = Physics2D.OverlapCircleNonAlloc(transform.position, scanRadius, results, roadLayer);
 
         for (int i = 0; i < hitCount && i < results.Length; i++)
@@ -205,8 +213,16 @@ public class EnemyMovement : MonoBehaviour
             Collider2D col = results[i];
             if (col.gameObject.TryGetComponent<Road>(out Road road))
             {
+                if(creativeScan!=0f)
+                {
+                    if (road._myOwner != GameManager.Instance.SinglePlayer.meshGenerator)
+                        continue;
+                }
+
                 if (road._myOwner != meshGenerator)
                 {
+                    targetRoad = road;
+
                     Vector3 dir = (col.transform.position - transform.position).normalized;
                     dir.z = 0f;
                     transform.up = dir;

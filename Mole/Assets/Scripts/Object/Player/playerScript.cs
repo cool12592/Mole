@@ -24,8 +24,7 @@ public class playerScript : MonoBehaviourPunCallbacks
     private Button attackButton;
 
     CinemachineVirtualCamera CM;
-
-    [SerializeField] MeshGenerator meshGenerator;
+    public MeshGenerator meshGenerator;
     PlayerHealth health;
     [SerializeField] GamePalette palette;
 
