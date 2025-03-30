@@ -201,8 +201,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 
+        float dirll = 1f;
+        if (player.IsEnemy==false && GetComponent<MeshGenerator>().isDrillMode)
+            dirll = 2f;
         if (Creative.Instance.playerSpped!=0f)
-            rigidBody.velocity = inputDirection * Creative.Instance.playerSpped;
+            rigidBody.velocity = inputDirection * Creative.Instance.playerSpped * dirll;
         else
             rigidBody.velocity = inputDirection * moveSpeed;
 
