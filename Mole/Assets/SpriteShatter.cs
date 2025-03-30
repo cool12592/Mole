@@ -15,16 +15,26 @@ public class SpriteShatter : MonoBehaviour
     [SerializeField] SpriteRenderer sr;
     Sprite sprite;
     Vector3 playerUpVector;
-    public void Init(Sprite sprite_, Vector3 playerUpVector_)
+
+    bool isDrill = false;
+    public void Init(Sprite sprite_, Vector3 playerUpVector_, bool isDrill_ = false)
     {
         sprite = sprite_;
         playerUpVector = playerUpVector_;
+        isDrill = isDrill_;
         Shatter();
     }
 
     public void Shatter()
     {
         if (sr == null || sr.sprite == null) return;
+
+        if (isDrill)
+        {
+            rows *= 2;
+            cols *= 2;
+            explosionForce = 5f;
+        }
 
         Texture2D tex = sr.sprite.texture;
         Rect spriteRect = sr.sprite.rect;
@@ -46,10 +56,20 @@ public class SpriteShatter : MonoBehaviour
 
     void CreatePiece(SpriteRenderer original, Texture2D texture, Rect spriteRect, int x, int y, float width, float height)
     {
-        var pos = transform.position + playerUpVector;
+        float dirllPos = 1f;
+        if (isDrill)
+            dirllPos = 4f;
+
+        float drillSize = 1f;
+        if (isDrill)
+            drillSize = 2f;
+
+        var pos = transform.position + playerUpVector* dirllPos;
         pos.z = -1f;
         SpritePiece piece = GlobalSpritePool.Instance.GetPiece(pos);
-        piece.transform.localScale = GlobalSpritePool.Instance.pieceSize * Vector3.one;
+
+        piece.transform.localScale = GlobalSpritePool.Instance.pieceSize * Vector3.one * drillSize;
+
 
         piece.spriteRenderer.sortingOrder = 2;
         piece.spriteRenderer.sprite = sprite;

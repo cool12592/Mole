@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -74,6 +75,20 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     List<Road> transformRoadList = new List<Road>();
 
     float moveHapTickTimer = 0f;
+
+    public bool isDrillMode = false;
+    public Sprite _drill1;
+    public Sprite _drill2;
+    [SerializeField] SpriteRenderer drillSr;
+    public void ChangeDrillMode()
+    {
+        if (GameManager.Instance.IsSingleMode == false || player.IsEnemy)
+            return;
+        player.movement.ChangeDrilAnim();
+        isDrillMode = true;
+        drillSr.gameObject.SetActive(true);
+    }
+
 
     public void SetMyColor(Color color)
     {
@@ -467,6 +482,15 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             _dust.flipY = !_dust.flipY;
             _dustRockSR.flipX = !_dustRockSR.flipX;
             flipTimer = 0f;
+
+
+            if (isDrillMode)
+            {
+                if (drillSr.sprite == _drill1)
+                    drillSr.sprite = _drill2;
+                else
+                    drillSr.sprite = _drill1;
+            }
         }
     }
 
@@ -477,11 +501,16 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (player.isActive == false)
             return;
 
+        if (Input.GetKeyDown(KeyCode.R))
+            ChangeDrillMode();
+
         if (inHouse)
         {
             DeactiveDust();
             return;
         }
+
+        
 
        // GetComponent<SpriteRenderer>().color = Color.red;
 
@@ -585,7 +614,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         
         Vector3 pos = new Vector3(x, y, z);
-        var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one *0.6f);
+        float scale = 0.6f;
+        if (isDrillMode)
+            scale = 1.5f;
+        var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one * scale);
         road._sr.color = myColor;
         road._myOwner = this;
 
@@ -606,7 +638,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
             if (shatter)
             {
-                road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up * 1f);
+                bool isDrill = false;
+                if (isDrillMode)
+                    isDrill = true;
+                road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up , isDrill);
             }
         }
     }
@@ -869,6 +904,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     }
 
+    [SerializeField] GameObject drillItem;
     [SerializeField] Material groundPieceMat;
 
     int originLastIndex = 0;
@@ -924,6 +960,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         //float height = maxY - minY; // AABB 세로 길이
         //float boundingBoxArea = width * height; // 사각형 넓이
 
+
+        if(isDrillMode==false && drillItem!= null && totalArea > 10f)
+        {
+            var itemPos = centerPos;
+            itemPos.z = 0f;
+            Instantiate(drillItem, itemPos, Quaternion.identity);
+        }
         
 
         //// ✅ UV 매핑 설정
@@ -1067,4 +1110,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
                 GlobalRoadPool.Instance.Release(road);
         }
     }
+
+    
 }

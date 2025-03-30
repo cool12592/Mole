@@ -88,6 +88,10 @@ public class playerScript : MonoBehaviourPunCallbacks
         NickNameText.color = colorInfo.color;
         movement._idleSprite = colorInfo.spries[0];
         movement._runSprite = colorInfo.spries[1];
+
+        movement._curIdleSprite = colorInfo.spries[0];
+        movement._curRunSprite = colorInfo.spries[1];
+
         health._dieSprite = colorInfo.spries[2];
 
         meshGenerator.SetMyColor(colorInfo.color);
@@ -222,7 +226,7 @@ public class playerScript : MonoBehaviourPunCallbacks
 
 
     [SerializeField] GameObject _moveParticle;
-    PlayerMovement movement;
+    public PlayerMovement movement;
 
     private void OnReadyState()
     {
@@ -321,5 +325,8 @@ public class playerScript : MonoBehaviourPunCallbacks
             _stateExecute.OnLateReadyState();
         }
     }
+
+
+    
 
 }

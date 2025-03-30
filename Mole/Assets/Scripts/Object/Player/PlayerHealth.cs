@@ -125,6 +125,9 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         if (GameManager.Instance.IsSingleMode ==false && PhotonNetwork.IsMasterClient == false)
             return;
 
+        if (GetComponent<MeshGenerator>().isDrillMode)
+            return;
+
         if (attackerName == "")
             return;
 

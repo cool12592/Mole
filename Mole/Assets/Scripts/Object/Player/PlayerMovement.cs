@@ -34,6 +34,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] float animChangeTerm = 0.1f;
     float nextChangeAnimTime = 0f;
 
+    public Sprite _curIdleSprite;
+    public Sprite _curRunSprite;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -176,12 +179,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
             nextChangeAnimTime = Time.time + animChangeTerm;
             if(_isIdle)
             {
-                _spriteRenderer.sprite = _runSprite;
+                _spriteRenderer.sprite = _curRunSprite;
                 _isIdle = false;
             }
             else
             {
-                _spriteRenderer.sprite = _idleSprite;
+                _spriteRenderer.sprite = _curIdleSprite;
                 _isIdle = true;
             }
         }
@@ -227,8 +230,18 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
     }
 
 
+    public void ChangeIdleAnim()
+    {
+        _curIdleSprite = _idleSprite;
+        _curRunSprite = _runSprite;
+    }
+
+    public void ChangeDrilAnim()
+    {
+        _curIdleSprite = _runSprite;
+        _curRunSprite = _runSprite;
+    }
 
 
 
-    
 }
