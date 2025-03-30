@@ -49,6 +49,9 @@ public class Creative : MonoBehaviour
 
     public float playerSpped = 0f;
 
+    public float DrillZoomOut = 2f;
+    public int drillSpawnCount = 2;
+
     public void StartIntroZoom(CinemachineVirtualCamera cm)
     {
         StartCoroutine(ZoomTo(cm,zoomInSize, zoomDuration));

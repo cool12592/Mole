@@ -91,7 +91,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         isDrillMode = true;
         drillSr.gameObject.SetActive(true);
 
-        player.ChangeDrillZoom();
+        player.ChangeDrillZoom(Creative.Instance.DrillZoomOut);
+
+        
     }
 
 
@@ -924,6 +926,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     [SerializeField] GameObject drillItem;
     [SerializeField] Material groundPieceMat;
+    int drillSpawnCount = 0;
 
     int originLastIndex = 0;
     /// <summary>
@@ -979,7 +982,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         //float boundingBoxArea = width * height; // 사각형 넓이
 
 
-        if(isDrillMode==false && drillItem!= null && totalArea > 10f)
+        drillSpawnCount++;
+        if (isDrillMode==false && drillItem!= null && drillSpawnCount==Creative.Instance.drillSpawnCount)
         {
             var itemPos = centerPos;
             itemPos.z = 0f;

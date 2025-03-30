@@ -252,9 +252,9 @@ public class playerScript : MonoBehaviourPunCallbacks
         _moveParticle.SetActive(true);
     }
 
-    public void ChangeDrillZoom()
+    public void ChangeDrillZoom(float num)
     {
-        Creative.Instance.ChangeZoom(CM, CM.m_Lens.OrthographicSize+3,0.5f);
+        Creative.Instance.ChangeZoom(CM, CM.m_Lens.OrthographicSize+num,0.5f);
     }
 
     private void OnResultState()
