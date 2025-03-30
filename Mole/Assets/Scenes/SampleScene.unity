@@ -55926,13 +55926,15 @@ MonoBehaviour:
   zoomInSize: 10
   zoomDuration: 0.5
   StartcameraZoom: 13
-  isFixedPositionMode: 1
+  isFixedPositionMode: 0
   isNoKillText: 1
   isNoSountEffect: 0
   isNoBGM: 0
   isNoRockSound: 0
   isNoCameraShake: 0
   playerSpped: 0
+  DrillZoomOut: 2
+  drillSpawnCount: -1
   _image1: {fileID: 781602451}
   _image2: {fileID: 502137215}
 --- !u!4 &1192254320
