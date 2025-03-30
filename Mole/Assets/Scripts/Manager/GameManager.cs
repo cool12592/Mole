@@ -407,6 +407,7 @@ public class GameManager : MonoBehaviour
             updateRankingTextRPC(rankStr, count);
     }
 
+    public bool isBlockMode = false;
     public playerScript SinglePlayer;
     [PunRPC]
     private void updateRankingTextRPC(string[] rankStr,int length)

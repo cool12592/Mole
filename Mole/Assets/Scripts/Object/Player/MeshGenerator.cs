@@ -84,6 +84,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     {
         if (GameManager.Instance.IsSingleMode == false || player.IsEnemy)
             return;
+        if (isDrillMode)
+            return;
+
         player.movement.ChangeDrilAnim();
         isDrillMode = true;
         drillSr.gameObject.SetActive(true);
@@ -653,6 +656,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
                 bool isDrill = false;
                 if (isDrillMode)
                     isDrill = true;
+                if(GameManager.Instance.isBlockMode == false)
                 road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up , isDrill);
             }
         }
@@ -879,8 +883,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             meshObj = new GameObject("GeneratedMesh");
             _myMeshSet.Add(meshObj);
 
-           // meshObj.AddComponent<Land>().Init(this);
-            meshObj.AddComponent<MeshShatter>();
+            // meshObj.AddComponent<Land>().Init(this);
+
+            if (GameManager.Instance.isBlockMode == false)
+                meshObj.AddComponent<MeshShatter>();
             meshCollider = meshObj.AddComponent<MeshCollider>();
             meshFilter = meshObj.AddComponent<MeshFilter>();
             meshRenderer = meshObj.AddComponent<MeshRenderer>();
@@ -1057,7 +1063,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         FinishLand();
 
-        if (meshObj != null)
+        if (meshObj != null && GameManager.Instance.isBlockMode == false)
             meshObj.GetComponent<MeshShatter>().Init(_groundPieces);
 
     }

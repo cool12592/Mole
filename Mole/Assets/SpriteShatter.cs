@@ -25,6 +25,19 @@ public class SpriteShatter : MonoBehaviour
         Shatter();
     }
 
+    bool isBlock = false;
+    public void BlockInit(Sprite sprite_)
+    {
+        isBlock = true;
+        rows = 2;
+        cols = 2;
+
+        sprite = sprite_;
+        playerUpVector = Vector3.zero;
+
+        Shatter();
+    }
+
     public void Shatter()
     {
         if (sr == null || sr.sprite == null) return;
@@ -75,6 +88,10 @@ public class SpriteShatter : MonoBehaviour
         piece.spriteRenderer.sprite = sprite;
         piece.spriteRenderer.color = GlobalSpritePool.Instance.pieceColor;
 
+        if(isBlock)
+        {
+            piece.spriteRenderer.color = Color.white;
+        }
         // 조각에 Rigidbody2D 추가해서 떨어지게 만들기
         piece.rigid.gravityScale = 1f;
         piece.rigid.AddForce(new Vector2(UnityEngine.Random.Range(-spread, spread), UnityEngine.Random.Range(0, spread)) * explosionForce, ForceMode2D.Impulse);
