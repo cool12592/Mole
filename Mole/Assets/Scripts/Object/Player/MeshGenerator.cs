@@ -26,7 +26,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     float dustTimer = 0f;
     float flipTimer = 0f;
-
+    float drillTimer = 0f;
     Vector3 lastPos;
 
     Action<float> OnGenerateMesh;
@@ -87,6 +87,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         player.movement.ChangeDrilAnim();
         isDrillMode = true;
         drillSr.gameObject.SetActive(true);
+
+        player.ChangeDrillZoom();
     }
 
 
@@ -484,13 +486,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             flipTimer = 0f;
 
 
-            if (isDrillMode)
-            {
-                if (drillSr.sprite == _drill1)
-                    drillSr.sprite = _drill2;
-                else
-                    drillSr.sprite = _drill1;
-            }
+            
         }
     }
 
@@ -503,6 +499,19 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (Input.GetKeyDown(KeyCode.R))
             ChangeDrillMode();
+
+        if(isDrillMode && transform.position != lastPos)
+        {
+            drillTimer += Time.deltaTime;
+            if (drillTimer > 0.02f)
+            {
+                drillTimer = 0f;
+                if (drillSr.sprite == _drill1)
+                    drillSr.sprite = _drill2;
+                else
+                    drillSr.sprite = _drill1;
+            }
+        }
 
         if (inHouse)
         {
@@ -524,7 +533,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             return;
         }
 
+        
+
         ActiveDust();
+        
 
         lastPos = transform.position;
 

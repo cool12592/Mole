@@ -55923,9 +55923,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isNoJoyPad: 1
-  zoomInSize: 8
+  zoomInSize: 10
   zoomDuration: 0.5
-  StartcameraZoom: 12
+  StartcameraZoom: 13
   isFixedPositionMode: 1
   isNoKillText: 1
   isNoSountEffect: 0
@@ -55976,7 +55976,7 @@ Transform:
   m_GameObject: {fileID: 1193560810}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -5.4, z: -1000}
+  m_LocalPosition: {x: 0.11, y: -5.31, z: -1000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -68250,7 +68250,7 @@ Transform:
   m_GameObject: {fileID: 1415761054}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -5.4, z: -1000}
+  m_LocalPosition: {x: 0.11, y: -5.31, z: -1000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -70807,7 +70807,7 @@ Transform:
   m_GameObject: {fileID: 1831305350}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.11, y: -5.4, z: -1000}
+  m_LocalPosition: {x: 0.11, y: -5.32, z: -1000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

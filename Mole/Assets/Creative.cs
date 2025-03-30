@@ -54,6 +54,11 @@ public class Creative : MonoBehaviour
         StartCoroutine(ZoomTo(cm,zoomInSize, zoomDuration));
     }
 
+    public void ChangeZoom(CinemachineVirtualCamera cm, float zoomSize, float zoomDuration)
+    {
+        StartCoroutine(ZoomTo(cm, zoomSize, zoomDuration));
+    }
+
     IEnumerator ZoomTo(CinemachineVirtualCamera cm, float targetZoom, float duration)
     {
         float startZoom = cm.m_Lens.OrthographicSize;
