@@ -572,9 +572,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         pos.z = GetSharedFloat();
 
         if(GameManager.Instance.IsSingleMode == false)
-            PV.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad,shatter);
+            PV.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad,shatter,false);
         else
-            CreateLoad_RPC( pos.x, pos.y, pos.z,isNeighCheckRoad,shatter);
+            CreateLoad_RPC( pos.x, pos.y, pos.z,isNeighCheckRoad,shatter,false);
     }
 
     void CreateLoadForward(Vector3 pos,bool isNeighCheckRoad ,bool shatter = false)
@@ -592,7 +592,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void CreateLoad_RPC(float x, float y, float z,bool isNeighCheckRoad,bool shatter, bool isForwad = false)
+    void CreateLoad_RPC(float x, float y, float z,bool isNeighCheckRoad,bool shatter, bool isForwad )
     {
         Vector3 pos = new Vector3(x, y, z);
 
