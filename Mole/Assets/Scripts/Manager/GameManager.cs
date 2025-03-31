@@ -550,18 +550,18 @@ public class GameManager : MonoBehaviour
 
     [PunRPC]
     private void killLogOnTheScreenRPC(string killer, string deadPerson)
-    {
+    { 
         ScreenText.text = killer.Substring(2) + " Killed " + deadPerson.Substring(2);
+
+        if (Creative.Instance.isNoKillText)
+        {
+            ScreenText.text = "";
+        }
     }
 
     [PunRPC]
     private void SetScreenTextRPC(string str, int fontSize)
     {
-        if(Creative.Instance.isNoKillText)
-        {
-            str = "";
-        }
-
         ScreenText.fontSize = fontSize;
         ScreenText.text = str;
 
