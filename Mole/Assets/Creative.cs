@@ -52,6 +52,8 @@ public class Creative : MonoBehaviour
     public float DrillZoomOut = 2f;
     public int drillSpawnCount = 2;
 
+    public Color meshShatterColor = Color.white;
+
     public void StartIntroZoom(CinemachineVirtualCamera cm)
     {
         StartCoroutine(ZoomTo(cm,zoomInSize, zoomDuration));

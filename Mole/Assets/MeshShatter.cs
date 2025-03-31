@@ -42,7 +42,7 @@ public class MeshShatter : MonoBehaviour
         Vector3 center = new Vector3(centerX, centerY, -2f);
 
         SpritePiece piece = GlobalSpritePool.Instance.GetPiece(center);
-        piece.spriteRenderer.color = Color.white;
+        piece.spriteRenderer.color = Creative.Instance.meshShatterColor;
         piece.spriteRenderer.sortingOrder = 0;
         // ✅ 원하는 스프라이트 랜덤하게 할당 (또는 순서대로)
         if (spriteFragments != null && spriteFragments.Length > 0)
