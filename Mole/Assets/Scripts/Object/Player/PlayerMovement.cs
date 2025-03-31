@@ -171,6 +171,15 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 
     public void ChangeAnim()
     {
+        if(GameManager.Instance.IsSingleMode)
+        {
+            if (player.meshGenerator.IsDrillMode)
+            {
+                _spriteRenderer.sprite = _runSprite;
+                return;
+            }
+        }
+
         if(nextChangeAnimTime < Time.time)
         {
             nextChangeAnimTime = Time.time + animChangeTerm;

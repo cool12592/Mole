@@ -158,8 +158,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-
-        Application.targetFrameRate = 60;
     }
 
     public static GameManager Instance

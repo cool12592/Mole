@@ -328,6 +328,12 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     {
         //DontDestroyOnLoad(gameObject);
 
+        DrillItem[] allDrill = FindObjectsOfType<DrillItem>();
+        foreach(var drill in allDrill)
+        {
+            Destroy(drill.gameObject);
+        }
+
         if (BGM.isPlaying)
         {
             BGM.Stop(); // 현재 재생 중이 아닐 때만 Play()
