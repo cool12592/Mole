@@ -55929,7 +55929,7 @@ MonoBehaviour:
   isFixedPositionMode: 0
   isNoKillText: 1
   isNoSountEffect: 0
-  isNoBGM: 0
+  isNoBGM: 1
   isNoRockSound: 0
   isNoCameraShake: 0
   playerSpped: 0
