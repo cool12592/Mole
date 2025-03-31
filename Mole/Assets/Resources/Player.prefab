@@ -834,7 +834,7 @@ MonoBehaviour:
     m_Bits: 1024
   landLayer:
     serializedVersion: 2
-    m_Bits: 2112
+    m_Bits: 3264
   groundPieceMat: {fileID: 2100000, guid: 79664077e8e1ab741abcedee51cf929c, type: 2}
   _groundPieces:
   - {fileID: 21300000, guid: 1c9281bc148944e5c8af9172557d090c, type: 3}
