@@ -927,7 +927,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if(10f< totalArea)
         {
             float rnd = UnityEngine.Random.Range(0.0f, 100f);
-            float chance = Mathf.Min(totalArea * 0.05f, 5f); // 최대 5%
+            float chance = Mathf.Min(totalArea * 0.01f, 3f); // 최대 3%
             if (rnd < chance)
             {
                 var itemPos = centerPos;
