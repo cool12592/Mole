@@ -586,13 +586,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         pos.z = GetSharedFloat();
 
         if(GameManager.Instance.IsSingleMode == false)
-            PV.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
+            PV.RPC("CreateLoad_RPC", RpcTarget.All, pos.x, pos.y, pos.z,isNeighCheckRoad, shatter,true);
         else
-            CreateLoad_RPC(pos.x, pos.y, pos.z,isNeighCheckRoad, shatter);
+            CreateLoad_RPC(pos.x, pos.y, pos.z,isNeighCheckRoad, shatter,true);
     }
 
     [PunRPC]
-    void CreateLoad_RPC(float x, float y, float z,bool isNeighCheckRoad,bool shatter)
+    void CreateLoad_RPC(float x, float y, float z,bool isNeighCheckRoad,bool shatter, bool isForwad = false)
     {
         Vector3 pos = new Vector3(x, y, z);
 
@@ -600,20 +600,31 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one *0.6f);
         if (isDrillMode)
             road.transform.localScale *= 2.2f;
+
         road._sr.color = myColor;
-        _myRoadList.Add(road);
-        OnGenerateMesh += road.ChangeLayer;
+
+        if (isForwad == false)
+        {
+            _myRoadList.Add(road);
+            OnGenerateMesh += road.ChangeLayer;
+        }
+
         road._myMeshSet = _myMeshSet;
         road._myOwner = this;
 
-        if(isNeighCheckRoad)
+        if(isNeighCheckRoad && isForwad == false)
         {
             road.IsNeighCheckRoad = true;
         }
 
-        if (shatter)
+        if (shatter && isForwad == false)
         {
             road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up * 0.5f);
+        }
+
+        if(isForwad)
+        {
+            Destroy(road.gameObject, 0.1f);
         }
 
     }
