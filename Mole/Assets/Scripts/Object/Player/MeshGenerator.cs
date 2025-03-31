@@ -1,6 +1,7 @@
 using Lofelt.NiceVibrations;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
+using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using System;
 using System.Collections;
@@ -473,6 +474,20 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if (player.isActive == false)
             return;
 
+        if(isDrillMode && lastPos!=transform.position)
+        {
+            drillTimer += Time.deltaTime;
+            if (0.02f < drillTimer)
+            {
+                drillTimer = 0f;
+
+                if (drill.sprite == drill1)
+                    drill.sprite = drill2;
+                else
+                    drill.sprite = drill1;
+            }
+        }
+
         if (inHouse)
         {
             DeactiveDust();
@@ -580,8 +595,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     void CreateLoad_RPC(float x, float y, float z,bool isNeighCheckRoad,bool shatter)
     {
         Vector3 pos = new Vector3(x, y, z);
+
+
         var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one *0.6f);
-        
+        if (isDrillMode)
+            road.transform.localScale *= 2.2f;
         road._sr.color = myColor;
         _myRoadList.Add(road);
         OnGenerateMesh += road.ChangeLayer;
@@ -905,6 +923,18 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         Vector3 centerPos = sumVec / posList.Count; // 중심 좌표
         centerPos.z = -10f;
+
+        if(10f< totalArea)
+        {
+            float rnd = UnityEngine.Random.Range(0.0f, 100f);
+            float chance = Mathf.Min(totalArea * 0.05f, 5f); // 최대 5%
+            if (rnd < chance)
+            {
+                var itemPos = centerPos;
+                itemPos.z = 0f;
+                Instantiate(drillItem, itemPos, Quaternion.identity);
+            }
+        }
         //float width = maxX - minX; // AABB 가로 길이
         //float height = maxY - minY; // AABB 세로 길이
         //float boundingBoxArea = width * height; // 사각형 넓이
@@ -1049,5 +1079,49 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             if (road != null)
                 GlobalRoadPool.Instance.Release(road);
         }
+    }
+
+
+
+    public bool IsDrillMode => isDrillMode;
+    bool isDrillMode = false;
+    [SerializeField] SpriteRenderer drill;
+    [SerializeField] Sprite drill1,drill2;
+    float drillTimer = 0f;
+
+    [SerializeField] GameObject drillItem;
+    Coroutine DrillCo;
+
+    public void StartDrillMode()
+    {
+        if (GameManager.Instance.IsSingleMode == false)
+            return;
+
+        isDrillMode = true;
+        drill.gameObject.SetActive(true);
+
+        if(DrillCo != null)
+        {
+            StopCoroutine(DrillCo);
+        }
+        DrillCo = StartCoroutine(CoEndDrill());
+    }
+
+    IEnumerator CoEndDrill()
+    {
+        yield return new WaitForSeconds(5f);
+        EndDrillMode();
+        DrillCo = null;
+    }    
+
+    public void EndDrillMode()
+    {
+        if (GameManager.Instance.IsSingleMode == false)
+            return;
+        if (isDrillMode == false)
+            return;
+        isDrillMode = false;
+        drill.gameObject.SetActive(false);
+
     }
 }

@@ -24,7 +24,7 @@ public class playerScript : MonoBehaviourPunCallbacks
 
     CinemachineVirtualCamera CM;
 
-    [SerializeField] MeshGenerator meshGenerator;
+    public MeshGenerator meshGenerator;
     PlayerHealth health;
     [SerializeField] GamePalette palette;
 

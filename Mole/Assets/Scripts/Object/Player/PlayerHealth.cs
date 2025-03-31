@@ -134,6 +134,11 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         if (attacker.isActive == false) //죽은애가 다시 못죽이게
             return;
 
+        if(player.meshGenerator.IsDrillMode)
+        {
+            return;
+        }
+
 
         if (GameManager.Instance.IsSingleMode==false)
         {

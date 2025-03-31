@@ -42,12 +42,13 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
     {
         MainRobbyUI.SetActive(false);
         MultiRobbyUI.gameObject.SetActive(true);
-        NickNameInput.text = "";
-        PrivateRoomInput.text = "";
     }
 
     public void ActiveMainUI()
     {
+        NickNameInput.text = "";
+        PrivateRoomInput.text = "";
+
         MainRobbyUI.SetActive(true);
         MultiRobbyUI.gameObject.SetActive(false);
     }

@@ -197,9 +197,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
         {
             return;
         }
-        
 
-        rigidBody.velocity = inputDirection * moveSpeed;
+        float magnitude = 1f;
+        if (player.meshGenerator.IsDrillMode)
+        {
+            magnitude = 1.2f;
+        }
+        rigidBody.velocity = inputDirection * moveSpeed * magnitude;
+ 
 
         if (inputDirection != Vector2.zero)
         {
