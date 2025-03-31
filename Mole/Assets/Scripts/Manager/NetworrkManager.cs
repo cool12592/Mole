@@ -287,8 +287,10 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
                     {
                         Destroy(players[cnt].gameObject);
                         player = Instantiate(SinglePlayer, spawnPosition, Quaternion.identity).GetComponent<playerScript>();
+
+                        player.transform.position = Vector3.zero;
+
                     }
-                    player.transform.position = Vector3.zero;
 
                     player.SettingColor(gamePalette.GetColorInfo(cnt));
 
