@@ -54,14 +54,14 @@
                 fixed4 underGroundColor = tex2D(_UnderGroundTex, i.uv);
                 fixed4 roadOutLineColor = tex2D(_RoadOutLineTex, i.uv);
 
-                if (roadColor.a > 0.1)
-                {
-                    fixed4 finalColor = underGroundColor * roadColor;
-                    //finalColor.rgb *= brightness;
-                    finalColor.a = 0.2; // 투명도 유지
+                // if (roadColor.a > 0.1)
+                // {
+                //     fixed4 finalColor = underGroundColor * roadColor;
+                //     //finalColor.rgb *= brightness;
+                //    // finalColor.a = 0.2; // 투명도 유지
 
-                    return finalColor;
-                }
+                //     return finalColor;
+                // }
 
                 if (maskColor.a > 0.1)
                 {
@@ -69,14 +69,14 @@
                     finalColor.a = 1;
                     return finalColor; // 바로 반환 (이후 검사 안 함)
                 }
-                if (roadOutLineColor.a > 0.1)
-                {
-                    fixed4 finalColor = roadOutLineColor;
-                    //finalColor.rgb *= brightness;
-                    finalColor.a = 1; // 투명도 유지
+                // if (roadOutLineColor.a > 0.1)
+                // {
+                //     fixed4 finalColor = roadOutLineColor;
+                //     //finalColor.rgb *= brightness;
+                //     finalColor.a = 1; // 투명도 유지
 
-                    return finalColor;
-                }
+                //     return finalColor;
+                // }
     
                 clip(-1); // 해당 픽셀을 완전히 삭제 (투명)
                 return baseColor;

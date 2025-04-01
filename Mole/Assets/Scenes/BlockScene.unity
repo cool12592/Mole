@@ -55903,6 +55903,9 @@ MonoBehaviour:
   isNoRockSound: 0
   isNoCameraShake: 0
   playerSpped: 0
+  DrillZoomOut: 2
+  drillSpawnCount: 2
+  meshShatterColor: {r: 1, g: 1, b: 1, a: 1}
   _image1: {fileID: 781602451}
   _image2: {fileID: 502137215}
 --- !u!4 &1192254320
@@ -55991,7 +55994,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 3648
+    m_Bits: 3776
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 8f9bf704b64d6d34092823336f89bfc5, type: 2}
   m_TargetDisplay: 0

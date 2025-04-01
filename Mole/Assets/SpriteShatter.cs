@@ -44,8 +44,8 @@ public class SpriteShatter : MonoBehaviour
 
         if (isDrill)
         {
-            rows *= 2;
-            cols *= 2;
+            rows = 3;
+            cols = 3;
             explosionForce = 5f;
         }
 

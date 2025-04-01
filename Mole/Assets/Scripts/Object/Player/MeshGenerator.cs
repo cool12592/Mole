@@ -93,7 +93,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         player.ChangeDrillZoom(Creative.Instance.DrillZoomOut);
 
-        Invoke("EndDrillMode", 4f);
+       // Invoke("EndDrillMode", 4f);
     }
 
     void EndDrillMode()
@@ -643,7 +643,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         Vector3 pos = new Vector3(x, y, z);
         float scale = 0.6f;
         if (isDrillMode)
-            scale = 1.5f;
+            scale = 1.05f;
+
+        scale *= 3f;
         var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one * scale);
         road._sr.color = myColor;
         road._myOwner = this;
