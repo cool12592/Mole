@@ -42,21 +42,13 @@ public class EnemyMovement : MonoBehaviour
     float rightRotation = 1f;
 
     [Header("연기")]
-    private bool hasStarted = false;
     [SerializeField] bool isActor = false;
-    private bool isPlayingActor = false;
-    [SerializeField] float suicideTime = 3f;
     [SerializeField] float creativeScan = 0f;
 
     void Update()
     {
         if (!player.isActive || GameStateManager.Instance.NowGameState != GameStateManager.GameState.Fight)
             return;
-
-        if (isActor && !hasStarted && suicideTime != 0f)
-        {
-            StartCoroutine(ExecuteAfterSeconds(suicideTime));
-        }
 
         timer -= Time.deltaTime;
 
@@ -65,12 +57,7 @@ public class EnemyMovement : MonoBehaviour
             lastWasInHousePostion = transform.position;
         }
 
-        
-        if (isPlayingActor)
-        {
-            ForcedDetectPlayer();
-        }
-        else
+
         {
             // 상태 전환 체크
             if (isHouse == false && wasInHouse)
@@ -110,7 +97,7 @@ public class EnemyMovement : MonoBehaviour
         transform.position += transform.up * moveSpeed * Time.deltaTime;
         playerMovement.ChangeAnim();
 
-        if (isPlayingActor == false && timer <= 0f && isHouse)
+        if ( timer <= 0f && isHouse)
         {
             ChooseNextState();
         }
@@ -255,28 +242,8 @@ public class EnemyMovement : MonoBehaviour
         return false;
     }
 
-    IEnumerator ExecuteAfterSeconds(float seconds)
-    {           
-        hasStarted = true;
-        yield return new WaitForSeconds(seconds);
-        StartActor();
-    }
 
-    void StartActor()
-    {
-        isPlayingActor = true;
-    }
 
-    void ForcedDetectPlayer()
-    {
-        if (GameManager.Instance.SinglePlayer == null)
-            return;
-        if (Vector3.Distance(GameManager.Instance.SinglePlayer.transform.position, transform.position) < 2f)
-            return;
-        Vector3 dir = (GameManager.Instance.SinglePlayer.transform.position+ Vector3.right*4f +  - transform.position).normalized;
-        dir.z = 0f;
-        transform.up = dir;
-    }
 
     //void aaa()
     //{

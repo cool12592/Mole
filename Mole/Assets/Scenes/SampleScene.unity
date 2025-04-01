@@ -49338,12 +49338,17 @@ PrefabInstance:
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: isActor
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
       propertyPath: actorTime
       value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 3634974203973246243, guid: d6efa75d03ae94315b566eeffd6d3526,
+        type: 3}
+      propertyPath: creativeScan
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5003663037539567242, guid: d6efa75d03ae94315b566eeffd6d3526,
         type: 3}
@@ -55926,7 +55931,7 @@ MonoBehaviour:
   zoomInSize: 10
   zoomDuration: 0.5
   StartcameraZoom: 13
-  isFixedPositionMode: 0
+  isFixedPositionMode: 1
   isNoKillText: 1
   isNoSountEffect: 0
   isNoBGM: 1
