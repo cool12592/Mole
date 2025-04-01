@@ -760,6 +760,7 @@ MonoBehaviour:
   IsEnemy: 1
   wallCollider: {fileID: 7554290197182403767}
   _moveParticle: {fileID: 7632980249345971223}
+  movement: {fileID: 0}
 --- !u!114 &2241514368879471466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -797,6 +798,8 @@ MonoBehaviour:
   _idleSprite: {fileID: 21300000, guid: 42532c03cfa2044df971188cd9d5942d, type: 3}
   _runSprite: {fileID: 21300000, guid: 3ace8199634744ed7aaf13e0d75aed8d, type: 3}
   animChangeTerm: 0.05
+  _curIdleSprite: {fileID: 0}
+  _curRunSprite: {fileID: 0}
 --- !u!114 &5003663037539567242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -829,9 +832,14 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 1024
+  isDrillMode: 0
+  _drill1: {fileID: 0}
+  _drill2: {fileID: 0}
+  drillSr: {fileID: 0}
   landLayer:
     serializedVersion: 2
     m_Bits: 3264
+  drillItem: {fileID: 0}
   groundPieceMat: {fileID: 2100000, guid: 79664077e8e1ab741abcedee51cf929c, type: 2}
   _groundPieces:
   - {fileID: 21300000, guid: 1c9281bc148944e5c8af9172557d090c, type: 3}
@@ -861,6 +869,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  scanRadius2: 6
   results:
   - {fileID: 0}
   - {fileID: 0}
@@ -883,9 +892,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  isActor: 0
-  suicideTime: 3
-  creativeScan: 0
 --- !u!1 &8258143570271245106
 GameObject:
   m_ObjectHideFlags: 0

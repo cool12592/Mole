@@ -260,92 +260,84 @@ public class NetworrkManager : MonoBehaviourPunCallbacks
 
         DisconnectPanel.SetActive(false);
         GameManager.Instance.IsSingleMode = true;
-        Vector3 spawnPosition;
-        int maxAttempts = 1000;
-        int attempt = 0;
         float checkRadius = 7f;
 
-        int cnt = 0;
-        do
+
+        List<Vector2> positions = new List<Vector2>();
+        for (int i = 0; i < 6; i++)
         {
-            spawnPosition = new Vector3(UnityEngine.Random.Range(-12f, 15f), UnityEngine.Random.Range(-20f, 9f),0f); // 3D 좌표
+            positions.Add(Vector2.zero);
+        }
 
-            // 스폰 위치에 플레이어가 있는지 체크
-            bool hasPlayer = Physics.CheckSphere(spawnPosition, checkRadius, LayerMask.GetMask("Player"));
-
-            if (!hasPlayer) // 아무도 없으면 스폰
+        for (int i = 1; i < 6; i++)
+        {
+            Vector2 pos;
+            int attempts = 0;
+            do
             {
-                if(cnt == 0)
+                pos = new Vector3(UnityEngine.Random.Range(-12f, 15f), UnityEngine.Random.Range(-20f, 9f), 0f);
+                attempts++;
+                if (attempts > 10000)
                 {
-                    playerScript player;
-                    if (Creative.Instance.isFixedPositionMode)
-                    {
-                        player = players[cnt];
-                        player.gameObject.SetActive(true);
-                    }
-                    else
-                    {
-                        Destroy(players[cnt].gameObject);
-                        player = Instantiate(SinglePlayer, spawnPosition, Quaternion.identity).GetComponent<playerScript>();
-
-                        player.transform.position = Vector3.zero;
-
-                    }
-
-                    player.SettingColor(gamePalette.GetColorInfo(cnt));
-
-                    string nickName = CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)] + CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)];
-                    nickName += "Player";
-                    player.IsSingleNickName = nickName;
-                    GameManager.Instance.SinglePlayer = player;
-                    GameManager.Instance.ResponePanel.SetActive(false);
-                    GameManager.Instance.SingleUserJoin(player.IsSingleNickName);
-
-                    cnt++;
+                    break;
                 }
-                else
-                {
-                    playerScript player;
-                    if (Creative.Instance.isFixedPositionMode)
-                    {
-                        player = players[cnt];
-                        player.gameObject.SetActive(true);
-                    }
-                    else
-                    {
-                        Destroy(players[cnt].gameObject);
-                        player = Instantiate(Enemys, spawnPosition, Quaternion.identity).GetComponent<playerScript>();
-                    }
-                    
-                    string nickName = CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)] + CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)];
+            } while (positions.Exists(p => Vector2.Distance(p, pos) < checkRadius));
 
-                    player.IsSingleNickName = nickName + commonNames[cnt];
-                    player.SetNickText(player.IsSingleNickName.Substring(2));
-                    player.SettingColor(gamePalette.GetColorInfo(cnt));
-                    cnt++;
-
-                    GameManager.Instance.SingleUserJoin(player.IsSingleNickName);
-
-                }
+            positions[i] = pos;
+        }
 
 
+        playerScript player;
+        if (Creative.Instance.isFixedPositionMode)
+        {
+            player = players[0];
+            player.gameObject.SetActive(true);
+        }
+        else
+        {
+            if(players[0] != null)
+                Destroy(players[0].gameObject);
+            player = Instantiate(SinglePlayer, positions[0], Quaternion.identity).GetComponent<playerScript>();
+        }
 
-                if (cnt==6)
-                {
-                    GameManager.Instance.SingleAllMemberCount = cnt;
-                    
-                    GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null);
-                    return;
-                }
+        player.SettingColor(gamePalette.GetColorInfo(0));
+
+        string nickName = CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)] + CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)];
+        nickName += "Player";
+        player.IsSingleNickName = nickName;
+        GameManager.Instance.SinglePlayer = player;
+        GameManager.Instance.ResponePanel.SetActive(false);
+        GameManager.Instance.SingleUserJoin(player.IsSingleNickName);
+
+        for (int cnt = 1; cnt < 6; cnt++)
+        {
+            if (Creative.Instance.isFixedPositionMode)
+            {
+                player = players[cnt];
+                player.gameObject.SetActive(true);
+            }
+            else
+            {
+                if (players[cnt] != null)
+                    Destroy(players[cnt].gameObject);
+                player = Instantiate(Enemys, positions[cnt], Quaternion.identity).GetComponent<playerScript>();
             }
 
-            attempt++;
+            nickName = CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)] + CommonSymbols[UnityEngine.Random.Range(0, CommonSymbols.Count)];
 
-        } while (attempt < maxAttempts);
+            player.IsSingleNickName = nickName + commonNames[cnt];
+            player.SetNickText(player.IsSingleNickName.Substring(2));
+            player.SettingColor(gamePalette.GetColorInfo(cnt));
 
-        Debug.LogWarning("스폰할 수 있는 위치를 찾을 수 없습니다.");
+            GameManager.Instance.SingleUserJoin(player.IsSingleNickName);
 
+        }
+
+        GameManager.Instance.SingleAllMemberCount = 6;
+        GameManager.Instance.StartShrinkScaleCoroutine(Vector3.one * 2f, null);
     }
+            
+    
 
     public void SingleRestart()
     {
