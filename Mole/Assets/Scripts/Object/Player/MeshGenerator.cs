@@ -93,7 +93,17 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         player.ChangeDrillZoom(Creative.Instance.DrillZoomOut);
 
-        
+        Invoke("EndDrillMode", 4f);
+    }
+
+    void EndDrillMode()
+    {
+        isDrillMode = false;
+        player.ChangeDrillZoom(-Creative.Instance.DrillZoomOut);
+        drillSr.gameObject.SetActive(false);
+        player.movement.ChangeIdleAnim();
+
+
     }
 
 
