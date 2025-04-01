@@ -935,10 +935,10 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         Vector3 centerPos = sumVec / posList.Count; // 중심 좌표
         centerPos.z = -10f;
 
-        if(10f< totalArea)
+        if(GameManager.Instance.IsSingleMode && 10f< totalArea)
         {
             float rnd = UnityEngine.Random.Range(0.0f, 100f);
-            float chance = Mathf.Min(totalArea * 0.01f, 3f); // 최대 3%
+            float chance = Mathf.Min(totalArea * 0.03f, 3f); // 최대 3%
             if (rnd < chance)
             {
                 var itemPos = centerPos;
@@ -1120,7 +1120,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     IEnumerator CoEndDrill()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(7f);
         EndDrillMode();
         DrillCo = null;
     }    
