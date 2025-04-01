@@ -223,7 +223,7 @@ public class EnemyMovement : MonoBehaviour
                 if (Vector3.Distance(GameManager.Instance.SinglePlayer.transform.position, transform.position) < 2f)
                     break;
                 
-                Vector3 dir = (GameManager.Instance.SinglePlayer.transform.position + Vector3.right * 4f + -transform.position).normalized;
+                Vector3 dir = (GameManager.Instance.SinglePlayer.transform.position + GameManager.Instance.SinglePlayer.transform.right * 4f - GameManager.Instance.SinglePlayer.transform.up*2f  + -transform.position).normalized;
 
                 dir.z = 0f;
                 transform.up = dir;
