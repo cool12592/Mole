@@ -220,13 +220,15 @@ public class EnemyMovement : MonoBehaviour
                 if (player_ != GameManager.Instance.SinglePlayer)
                     continue;
 
-                if (player_ != player)
-                {
-                    Vector3 dir = (player_.transform.position + Vector3.right*3f - transform.position).normalized;
-                    dir.z = 0f;
-                    transform.up = dir;
-                    return true;
-                }
+                if (Vector3.Distance(GameManager.Instance.SinglePlayer.transform.position, transform.position) < 2f)
+                    break;
+                
+                Vector3 dir = (GameManager.Instance.SinglePlayer.transform.position + Vector3.right * 4f + -transform.position).normalized;
+
+                dir.z = 0f;
+                transform.up = dir;
+                return true;
+                
             }
         }
         return false;

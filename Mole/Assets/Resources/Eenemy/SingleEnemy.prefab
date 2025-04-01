@@ -869,7 +869,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
-  scanRadius2: 6
+  scanRadius2: 7
   results:
   - {fileID: 0}
   - {fileID: 0}
