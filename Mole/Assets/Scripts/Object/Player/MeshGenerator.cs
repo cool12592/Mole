@@ -80,6 +80,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
     public Sprite _drill1;
     public Sprite _drill2;
     [SerializeField] SpriteRenderer drillSr;
+
+
+    [SerializeField] GameObject normalDetector;
     public void ChangeDrillMode()
     {
         if (GameManager.Instance.IsSingleMode == false || player.IsEnemy)
@@ -92,7 +95,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         drillSr.gameObject.SetActive(true);
 
         player.ChangeDrillZoom(Creative.Instance.DrillZoomOut);
-
+        normalDetector.SetActive(false);
+       
        // Invoke("EndDrillMode", 4f);
     }
 
@@ -102,6 +106,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         player.ChangeDrillZoom(-Creative.Instance.DrillZoomOut);
         drillSr.gameObject.SetActive(false);
         player.movement.ChangeIdleAnim();
+        normalDetector.SetActive(true);
+
 
 
     }

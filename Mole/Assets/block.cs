@@ -28,6 +28,8 @@ public class block : MonoBehaviour
         {
             return;
         }
+        if (other.gameObject.layer != LayerMask.NameToLayer("RenderTexture") && other.gameObject.layer != LayerMask.NameToLayer("FinishRenderTexture"))
+            return;
         b = true;
         spShatter.BlockInit(sr.sprite);
         gameObject.SetActive(false);
