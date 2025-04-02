@@ -55941,6 +55941,7 @@ MonoBehaviour:
   DrillZoomOut: 2
   drillSpawnCount: -1
   meshShatterColor: {r: 1, g: 1, b: 1, a: 1}
+  drillDuration: 8
   _image1: {fileID: 781602451}
   _image2: {fileID: 502137215}
 --- !u!4 &1192254320
