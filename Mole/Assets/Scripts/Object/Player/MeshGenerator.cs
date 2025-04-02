@@ -599,7 +599,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         float scale = 0.6f;
         if (isDrillMode)
-            scale = 1.5f;
+            scale = 1.2f;
 
         var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one *scale);
 
@@ -621,7 +621,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (shatter && isForwad == false)
         {
-            road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up);
+            road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up, isDrillMode);
         }
 
         if(isForwad)
@@ -940,8 +940,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if(GameManager.Instance.IsSingleMode && 10f< totalArea)
         {
             float rnd = UnityEngine.Random.Range(0.0f, 100f);
-            float chance = Mathf.Min(totalArea * 0.03f, 3f); // 최대 3%
-            //if (rnd < chance)
+            float chance = Mathf.Min(totalArea * 0.06f, 4f); // 최대 4%
+            if (rnd < chance)
             {
                 var itemPos = centerPos;
                 itemPos.z = 0f;
@@ -1122,7 +1122,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
     IEnumerator CoEndDrill()
     {
-        yield return new WaitForSeconds(7f);
+        yield return new WaitForSeconds(8f);
         EndDrillMode();
         DrillCo = null;
     }    
