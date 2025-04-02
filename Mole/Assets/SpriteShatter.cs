@@ -53,7 +53,7 @@ public class SpriteShatter : MonoBehaviour
 
         piece.spriteRenderer.sortingOrder = 2;
         piece.spriteRenderer.sprite = sprite;
-        piece.spriteRenderer.color = new Color(0.4431373f,0.282353f, 0.2156863f);
+        piece.spriteRenderer.color =Color.red; // new Color(0.4431373f,0.282353f, 0.2156863f);
 
         // 조각에 Rigidbody2D 추가해서 떨어지게 만들기
         piece.rigid.gravityScale = 1f;

@@ -619,7 +619,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (shatter && isForwad == false)
         {
-            road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up * 0.5f);
+            road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up * 1f);
         }
 
         if(isForwad)
@@ -939,7 +939,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         {
             float rnd = UnityEngine.Random.Range(0.0f, 100f);
             float chance = Mathf.Min(totalArea * 0.03f, 3f); // 최대 3%
-            if (rnd < chance)
+            //if (rnd < chance)
             {
                 var itemPos = centerPos;
                 itemPos.z = 0f;
