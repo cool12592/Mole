@@ -675,13 +675,13 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             posList.Add(pos);
         }
 
-        // foreach(var road in visitedNodes)
-        // {
-        //     if(road._myOwner != null && road._myOwner != this)
-        //     {
-        //         StealRoad(road);
-        //     }
-        // }
+        foreach(var road in visitedNodes)
+        {
+            if(road._myOwner != null && road._myOwner != this)
+            {
+                StealRoad(road);
+            }
+        }
     }
 
     const int NodesPerFrame = 10000;
@@ -930,7 +930,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if(GameManager.Instance.IsSingleMode && 10f< totalArea)
         {
             float rnd = UnityEngine.Random.Range(0.0f, 100f);
-            float chance = Mathf.Min(totalArea * 0.05f, 3f); // 최대 3%
+            float chance = Mathf.Min(totalArea * 0.05f, 3.5f); // 최대 3.5%
             if (rnd < chance)
             {
                 var itemPos = centerPos;
