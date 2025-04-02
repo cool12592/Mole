@@ -190,6 +190,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             if (GameManager.Instance.IsSingleMode==false  && (otherRoad._myOwner.PV == null || PV == null))
                 return;
 
+            if(otherRoad._myOwner.GetComponent<playerScript>().IsEnemy==false)
+                return;
+
             var otherHealth = otherRoad._myOwner.gameObject.GetComponent<PlayerHealth>();
             if (otherHealth == null || otherHealth.PlayerActive == false)
                 return;

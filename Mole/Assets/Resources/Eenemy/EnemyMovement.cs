@@ -29,6 +29,9 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] Collider2D[] results;
     [SerializeField] Collider2D[] results2;
     Vector3 startingPoint;
+
+    static EnemyMovement isScaningEnemy = null;
+
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
@@ -210,6 +213,9 @@ public class EnemyMovement : MonoBehaviour
 
     bool DetectPlayer()
     {
+        if(isScaningEnemy != null && isScaningEnemy != this)
+            return false;
+
         int hitCount = Physics2D.OverlapCircleNonAlloc(transform.position, scanRadius2, results2, playerLayer);
         
         for (int i = 0; i < hitCount && i < results2.Length; i++)
@@ -223,10 +229,12 @@ public class EnemyMovement : MonoBehaviour
                 if (Vector3.Distance(GameManager.Instance.SinglePlayer.transform.position, transform.position) < 2f)
                     break;
                 
-                Vector3 dir = (GameManager.Instance.SinglePlayer.transform.position + GameManager.Instance.SinglePlayer.transform.right * 4f - GameManager.Instance.SinglePlayer.transform.up*2f  + -transform.position).normalized;
+                Vector3 dir = (GameManager.Instance.SinglePlayer.transform.position + GameManager.Instance.SinglePlayer.transform.right * 4f - GameManager.Instance.SinglePlayer.transform.up*2f   -transform.position).normalized;
 
                 dir.z = 0f;
                 transform.up = dir;
+
+                isScaningEnemy = this;
                 return true;
                 
             }
@@ -243,6 +251,14 @@ public class EnemyMovement : MonoBehaviour
         Vector3 dir = (GameManager.Instance.SinglePlayer.transform.position+ Vector3.right*4f +  - transform.position).normalized;
         dir.z = 0f;
         transform.up = dir;
+    }
+
+    private void OnDisable() 
+    {
+        if(isScaningEnemy == this)
+        {
+            isScaningEnemy = null;
+        }
     }
 
     //void aaa()
