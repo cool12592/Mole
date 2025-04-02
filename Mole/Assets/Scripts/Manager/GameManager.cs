@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
 
     public void ActiveResultPanel(ResultPanel resultPanel)
     {
+        return;
         if(resultPanel == ResultPanel.MultiResult)
         {
             StartCoroutine(CoWaitRequest());
