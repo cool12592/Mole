@@ -604,7 +604,6 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one *scale);
 
         road._sr.color = myColor;
-        road._myMeshSet = _myMeshSet;
         road._myOwner = this;
 
         if(isForwad)
@@ -613,6 +612,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         }
         else
         {
+            road._myMeshSet = _myMeshSet;
             _myRoadList.Add(road);
             OnGenerateMesh += road.ChangeLayer;
 
