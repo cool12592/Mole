@@ -604,31 +604,28 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one *scale);
 
         road._sr.color = myColor;
-
-        if (isForwad == false)
-        {
-            _myRoadList.Add(road);
-            OnGenerateMesh += road.ChangeLayer;
-        }
-
         road._myMeshSet = _myMeshSet;
         road._myOwner = this;
-
-        if(isNeighCheckRoad && isForwad == false)
-        {
-            road.IsNeighCheckRoad = true;
-        }
-
-        if (shatter && isForwad == false)
-        {
-            road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up, isDrillMode);
-        }
 
         if(isForwad)
         {
             Destroy(road.gameObject, 0.1f);
         }
+        else
+        {
+            _myRoadList.Add(road);
+            OnGenerateMesh += road.ChangeLayer;
 
+            if(isNeighCheckRoad)
+            {
+                road.IsNeighCheckRoad = true;
+            }
+
+            if (shatter)
+            {
+                road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up, isDrillMode);
+            }
+        }
     }
 
     public void StealRoad(Road road)
@@ -678,20 +675,12 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
             posList.Add(pos);
         }
 
-        foreach(var road in visitedNodes)
-        {
-            if(road._myOwner != null && road._myOwner != this)
-            {
-                StealRoad(road);
-            }
-        }
-
-        // // 루프가 끝난 후 삭제
-        // foreach (var road in roadsToDestroy)
+        // foreach(var road in visitedNodes)
         // {
-        //     if(road!= null)
-        //     //Destroy(road.gameObject);
-        //     road.DeleteNeigh();
+        //     if(road._myOwner != null && road._myOwner != this)
+        //     {
+        //         StealRoad(road);
+        //     }
         // }
     }
 
@@ -706,9 +695,9 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         HashSet<Road> visited = new HashSet<Road>();
         Dictionary<Road, Road> parentMap = new Dictionary<Road, Road>(); // 부모 저장용
 
-        queue.Enqueue(lastExitRoad);
-        visited.Add(lastExitRoad);
-        parentMap[lastExitRoad] = null; // 시작점의 부모는 없음
+        queue.Enqueue(lastEnterRoad);
+        visited.Add(lastEnterRoad);
+        parentMap[lastEnterRoad] = null; // 시작점의 부모는 없음
 
         int nodeCount = 0;
         while (queue.Count > 0)
@@ -720,11 +709,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
                 if (neighbor == null || neighbor._isFinishRoad == false)
                     continue;
         
-                if (neighbor == lastEnterRoad) // 목적지 도달
+                if (neighbor == lastExitRoad) // 목적지 도달
                 {
 
                     parentMap[neighbor] = node; // 부모 저장
-                    SavePath(parentMap, lastEnterRoad);
+                    SavePath(parentMap, lastExitRoad);
 
                    // lastExitRoad.transform.position = new Vector3(lastExitRoad.transform.position.x, lastExitRoad.transform.position.y, -999f);
                    // lastEnterRoad.transform.position = new Vector3(lastEnterRoad.transform.position.x, lastEnterRoad.transform.position.y, -999f);
@@ -755,8 +744,8 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
                 }
             }
         }
-
-        UnityEngine.Debug.LogError("BFS 탐색 실패!!!!");
+        if(GameManager.Instance.SinglePlayer == player)
+            UnityEngine.Debug.LogError("BFS 탐색 실패!!!!");
     }
 
     void SphereCastDetectEnterRoad()
@@ -806,6 +795,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         //}
         SphereCastDetectEnterRoad();
+
         originLastIndex = posList.Count - 1;        
 
         float z = GetSharedFloat();
@@ -940,7 +930,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         if(GameManager.Instance.IsSingleMode && 10f< totalArea)
         {
             float rnd = UnityEngine.Random.Range(0.0f, 100f);
-            float chance = Mathf.Min(totalArea * 0.06f, 4f); // 최대 4%
+            float chance = Mathf.Min(totalArea * 0.05f, 3f); // 최대 3%
             if (rnd < chance)
             {
                 var itemPos = centerPos;
