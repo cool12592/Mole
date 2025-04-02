@@ -50969,7 +50969,7 @@ SpriteRenderer:
   m_SortingOrder: -100
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6,
     type: 3}
-  m_Color: {r: 0.5566038, g: 0.5566038, b: 0.5566038, a: 1}
+  m_Color: {r: 0.17254902, g: 0.74509805, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -54295,7 +54295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spritePrefab: {fileID: 5345023392460039168, guid: 4c9bcbad14fe6b0489a8cc0458714033,
     type: 3}
-  pieceColor: {r: 0.44313726, g: 0.28235295, b: 0.21568628, a: 1}
+  pieceColor: {r: 0.7830189, g: 0.68098634, b: 0.63897294, a: 1}
   pieceSize: 0.17
 --- !u!4 &1093664108
 Transform:
@@ -55904,8 +55904,9 @@ MonoBehaviour:
   isNoCameraShake: 0
   playerSpped: 0
   DrillZoomOut: 2
-  drillSpawnCount: 2
+  drillSpawnCount: 3
   meshShatterColor: {r: 1, g: 1, b: 1, a: 1}
+  drillDuration: 8
   _image1: {fileID: 781602451}
   _image2: {fileID: 502137215}
 --- !u!4 &1192254320
@@ -70522,7 +70523,7 @@ Transform:
   m_GameObject: {fileID: 1755611793}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.145, y: 13.673, z: 0.031450607}
+  m_LocalPosition: {x: -19.42, y: 14.95, z: 0.031450607}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
