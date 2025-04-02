@@ -88,10 +88,10 @@ public class SpriteShatter : MonoBehaviour
         piece.spriteRenderer.sprite = sprite;
         piece.spriteRenderer.color = GlobalSpritePool.Instance.pieceColor;
 
-        if(isBlock)
-        {
-            piece.spriteRenderer.color = Color.white;
-        }
+        // if(isBlock)
+        // {
+        //     piece.spriteRenderer.color = Color.white;
+        // }
         // 조각에 Rigidbody2D 추가해서 떨어지게 만들기
         piece.rigid.gravityScale = 1f;
         piece.rigid.AddForce(new Vector2(UnityEngine.Random.Range(-spread, spread), UnityEngine.Random.Range(0, spread)) * explosionForce, ForceMode2D.Impulse);
