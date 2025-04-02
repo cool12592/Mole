@@ -46,6 +46,7 @@ public class SpriteShatter : MonoBehaviour
 
     void CreatePiece(SpriteRenderer original, Texture2D texture, Rect spriteRect, int x, int y, float width, float height)
     {
+        
         var pos = transform.position + playerUpVector;
         pos.z = -1f;
         SpritePiece piece = GlobalSpritePool.Instance.GetPiece(pos);

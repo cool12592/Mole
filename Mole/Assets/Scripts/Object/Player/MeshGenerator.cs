@@ -597,9 +597,11 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         Vector3 pos = new Vector3(x, y, z);
 
 
-        var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one *0.6f);
+        float scale = 0.6f;
         if (isDrillMode)
-            road.transform.localScale *= 2.2f;
+            scale = 1.5f;
+
+        var road = GlobalRoadPool.Instance.GetRoad(pos,Vector3.one *scale);
 
         road._sr.color = myColor;
 
@@ -619,7 +621,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
 
         if (shatter && isForwad == false)
         {
-            road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up * 1f);
+            road.GetComponent<SpriteShatter>().Init(pieceSprite, transform.up);
         }
 
         if(isForwad)
