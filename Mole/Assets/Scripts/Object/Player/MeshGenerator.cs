@@ -97,7 +97,7 @@ public class MeshGenerator : MonoBehaviourPunCallbacks
         player.ChangeDrillZoom(Creative.Instance.DrillZoomOut);
         normalDetector.SetActive(false);
        
-       // Invoke("EndDrillMode", 4f);
+        Invoke("EndDrillMode", Creative.Instance.drillDuration);
     }
 
     void EndDrillMode()
